@@ -1,0 +1,567 @@
+{
+  "course": {
+    "name": "Physics",
+    "level": "Senior",
+    "grade": 11,
+    "chapter": {
+      "chapterNumber": 14,
+      "title": "Waves",
+      "slug": "waves",
+      "description": "Study the propagation of disturbances, mechanical waves, transverse and longitudinal waves, progressive waves, wave speed, superposition, reflection, standing waves, normal modes and beats.",
+      "source": "waves.pdf",
+
+      "sections": [
+        {
+          "id": "14-1",
+          "number": "14.1",
+          "title": "Introduction",
+          "slug": "introduction",
+          "topics": [
+            {
+              "title": "What is a Wave?",
+              "content": "A wave is a moving disturbance that propagates from one point to another without the actual physical transfer or flow of matter as a whole."
+            },
+            {
+              "title": "Energy Transfer",
+              "content": "Waves transport energy and propagate information from one point to another."
+            },
+            {
+              "title": "Mechanical Waves",
+              "content": "Mechanical waves require a material medium for propagation. Examples include waves on a string, water waves, sound waves and seismic waves."
+            },
+            {
+              "title": "Electromagnetic Waves",
+              "content": "Electromagnetic waves do not necessarily require a medium and can propagate through vacuum. Examples include light, radio waves and X-rays."
+            },
+            {
+              "title": "Matter Waves",
+              "content": "Matter waves are associated with particles such as electrons, protons, neutrons, atoms and molecules."
+            },
+            {
+              "title": "Wave Propagation in a Medium",
+              "content": "A disturbance propagates through coupled oscillating elements of a medium. Elastic forces transmit the disturbance from one element to another."
+            }
+          ]
+        },
+
+        {
+          "id": "14-2",
+          "number": "14.2",
+          "title": "Transverse and Longitudinal Waves",
+          "slug": "transverse-and-longitudinal-waves",
+          "topics": [
+            {
+              "title": "Transverse Waves",
+              "definition": "The constituents of the medium oscillate perpendicular to the direction of wave propagation.",
+              "examples": [
+                "Wave on a stretched string"
+              ]
+            },
+            {
+              "title": "Longitudinal Waves",
+              "definition": "The constituents of the medium oscillate along the direction of wave propagation.",
+              "examples": [
+                "Sound waves in air"
+              ]
+            },
+            {
+              "title": "Compressions and Rarefactions",
+              "content": "Longitudinal sound waves propagate through successive compressions and rarefactions of the medium."
+            },
+            {
+              "title": "Progressive Waves",
+              "definition": "A travelling or progressive wave moves from one part of the medium to another while the medium as a whole does not move with the wave."
+            },
+            {
+              "title": "Propagation in Different Media",
+              "content": "Transverse waves require a medium capable of sustaining shear stress, whereas longitudinal waves can propagate in elastic solids, liquids and gases."
+            },
+            {
+              "title": "Water Waves",
+              "content": "Water waves involve complicated particle motion and can contain both transverse and longitudinal components."
+            }
+          ],
+          "example": {
+            "number": "14.1",
+            "title": "Classifying Wave Motion",
+            "questions": [
+              {
+                "question": "Motion of a kink in a longitudinal spring produced by displacing one end sideways.",
+                "answer": "Transverse and longitudinal"
+              },
+              {
+                "question": "Waves produced in a cylinder containing a liquid by moving its piston back and forth.",
+                "answer": "Longitudinal"
+              },
+              {
+                "question": "Waves produced by a motorboat sailing in water.",
+                "answer": "Transverse and longitudinal"
+              },
+              {
+                "question": "Ultrasonic waves in air produced by a vibrating quartz crystal.",
+                "answer": "Longitudinal"
+              }
+            ]
+          }
+        },
+
+        {
+          "id": "14-3",
+          "number": "14.3",
+          "title": "Displacement Relation in a Progressive Wave",
+          "slug": "displacement-relation-progressive-wave",
+          "topics": [
+            {
+              "title": "Wave Function",
+              "formula": "y(x,t) = a sin(kx - ωt + φ)",
+              "description": "A sinusoidal travelling wave propagating in the positive x-direction."
+            },
+            {
+              "title": "Wave Travelling in Negative Direction",
+              "formula": "y(x,t) = a sin(kx + ωt + φ)"
+            },
+            {
+              "title": "Amplitude",
+              "symbol": "a",
+              "definition": "Maximum displacement of the constituents of the medium from their equilibrium position."
+            },
+            {
+              "title": "Phase",
+              "formula": "kx - ωt + φ",
+              "definition": "The phase determines the displacement of the wave at a particular position and instant."
+            },
+            {
+              "title": "Initial Phase",
+              "symbol": "φ",
+              "definition": "The phase at x = 0 and t = 0."
+            },
+            {
+              "title": "Wavelength",
+              "symbol": "λ",
+              "formula": "λ = 2π/k",
+              "definition": "The minimum distance between two points having the same phase."
+            },
+            {
+              "title": "Angular Wave Number",
+              "symbol": "k",
+              "formula": "k = 2π/λ",
+              "unit": "rad m^-1"
+            },
+            {
+              "title": "Time Period",
+              "symbol": "T",
+              "formula": "T = 2π/ω"
+            },
+            {
+              "title": "Angular Frequency",
+              "symbol": "ω",
+              "formula": "ω = 2π/T",
+              "unit": "rad s^-1"
+            },
+            {
+              "title": "Frequency",
+              "symbol": "ν",
+              "formula": "ν = 1/T = ω/(2π)",
+              "unit": "Hz"
+            },
+            {
+              "title": "Longitudinal Wave Displacement",
+              "formula": "s(x,t) = a sin(kx - ωt + φ)"
+            }
+          ],
+          "example": {
+            "number": "14.2",
+            "title": "Wave Equation on a String",
+            "given": "y(x,t) = 0.005 sin(80.0x - 3.0t)",
+            "find": [
+              "Amplitude",
+              "Wavelength",
+              "Period",
+              "Frequency",
+              "Displacement at x = 30.0 cm and t = 20 s"
+            ],
+            "results": {
+              "amplitude": "0.005 m = 5 mm",
+              "angularWaveNumber": "80.0 m^-1",
+              "angularFrequency": "3.0 rad s^-1",
+              "wavelength": "7.85 cm",
+              "period": "2.09 s",
+              "frequency": "0.48 Hz",
+              "displacement": "Approximately 5 mm"
+            }
+          }
+        },
+
+        {
+          "id": "14-4",
+          "number": "14.4",
+          "title": "The Speed of a Travelling Wave",
+          "slug": "speed-of-travelling-wave",
+          "topics": [
+            {
+              "title": "Wave Speed",
+              "formula": "v = ω/k"
+            },
+            {
+              "title": "Fundamental Wave Relation",
+              "formula": "v = λν = λ/T"
+            },
+            {
+              "title": "Physical Meaning",
+              "content": "During one complete oscillation of a constituent of the medium, the wave pattern travels a distance equal to one wavelength."
+            },
+            {
+              "title": "Dependence of Wave Speed",
+              "content": "The speed of a mechanical wave depends on the inertial and elastic properties of the medium."
+            }
+          ],
+          "subsections": [
+            {
+              "id": "14-4-1",
+              "title": "Speed of a Transverse Wave on a Stretched String",
+              "formula": "v = √(T/μ)",
+              "variables": {
+                "T": "Tension in the string",
+                "μ": "Linear mass density"
+              },
+              "importantPoint": "The speed depends on the properties of the string and does not depend on the wavelength or frequency of the wave itself."
+            },
+            {
+              "id": "14-4-2",
+              "title": "Speed of a Longitudinal Wave",
+              "formula": "v = √(B/ρ)",
+              "variables": {
+                "B": "Bulk modulus",
+                "ρ": "Mass density"
+              },
+              "solidBarFormula": "v = √(Y/ρ)",
+              "solidBarVariables": {
+                "Y": "Young's modulus",
+                "ρ": "Mass density"
+              },
+              "gasFormulaNewton": "v = √(P/ρ)",
+              "gasFormulaLaplace": "v = √(γP/ρ)"
+            }
+          ],
+          "examples": [
+            {
+              "number": "14.3",
+              "title": "Speed of Transverse Waves on a Steel Wire",
+              "given": {
+                "length": "0.72 m",
+                "mass": "5.0 × 10^-3 kg",
+                "tension": "60 N"
+              },
+              "method": "Calculate linear mass density and apply v = √(T/μ)."
+            },
+            {
+              "number": "14.4",
+              "title": "Speed of Sound in Air",
+              "concepts": [
+                "Newton's formula",
+                "Isothermal assumption",
+                "Laplace correction",
+                "Adiabatic process"
+              ],
+              "result": "Using the Laplace correction gives approximately 331.3 m s^-1 at STP."
+            }
+          ]
+        },
+
+        {
+          "id": "14-5",
+          "number": "14.5",
+          "title": "The Principle of Superposition of Waves",
+          "slug": "principle-of-superposition",
+          "topics": [
+            {
+              "title": "Superposition Principle",
+              "definition": "When two or more waves overlap, the resultant displacement is the algebraic sum of the individual displacements.",
+              "formula": "y(x,t) = y1(x,t) + y2(x,t)"
+            },
+            {
+              "title": "Multiple Waves",
+              "formula": "y = Σ fi(x - vt)"
+            },
+            {
+              "title": "Interference",
+              "content": "The principle of superposition is fundamental to the phenomenon of interference."
+            },
+            {
+              "title": "Constructive Interference",
+              "condition": "φ = 0",
+              "result": "Resultant amplitude = 2a"
+            },
+            {
+              "title": "Destructive Interference",
+              "condition": "φ = π",
+              "result": "Resultant displacement = 0 for equal-amplitude waves."
+            },
+            {
+              "title": "Resultant Amplitude",
+              "formula": "A(φ) = 2a cos(φ/2)"
+            }
+          ]
+        },
+
+        {
+          "id": "14-6",
+          "number": "14.6",
+          "title": "Reflection of Waves",
+          "slug": "reflection-of-waves",
+          "topics": [
+            {
+              "title": "Reflection at a Rigid Boundary",
+              "content": "A travelling wave or pulse suffers a phase change of π on reflection at a rigid boundary."
+            },
+            {
+              "title": "Reflection at an Open Boundary",
+              "content": "At a completely free boundary, the reflected pulse has the same phase as the incident pulse, assuming no energy dissipation."
+            },
+            {
+              "title": "Rigid Boundary",
+              "formula": "yr(x,t) = -a sin(kx - ωt)"
+            },
+            {
+              "title": "Open Boundary",
+              "formula": "yr(x,t) = a sin(kx - ωt)"
+            },
+            {
+              "title": "Echo",
+              "content": "Echo is an example of reflection by a rigid boundary."
+            }
+          ],
+          "subsections": [
+            {
+              "id": "14-6-1",
+              "title": "Standing Waves and Normal Modes",
+              "slug": "standing-waves-normal-modes",
+              "topics": [
+                {
+                  "title": "Standing Wave Formation",
+                  "formula": "y(x,t) = 2a sin(kx) cos(ωt)",
+                  "description": "Produced by superposition of two waves of equal amplitude and wavelength travelling in opposite directions."
+                },
+                {
+                  "title": "Nodes",
+                  "definition": "Points where the amplitude is zero and there is no motion.",
+                  "formula": "x = nλ/2"
+                },
+                {
+                  "title": "Antinodes",
+                  "definition": "Points where the amplitude is maximum.",
+                  "formula": "x = (n + 1/2)λ/2"
+                },
+                {
+                  "title": "Distance Between Successive Nodes",
+                  "formula": "λ/2"
+                },
+                {
+                  "title": "Distance Between Successive Antinodes",
+                  "formula": "λ/2"
+                },
+                {
+                  "title": "String Fixed at Both Ends",
+                  "formula": "L = nλ/2",
+                  "wavelengths": "λn = 2L/n",
+                  "frequencies": "νn = nv/(2L)",
+                  "fundamental": "ν1 = v/(2L)"
+                },
+                {
+                  "title": "Harmonics",
+                  "content": "n = 1 is the fundamental or first harmonic, n = 2 is the second harmonic, n = 3 is the third harmonic, and so on."
+                },
+                {
+                  "title": "Air Column Closed at One End",
+                  "formula": "λ = 2L/(n + 1/2)",
+                  "frequencyFormula": "ν = (n + 1/2)v/(2L)",
+                  "content": "Only odd harmonics occur."
+                },
+                {
+                  "title": "Open Pipe",
+                  "content": "For an air column open at both ends, both ends are antinodes and all harmonics can occur."
+                },
+                {
+                  "title": "Resonance",
+                  "content": "A system shows resonance when the external frequency is close to one of its natural frequencies."
+                }
+              ],
+              "example": {
+                "number": "14.5",
+                "title": "Resonance in an Open Pipe",
+                "given": {
+                  "pipeLength": "30.0 cm",
+                  "soundSpeed": "330 m s^-1",
+                  "sourceFrequency": "1.1 kHz"
+                },
+                "result": "The source resonates with the second harmonic of the open pipe."
+              }
+            }
+          ]
+        },
+
+        {
+          "id": "14-7",
+          "number": "14.7",
+          "title": "Beats",
+          "slug": "beats",
+          "topics": [
+            {
+              "title": "Formation of Beats",
+              "definition": "Beats arise when two waves having slightly different frequencies and comparable amplitudes are superposed."
+            },
+            {
+              "title": "Beat Frequency",
+              "formula": "νbeat = |ν1 - ν2|"
+            },
+            {
+              "title": "Nature of Beats",
+              "content": "The sound intensity periodically increases and decreases, producing audible waxing and waning."
+            }
+          ],
+          "example": {
+            "number": "14.6",
+            "title": "Beats from Two Sitar Strings",
+            "given": {
+              "frequencyA": "427 Hz",
+              "initialBeatFrequency": "5 Hz",
+              "newBeatFrequency": "3 Hz",
+              "change": "Tension of string B is increased."
+            },
+            "result": "The original frequency of string B is 422 Hz."
+          }
+        }
+      ],
+
+      "summary": [
+        "Mechanical waves exist in material media.",
+        "Transverse waves have particle oscillations perpendicular to propagation.",
+        "Longitudinal waves have particle oscillations parallel to propagation.",
+        "A progressive wave moves from one point of a medium to another.",
+        "A sinusoidal wave travelling in the positive x-direction is represented by y(x,t) = a sin(kx - ωt + φ).",
+        "Wavelength is the distance between consecutive points having the same phase.",
+        "Period T = 2π/ω.",
+        "Frequency ν = 1/T = ω/(2π).",
+        "Wave speed v = ω/k = λ/T = λν.",
+        "Speed of a transverse wave on a stretched string is v = √(T/μ).",
+        "Sound waves are longitudinal mechanical waves and can propagate through solids, liquids and gases.",
+        "The speed of a longitudinal wave is v = √(B/ρ).",
+        "The principle of superposition states that resultant displacement is the algebraic sum of individual displacements.",
+        "Reflection at a rigid boundary produces a phase change of π.",
+        "Standing waves contain nodes and antinodes.",
+        "A string fixed at both ends has frequencies νn = nv/(2L).",
+        "An air column closed at one end supports odd harmonics.",
+        "Beats occur when two waves of slightly different frequencies are superposed.",
+        "Beat frequency is νbeat = |ν1 - ν2|."
+      ],
+
+      "pointsToPonder": [
+        "A wave is not motion of matter as a whole in a medium.",
+        "Energy, rather than matter, is transferred from one point to another.",
+        "Mechanical wave energy transfer occurs through elastic coupling between neighbouring oscillating parts.",
+        "Transverse waves require a medium with shear elasticity.",
+        "Longitudinal waves can propagate in solids, liquids and gases.",
+        "In a harmonic progressive wave, particles have the same amplitude but different phases.",
+        "In a stationary wave, particles between two nodes have the same phase but different amplitudes.",
+        "The speed of a mechanical wave in a medium depends on the elastic and inertial properties of the medium."
+      ],
+
+      "exercises": [
+        {
+          "number": "14.1",
+          "question": "A string of mass 2.50 kg is under a tension of 200 N. The length of the stretched string is 20.0 m. If the transverse jerk is struck at one end of the string, how long does the disturbance take to reach the other end?"
+        },
+        {
+          "number": "14.2",
+          "question": "A stone dropped from the top of a tower of height 300 m splashes into the water of a pond near the base of the tower. When is the splash heard at the top given that the speed of sound in air is 340 m s^-1? Take g = 9.8 m s^-2."
+        },
+        {
+          "number": "14.3",
+          "question": "A steel wire has a length of 12.0 m and a mass of 2.10 kg. What should be the tension in the wire so that the speed of a transverse wave on the wire equals the speed of sound in dry air at 20 °C, 343 m s^-1?"
+        },
+        {
+          "number": "14.4",
+          "question": "Use the formula v = √(γP/ρ) to explain why the speed of sound in air is independent of pressure, increases with temperature and increases with humidity."
+        },
+        {
+          "number": "14.5",
+          "question": "Examine whether functions such as (x - vt)^2, log[(x + vt)/x0], and 1/(x + vt) can represent travelling waves."
+        },
+        {
+          "number": "14.6",
+          "question": "A bat emits ultrasonic sound of frequency 1000 kHz in air."
+        }
+      ],
+
+      "website": {
+        "route": "/senior/grade/11/physics/waves",
+        "pageTitle": "Waves | Grade 11 Physics",
+        "metaDescription": "Learn Grade 11 Physics Waves: transverse and longitudinal waves, progressive waves, wave speed, superposition, reflection, standing waves, normal modes and beats.",
+        "navigation": [
+          {
+            "label": "Introduction",
+            "href": "#introduction"
+          },
+          {
+            "label": "Transverse & Longitudinal Waves",
+            "href": "#transverse-and-longitudinal-waves"
+          },
+          {
+            "label": "Progressive Waves",
+            "href": "#displacement-relation-progressive-wave"
+          },
+          {
+            "label": "Wave Speed",
+            "href": "#speed-of-travelling-wave"
+          },
+          {
+            "label": "Superposition",
+            "href": "#principle-of-superposition"
+          },
+          {
+            "label": "Reflection & Standing Waves",
+            "href": "#reflection-of-waves"
+          },
+          {
+            "label": "Beats",
+            "href": "#beats"
+          },
+          {
+            "label": "Summary",
+            "href": "#summary"
+          },
+          {
+            "label": "Exercises",
+            "href": "#exercises"
+          }
+        ]
+      },
+
+      "learningFeatures": {
+        "conceptCards": true,
+        "formulaCards": true,
+        "workedExamples": true,
+        "interactiveDiagrams": [
+          "Transverse wave",
+          "Longitudinal wave with compressions and rarefactions",
+          "Progressive sinusoidal wave",
+          "Wave reflection at rigid boundary",
+          "Wave reflection at open boundary",
+          "Standing wave with nodes and antinodes",
+          "Harmonics of a stretched string",
+          "Open and closed air columns",
+          "Beat formation"
+        ],
+        "practiceModes": [
+          "MCQ",
+          "Numerical Problems",
+          "Concept Questions",
+          "Formula Practice",
+          "Chapter Revision"
+        ],
+        "progressTracking": true,
+        "darkMode": true
+      }
+    }
+  }
+}
