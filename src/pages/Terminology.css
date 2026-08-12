@@ -1,0 +1,436 @@
+/* Terminology Page Styles */
+.terminology-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 30px 40px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  background-color: #f7f8fc;
+  min-height: 100vh;
+}
+
+/* Top Navigation Row */
+.top-nav-row {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 24px;
+}
+
+.back-dashboard-btn {
+  background: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1a1a2e;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.back-dashboard-btn:hover {
+  background: #f0f1f6;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Page Header */
+.page-header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.page-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin: 0 0 6px 0;
+  letter-spacing: -0.3px;
+}
+
+.page-subtitle {
+  font-size: 16px;
+  color: #5a5a7a;
+  margin: 0;
+  font-weight: 400;
+}
+
+/* Filter Tabs */
+.filter-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 28px;
+}
+
+.filter-tab {
+  background: white;
+  border: 1px solid #e2e4ed;
+  padding: 8px 24px;
+  border-radius: 24px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #4a4a6a;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.filter-tab:hover {
+  background: #f0f1f6;
+  border-color: #c8cae0;
+}
+
+.filter-tab.active {
+  background: #4a6cf7;
+  color: white;
+  border-color: #4a6cf7;
+  box-shadow: 0 2px 10px rgba(74, 108, 247, 0.25);
+}
+
+/* Main Two-Column Layout */
+.terminology-main {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 24px;
+  background: transparent;
+  min-height: 500px;
+}
+
+/* Left: Term List */
+.term-list {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.04);
+  padding: 8px 0;
+  max-height: 600px;
+  overflow-y: auto;
+  border: 1px solid #edeff5;
+}
+
+.term-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 12px 18px;
+  background: transparent;
+  border: none;
+  border-left: 3px solid transparent;
+  text-align: left;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: #2a2a4a;
+  transition: all 0.15s ease;
+  font-family: inherit;
+  gap: 12px;
+}
+
+.term-list-item:hover {
+  background: #f5f6fb;
+}
+
+.term-list-item.active {
+  background: #eef1ff;
+  border-left-color: #4a6cf7;
+  color: #1a1a2e;
+}
+
+.term-list-title {
+  flex: 1;
+  font-size: 14px;
+}
+
+.term-list-section {
+  font-size: 11px;
+  font-weight: 400;
+  color: #8a8aaa;
+  background: #f0f1f6;
+  padding: 2px 10px;
+  border-radius: 12px;
+  white-space: nowrap;
+}
+
+.term-list-item.active .term-list-section {
+  background: #dde3ff;
+  color: #4a6cf7;
+}
+
+/* Scrollbar styling */
+.term-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.term-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.term-list::-webkit-scrollbar-thumb {
+  background: #d0d2e0;
+  border-radius: 4px;
+}
+
+/* Right: Term Detail */
+.term-detail {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.04);
+  padding: 28px 32px 32px;
+  border: 1px solid #edeff5;
+  min-height: 400px;
+}
+
+.term-section-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #6a6a8a;
+  background: #f0f2f8;
+  display: inline-block;
+  padding: 3px 14px;
+  border-radius: 14px;
+  margin-bottom: 14px;
+  letter-spacing: 0.3px;
+}
+
+.term-section-title {
+  margin-left: 6px;
+  font-weight: 400;
+  color: #8a8aaa;
+}
+
+.term-detail-title {
+  font-size: 26px;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin: 0 0 18px 0;
+  letter-spacing: -0.2px;
+}
+
+/* Term fields */
+.term-field {
+  margin-bottom: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 8px;
+}
+
+.term-field-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #3a3a5a;
+  min-width: 80px;
+}
+
+.term-field-value {
+  font-size: 15px;
+  color: #1a1a2e;
+  word-break: break-word;
+}
+
+.symbol-value {
+  font-family: 'Times New Roman', serif;
+  font-style: italic;
+  font-size: 18px;
+  color: #1a1a2e;
+}
+
+.formula-value {
+  font-family: 'Courier New', monospace;
+  font-size: 16px;
+  background: #f5f6fb;
+  padding: 2px 12px;
+  border-radius: 6px;
+  color: #1a1a2e;
+}
+
+.term-definition {
+  display: block;
+  margin-top: 6px;
+}
+
+.term-definition .term-field-label {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.term-definition .term-field-value {
+  display: block;
+  line-height: 1.6;
+  font-size: 15px;
+  color: #2a2a4a;
+}
+
+/* Quick Memory Box */
+.quick-memory-box {
+  background: #f0f4ff;
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin: 20px 0 16px 0;
+  border-left: 4px solid #4a6cf7;
+}
+
+.quick-memory-header {
+  font-size: 13px;
+  font-weight: 600;
+  color: #4a6cf7;
+  margin-bottom: 4px;
+}
+
+.quick-memory-content {
+  font-size: 14px;
+  color: #1a1a3e;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Examples */
+.term-examples {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid #edeff5;
+}
+
+.examples-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #3a3a5a;
+  margin: 0 0 8px 0;
+}
+
+.examples-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.example-item {
+  font-size: 14px;
+  color: #2a2a4a;
+  padding: 4px 0 4px 20px;
+  position: relative;
+  line-height: 1.5;
+}
+
+.example-item::before {
+  content: '•';
+  position: absolute;
+  left: 2px;
+  color: #4a6cf7;
+  font-weight: 700;
+}
+
+/* Variables */
+.term-variables {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid #edeff5;
+}
+
+.variables-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #3a3a5a;
+  margin: 0 0 10px 0;
+}
+
+.variables-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px 16px;
+  margin: 0;
+}
+
+.variable-item {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 4px 0;
+  font-size: 14px;
+}
+
+.variable-symbol {
+  font-weight: 600;
+  color: #1a1a2e;
+  font-family: 'Times New Roman', serif;
+  font-style: italic;
+  min-width: 30px;
+}
+
+.variable-definition {
+  margin: 0;
+  color: #4a4a6a;
+  font-size: 14px;
+}
+
+/* Loading State */
+.loading-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  font-size: 16px;
+  color: #6a6a8a;
+}
+
+/* Responsive */
+@media (max-width: 820px) {
+  .terminology-main {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .term-list {
+    max-height: 300px;
+  }
+
+  .term-detail {
+    padding: 20px;
+  }
+
+  .variables-list {
+    grid-template-columns: 1fr;
+  }
+
+  .page-title {
+    font-size: 26px;
+  }
+
+  .terminology-container {
+    padding: 16px;
+  }
+
+  .filter-tabs {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .filter-tab {
+    padding: 6px 16px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .term-detail-title {
+    font-size: 20px;
+  }
+
+  .term-field {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+
+  .term-field-label {
+    min-width: auto;
+  }
+
+  .back-dashboard-btn {
+    font-size: 13px;
+    padding: 6px 16px;
+  }
+}
