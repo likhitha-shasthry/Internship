@@ -123,16 +123,31 @@ function buildQuizBank(items){
 
   symbolPool.forEach(t=>{
     const distractors=shuffled(symbolPool.filter(x=>x.symbol!==t.symbol).map(x=>x.symbol)).slice(0,3);
-    if(distractors.length===3)bank.push({type:'symbol',prompt:`Which symbol represents "${t.title}"?`,correct:t.symbol,options:shuffled([t.symbol,...distractors]),source:t.title});
+    if(distractors.length===3){
+      let explanation=`"${t.title}" is denoted by the symbol ${t.symbol}.`;
+      if(t.definition||t.content)explanation+=` ${t.definition||t.content}`;
+      else if(t.formula)explanation+=` Formula: ${t.formula}.`;
+      bank.push({type:'symbol',prompt:`Which symbol represents "${t.title}"?`,correct:t.symbol,options:shuffled([t.symbol,...distractors]),source:t.title,explanation});
+    }
   });
   formulaPool.forEach(t=>{
     const distractors=shuffled(formulaPool.filter(x=>x.formula!==t.formula).map(x=>x.formula)).slice(0,3);
-    if(distractors.length===3)bank.push({type:'formula',prompt:`Which formula corresponds to "${t.title}"?`,correct:t.formula,options:shuffled([t.formula,...distractors]),source:t.title});
+    if(distractors.length===3){
+      let explanation=`${t.title}: ${t.formula}.`;
+      if(t.definition||t.content)explanation+=` ${t.definition||t.content}`;
+      if(t.unit)explanation+=` Unit: ${t.unit}.`;
+      bank.push({type:'formula',prompt:`Which formula corresponds to "${t.title}"?`,correct:t.formula,options:shuffled([t.formula,...distractors]),source:t.title,explanation});
+    }
   });
   defPool.forEach(t=>{
     const text=t.definition||t.content;
     const distractors=shuffled(defPool.filter(x=>x.title!==t.title).map(x=>x.title)).slice(0,3);
-    if(distractors.length===3)bank.push({type:'term',prompt:`Which term does this describe: "${text}"`,correct:t.title,options:shuffled([t.title,...distractors]),source:t.title});
+    if(distractors.length===3){
+      let explanation=`"${t.title}" is defined as: ${text}`;
+      if(t.symbol)explanation+=` (Symbol: ${t.symbol})`;
+      if(t.formula)explanation+=` Formula: ${t.formula}.`;
+      bank.push({type:'term',prompt:`Which term does this describe: "${text}"`,correct:t.title,options:shuffled([t.title,...distractors]),source:t.title,explanation});
+    }
   });
   return bank;
 }
@@ -537,6 +552,10 @@ function Quiz({onGo}){
         return <button key={opt} className={cls} onClick={()=>choose(opt)} disabled={!!selected} aria-pressed={opt===selected}>{opt}</button>;
       })}
     </div>
+    {selected&&q.explanation&&
+      <div className="quiz-explanation">
+        <strong>Explanation:</strong> {q.explanation}
+      </div>}
     <div className="quiz-actions">
       <button className="quiz-next" disabled={!selected} onClick={next}>
         {index+1<questions.length?'Next Question →':'See Results →'}
