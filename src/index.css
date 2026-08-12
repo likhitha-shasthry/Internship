@@ -102,3 +102,60 @@
 .question-detail{margin:0;padding:0 22px 22px;color:#5d6885;font-size:14.5px;line-height:1.6}
 
 @media(max-width:900px){.prereq-grid{grid-template-columns:1fr}.question-grid{grid-template-columns:1fr}}
+
+/* ---- Exam Edge ---- */
+.examedge-hero{margin-top:34px;padding:54px 40px;border-radius:26px;text-align:center;color:#fff;background:radial-gradient(circle at 30% 20%,#3f61ee,#17254b 75%)}
+.examedge-hero h1{margin:0 0 14px;font-size:clamp(34px,4.6vw,50px);letter-spacing:-1.5px}
+.examedge-hero h1 span{color:#ff6b6b}
+.examedge-hero p{max-width:640px;margin:0 auto;color:#d3dbff;font-size:16px;line-height:1.6}
+
+.examedge-tabs{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin:30px 0}
+.exam-tab{border:1px solid #dfe4ef;background:#fff;border-radius:24px;padding:12px 24px;font-weight:800;font-size:15px;color:#3a4462;cursor:pointer}
+.exam-tab.active.green{background:#2f9e5c;border-color:#2f9e5c;color:#fff}
+.exam-tab.active.blue{background:#4566df;border-color:#4566df;color:#fff}
+.exam-tab.active.orange{background:#e58406;border-color:#e58406;color:#fff}
+.exam-tab.active.purple{background:#7b43ea;border-color:#7b43ea;color:#fff}
+
+.examedge-panel{background:#fff;border:1px solid #e1e6f2;border-radius:24px;padding:36px 38px;box-shadow:0 6px 18px #223a7809}
+.examedge-strat-title{display:flex;align-items:center;gap:12px;margin:0 0 26px;font-size:26px;color:#17203d}
+.examedge-bar{width:6px;height:26px;border-radius:4px;background:#4566df;display:inline-block}
+.examedge-strat-title.green .examedge-bar{background:#2f9e5c}
+.examedge-strat-title.blue .examedge-bar{background:#4566df}
+.examedge-strat-title.orange .examedge-bar{background:#e58406}
+.examedge-strat-title.purple .examedge-bar{background:#7b43ea}
+
+.examedge-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:30px}
+.examedge-stats>div{background:#f6f8fd;border-radius:16px;padding:20px 22px}
+.examedge-stats small{display:block;color:#8a93ab;font-size:11px;font-weight:900;letter-spacing:1px;margin-bottom:8px}
+.examedge-stats strong{font-size:28px;color:#17203d}
+.examedge-stats strong em{font-style:normal;font-size:14px;color:#8a93ab;font-weight:700}
+.examedge-stats strong.green{color:#2f9e5c}
+.examedge-stats strong.blue{color:#4566df}
+.examedge-stats strong.orange{color:#e58406}
+.examedge-stats strong.purple{color:#7b43ea}
+
+.examedge-panel h3{margin:0 0 14px;font-size:18px;color:#17203d}
+.examedge-focus{border-radius:16px;padding:22px 24px;background:#eef2ff;border-left:4px solid #4566df;color:#3a4462;font-size:15.5px;line-height:1.6;margin-bottom:36px}
+.examedge-focus.green{background:#eafaf0;border-color:#2f9e5c}
+.examedge-focus.blue{background:#eef2ff;border-color:#4566df}
+.examedge-focus.orange{background:#fff6e9;border-color:#e58406}
+.examedge-focus.purple{background:#f5f0ff;border-color:#7b43ea}
+
+.examedge-pyq-title{display:flex;align-items:center;gap:8px}
+.examedge-pyq-list{display:flex;flex-direction:column;gap:18px;margin-top:16px}
+.pyq-card{border:1px solid #e1e6f2;border-radius:18px;padding:24px}
+.pyq-tag{display:inline-block;background:#f0f2f8;color:#6a7690;font-size:12px;font-weight:800;padding:5px 12px;border-radius:20px;margin-bottom:12px}
+.pyq-card p{margin:0 0 16px;color:#17203d;font-size:16px;font-weight:700;line-height:1.5}
+.pyq-solution{border-top:2px solid #4566df;padding-top:14px}
+.pyq-solution small{display:block;color:#4566df;font-size:11px;font-weight:900;letter-spacing:1px;margin-bottom:6px}
+.pyq-solution span{color:#5d6885;font-size:14.5px;line-height:1.6}
+.pyq-solution.green{border-color:#2f9e5c}
+.pyq-solution.green small{color:#2f9e5c}
+.pyq-solution.blue{border-color:#4566df}
+.pyq-solution.blue small{color:#4566df}
+.pyq-solution.orange{border-color:#e58406}
+.pyq-solution.orange small{color:#e58406}
+.pyq-solution.purple{border-color:#7b43ea}
+.pyq-solution.purple small{color:#7b43ea}
+
+@media(max-width:900px){.examedge-stats{grid-template-columns:1fr}.examedge-panel{padding:26px 20px}}

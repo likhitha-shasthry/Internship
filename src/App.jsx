@@ -29,6 +29,36 @@ const bigQuestions=[
   ['pink','⚙️','How','does a disturbance actually travel?','Picture springs joined end to end: pull one and release it, and it stretches its neighbour, which stretches the next, and so on. Each spring only oscillates about its own equilibrium position, but the disturbance itself walks all the way down the line.'],
 ];
 
+const examTabs=[['neet','NEET','green'],['jee','JEE Main','blue'],['cet','Karnataka CET','orange'],['puc','PUC / Boards','purple']];
+
+const examData={
+  neet:{title:'NEET',weightage:'2 - 3',marks:'8 - 12',difficulty:'Medium',
+    focus:"Wave speed formulas (v = √(T/μ), v = √(B/ρ)), the principle of superposition, and beat frequency (Δf = |f₁ − f₂|) are asked almost every year. Expect one direct numerical and one conceptual question.",
+    pyqs:[
+      ['NEET 2023','Two tuning forks of frequency 256 Hz and 260 Hz are sounded together. The number of beats heard in 4 seconds is:','Beat frequency = |f₁ − f₂| = |260 − 256| = 4 Hz. Beats in 4 s = 4 × 4 = 16 beats.'],
+      ['NEET 2022','A transverse wave y = 0.02 sin(4πt − 0.02πx) (SI units) travels along a stretched string. The wave speed is:','Compare with y = a sin(ωt − kx): ω = 4π rad/s, k = 0.02π rad/m. v = ω/k = 4π / 0.02π = 200 m/s.'],
+      ['NEET 2021','A wave pulse on a string reflects from a rigid boundary. The phase change on reflection is:','A rigid (fixed) end forces zero displacement, so the reflected pulse is inverted — a phase change of π (180°). A free end gives no phase change.'],
+    ]},
+  jee:{title:'JEE Main',weightage:'1 - 2',marks:'4 - 8',difficulty:'Hard',
+    focus:'Questions combine superposition with standing waves on strings or pipes, or mix wave speed with elasticity (Ch.8). Multi-step numericals involving harmonics and resonance length are common.',
+    pyqs:[
+      ['JEE Main 2023','A string of length 1 m, fixed at both ends, vibrates in its 3rd harmonic at 300 Hz. Find the wave speed on the string.','nth harmonic: fₙ = nv/2L → 300 = 3v/(2×1) → v = 300×2/3 = 200 m/s.'],
+      ['JEE Main 2022','Two waves y₁ = a sin(ωt) and y₂ = a sin(ωt + π/3) superpose. Find the amplitude of the resultant wave.','A = √(a² + a² + 2a²cos(π/3)) = √(3)·a ≈ 1.73a.'],
+    ]},
+  cet:{title:'Karnataka CET',weightage:'2 - 3',marks:'2 - 3',difficulty:'Easy to Medium',
+    focus:'Formula recall and short conceptual definitions dominate — amplitude, wavelength, the frequency-period relation, and the basic wave equation v = fλ. Expect direct one-line numericals.',
+    pyqs:[
+      ['Karnataka CET 2021','The relation between wave velocity v, frequency f and wavelength λ is:','v = f × λ — the wave equation relating speed, frequency and wavelength.'],
+      ['Karnataka CET 2019','A wave has a frequency of 500 Hz and travels at 350 m/s in air. Its wavelength is:','λ = v/f = 350/500 = 0.7 m.'],
+    ]},
+  puc:{title:'PUC / Boards',weightage:'7 - 10%',marks:'5 - 7',difficulty:'Medium',
+    focus:'Derivations (speed of a transverse wave on a stretched string, the progressive wave equation) and short definition questions on amplitude, phase and beats are the safest scoring areas.',
+    pyqs:[
+      ['PUC / Boards 2020','Derive an expression for the speed of a transverse wave on a stretched string.',"Consider an element of string under tension T and linear density μ. Applying Newton's second law to a small curved element and simplifying for small displacements gives v = √(T/μ)."],
+      ['PUC / Boards 2018','What are beats? Derive an expression for beat frequency.','Superposing y₁ = a sin(ω₁t) and y₂ = a sin(ω₂t) gives a resultant whose amplitude is modulated at frequency |f₁ − f₂|/2, so beats are heard at frequency |f₁ − f₂|.'],
+    ]},
+};
+
 function Header(){return <header className="topbar"><a className="brand" href="#top"><span className="brand-mark">◔</span><b>skill<span>100</span>.ai</b></a><nav>{['Home','Skill Discovery','IDY 2026','WYSD 2026','WYSD Maths','NEET','Rapid Math'].map(x=><a key={x} href="#modules">{x}</a>)}</nav><button className="logout">Logout</button></header>}
 
 function DetailNav({active,onBack,onGo}){
@@ -136,15 +166,62 @@ function Introduction({onBack,onGo}){
   </main></div>
 }
 
+function ExamEdge({onBack,onGo}){
+  const[tab,setTab]=useState('neet');
+  const d=examData[tab];
+  const colour=examTabs.find(t=>t[0]===tab)[2];
+  return <div className="connect-page"><Header/><main className="connect-main">
+    <DetailNav active="Exam Edge" onBack={onBack} onGo={onGo}/>
+
+    <section className="examedge-hero">
+      <h1>Waves <span>Exam Edge</span></h1>
+      <p>See how Waves is tested across major competitive exams and clear your conceptual hurdles.</p>
+    </section>
+
+    <div className="examedge-tabs">
+      {examTabs.map(([key,label,c])=>
+        <button key={key} className={`exam-tab ${c} ${tab===key?'active':''}`} onClick={()=>setTab(key)}>{label}</button>)}
+    </div>
+
+    <section className="examedge-panel">
+      <h2 className={`examedge-strat-title ${colour}`}><span className="examedge-bar"/>{d.title} <b>Strategy</b></h2>
+      <div className="examedge-stats">
+        <div><small>WEIGHTAGE</small><strong className={colour}>{d.weightage} <em>Qs</em></strong></div>
+        <div><small>MARKS</small><strong className={colour}>{d.marks}</strong></div>
+        <div><small>DIFFICULTY</small><strong>{d.difficulty}</strong></div>
+      </div>
+
+      <h3>What to Focus On</h3>
+      <div className={`examedge-focus ${colour}`}>{d.focus}</div>
+
+      <h3 className="examedge-pyq-title">📝 Previous Year Questions (Trend)</h3>
+      <div className="examedge-pyq-list">
+        {d.pyqs.map(([tag,q,sol])=>
+          <div className="pyq-card" key={tag+q.slice(0,12)}>
+            <span className="pyq-tag">{tag}</span>
+            <p>{q}</p>
+            <div className={`pyq-solution ${colour}`}>
+              <small>SOLUTION OUTLINE</small>
+              <span>{sol}</span>
+            </div>
+          </div>)}
+      </div>
+    </section>
+
+  </main></div>
+}
+
 function App(){
   const[view,setView]=useState(null);
   const goDashboard=()=>setView(null);
   const goTo=(title)=>{
     if(title==='Connectomics')setView('connectomics');
     else if(title==='Introduction')setView('introduction');
+    else if(title==='Exam Edge')setView('examedge');
     else goDashboard();
   };
   if(view==='connectomics')return <Connectomics onBack={goDashboard} onGo={goTo}/>;
   if(view==='introduction')return <Introduction onBack={goDashboard} onGo={goTo}/>;
+  if(view==='examedge')return <ExamEdge onBack={goDashboard} onGo={goTo}/>;
   return <div className="chapter-page"><Header/><main id="top" className="chapter-layout"><section className="chapter-hero"><div className="hero-orb orb-one"/><div className="hero-orb orb-two"/><a href="#modules" className="back-link">← Grade 11 Physics</a><div className="hero-copy"><p className="chapter-kicker">CHAPTER FOURTEEN</p><h1>Master<br/><span>Waves</span></h1><p>Discover how disturbances travel through matter and space. From ripples on water to sound and communication, master the physics of waves.</p></div><div className="stats"><div><strong>7</strong><small>CORE TOPICS</small></div><div><strong>20+</strong><small>PRACTICE PROBLEMS</small></div><div><strong>12</strong><small>CHAPTER LINKS</small></div><div><strong>0%</strong><small>MASTERY</small></div></div></section><section id="modules" className="module-list">{modules.map(([eyebrow,title,icon,colour,text])=><article className={`module-card ${colour}`} key={title} onClick={()=>goTo(title)}><div className="module-icon">{icon}</div><div><p>{eyebrow}</p><h2>{title}</h2><span>{text}</span></div><button aria-label={`Open ${title}`}>→</button></article>)}</section></main></div>
 };export default App;
