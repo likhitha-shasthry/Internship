@@ -1,7 +1,11 @@
 import { useMemo, useState } from 'react';
 import './index.css';
 
+<<<<<<< HEAD
+const modules=[['BEFORE YOU BEGIN','Connectomics','🔗','gold','Connect waves to oscillations, energy transfer, and the behaviour of particles in a medium.'],['START HERE','Introduction','☀️','blue','Understand what a wave is, how disturbances travel, and why waves carry energy without transporting matter.'],['THE LANGUAGE','Terminology','📖','teal','Learn amplitude, wavelength, frequency, period, phase, crest, trough, and wavefront.'],['CORE PRACTICE','Skills','🎯','purple','Explore transverse and longitudinal waves, progressive-wave displacement, wave speed, and superposition.'],['TEST READY','Exam Edge','🏆','red','Practice reflection of waves, beats, numerical problems, and chapter exercises with confidence.'],['QUICK REFERENCE','Derivations & Formulas','📐','pink','Step-by-step derivations for wave speed and the wave equation, plus a quick-revision formula sheet.']];
+=======
 const modules=[['START HERE','Introduction','☀️','blue','Understand what a wave is, how disturbances travel, and why waves carry energy without transporting matter.'],['THE LANGUAGE','Terminology','📖','teal','Learn amplitude, wavelength, frequency, period, phase, crest, trough, and wavefront.'],['CORE PRACTICE','Skills','🎯','purple','Explore transverse and longitudinal waves, progressive-wave displacement, wave speed, and superposition.'],['BIG PICTURE','Connectomics','🔗','gold','Connect waves to oscillations, energy transfer, and the behaviour of particles in a medium.'],['TEST READY','Exam Edge','🏆','red','Practice reflection of waves, beats, numerical problems, and chapter exercises with confidence.'],['VISUAL FLOW','Mind Map','🧠','indigo','Interactive flow mapping every section, idea, and equation in the Waves chapter.']];
+>>>>>>> fbf00b503f0fff92545716db8620c97d53fffa98
 
 const prereqs=[['Periodic Motion & S.H.M.','🌀','Comfort with periodic motion, the restoring force F = −kx, and angular frequency ω — waves are S.H.M. handed from particle to particle.'],['Trigonometric Functions','📐','Reading and manipulating sin(kx − ωt) — recognising amplitude, argument, and how a phase shift moves a graph.'],['Elastic Restoring Forces','🔗','Springs, coupled particles, and how a push on one element creates a force that pulls the next one back into place.']];
 
@@ -38,26 +42,99 @@ const examData={
       ['NEET 2023','Two tuning forks of frequency 256 Hz and 260 Hz are sounded together. The number of beats heard in 4 seconds is:','Beat frequency = |f₁ − f₂| = |260 − 256| = 4 Hz. Beats in 4 s = 4 × 4 = 16 beats.'],
       ['NEET 2022','A transverse wave y = 0.02 sin(4πt − 0.02πx) (SI units) travels along a stretched string. The wave speed is:','Compare with y = a sin(ωt − kx): ω = 4π rad/s, k = 0.02π rad/m. v = ω/k = 4π / 0.02π = 200 m/s.'],
       ['NEET 2021','A wave pulse on a string reflects from a rigid boundary. The phase change on reflection is:','A rigid (fixed) end forces zero displacement, so the reflected pulse is inverted — a phase change of π (180°). A free end gives no phase change.'],
+      ['NEET 2020','A closed organ pipe of length 20 cm resonates in its fundamental mode with a tuning fork of frequency 425 Hz. The speed of sound in air is:','Fundamental of a closed pipe: f₁ = v/4L → v = 4Lf₁ = 4 × 0.20 × 425 = 340 m/s.'],
+      ['NEET 2019','A stationary wave is given by y = 4 sin(0.5πx) cos(200πt) (x, y in cm, t in s). The distance between two successive nodes is:','Compare 0.5πx with kx: k = 0.5π rad/cm → λ = 2π/k = 4 cm. Nodes repeat every λ/2, so successive-node spacing = 2 cm.'],
+      ['NEET 2018','A source emitting sound at 500 Hz moves towards a stationary listener at 34 m/s (speed of sound = 340 m/s). The frequency heard is:','f′ = f × v/(v − vₛ) = 500 × 340/(340 − 34) = 500 × 340/306 ≈ 556 Hz.'],
     ]},
   jee:{title:'JEE Main',weightage:'1 - 2',marks:'4 - 8',difficulty:'Hard',
     focus:'Questions combine superposition with standing waves on strings or pipes, or mix wave speed with elasticity (Ch.8). Multi-step numericals involving harmonics and resonance length are common.',
     pyqs:[
       ['JEE Main 2023','A string of length 1 m, fixed at both ends, vibrates in its 3rd harmonic at 300 Hz. Find the wave speed on the string.','nth harmonic: fₙ = nv/2L → 300 = 3v/(2×1) → v = 300×2/3 = 200 m/s.'],
       ['JEE Main 2022','Two waves y₁ = a sin(ωt) and y₂ = a sin(ωt + π/3) superpose. Find the amplitude of the resultant wave.','A = √(a² + a² + 2a²cos(π/3)) = √(3)·a ≈ 1.73a.'],
+      ['JEE Main 2021','In a resonance-tube experiment (neglecting end correction), the first resonance length is 17 cm for a tuning fork of frequency 500 Hz. The speed of sound in air is:','First resonance in a closed tube: L₁ = λ/4 → λ = 4 × 0.17 = 0.68 m. v = fλ = 500 × 0.68 = 340 m/s.'],
+      ['JEE Main 2020','Waves y₁ = A sin(kx − ωt) and y₂ = A sin(kx + ωt) superpose to form a stationary wave. The positions of the nodes are:','y = y₁ + y₂ = 2A sin(kx)cos(ωt). Nodes occur where sin(kx) = 0 → kx = nπ → x = nλ/2, for n = 0, 1, 2…'],
+      ['JEE Main 2024','A car horn at 400 Hz approaches a stationary wall at 20 m/s (v_sound = 340 m/s). Find the frequency of the reflected sound heard by the driver.','Frequency hitting the wall (moving source): f₁ = f·v/(v − vₛ) = 400×340/320 = 425 Hz. Driver (moving observer, approaching wall) hears: f₂ = f₁·(v + v₀)/v = 425×360/340 = 450 Hz.'],
     ]},
   cet:{title:'Karnataka CET',weightage:'2 - 3',marks:'2 - 3',difficulty:'Easy to Medium',
     focus:'Formula recall and short conceptual definitions dominate — amplitude, wavelength, the frequency-period relation, and the basic wave equation v = fλ. Expect direct one-line numericals.',
     pyqs:[
       ['Karnataka CET 2021','The relation between wave velocity v, frequency f and wavelength λ is:','v = f × λ — the wave equation relating speed, frequency and wavelength.'],
       ['Karnataka CET 2019','A wave has a frequency of 500 Hz and travels at 350 m/s in air. Its wavelength is:','λ = v/f = 350/500 = 0.7 m.'],
+      ['Karnataka CET 2018','The type of wave used in SONAR for underwater detection is:','Ultrasonic waves — longitudinal mechanical waves of frequency above 20,000 Hz.'],
+      ['Karnataka CET 2017','A wave is represented by y = A sin(ωt − kx). The direction of propagation of this wave is:','The (ωt − kx) form travels in the +x direction; (ωt + kx) would travel in −x.'],
+      ['Karnataka CET 2022','If the tension in a stretched string is made four times its original value, the wave speed becomes:','v ∝ √T, so quadrupling T doubles v — the new speed is 2× the original.'],
     ]},
   puc:{title:'PUC / Boards',weightage:'7 - 10%',marks:'5 - 7',difficulty:'Medium',
     focus:'Derivations (speed of a transverse wave on a stretched string, the progressive wave equation) and short definition questions on amplitude, phase and beats are the safest scoring areas.',
     pyqs:[
       ['PUC / Boards 2020','Derive an expression for the speed of a transverse wave on a stretched string.',"Consider an element of string under tension T and linear density μ. Applying Newton's second law to a small curved element and simplifying for small displacements gives v = √(T/μ)."],
       ['PUC / Boards 2018','What are beats? Derive an expression for beat frequency.','Superposing y₁ = a sin(ω₁t) and y₂ = a sin(ω₂t) gives a resultant whose amplitude is modulated at frequency |f₁ − f₂|/2, so beats are heard at frequency |f₁ − f₂|.'],
+      ['PUC / Boards 2019','Distinguish between progressive waves and stationary waves (any two points).','Progressive waves transport energy and every particle has the same amplitude; stationary waves transport no net energy and amplitude varies with position, from zero at nodes to maximum at antinodes.'],
+      ['PUC / Boards 2021','State the principle of superposition of waves.',"When two or more waves overlap at a point, the resultant displacement is the vector (algebraic) sum of the displacements each wave would produce individually — y = y₁ + y₂ + …"],
+      ['PUC / Boards 2017',"Derive Newton's formula for the speed of sound in a gas and state Laplace's correction.",'Newton assumed an isothermal process, giving v = √(P/ρ); this underestimates the actual speed. Laplace corrected it to an adiabatic process, giving v = √(γP/ρ), which matches experiment.'],
     ]},
 };
+
+const derivations=[
+  {title:'Speed of a Transverse Wave on a Stretched String',icon:'🎻',colour:'blue',
+   subtitle:'From tension and linear mass density to v = √(T/μ)',
+   steps:[
+     'Consider a small curved element of a string under tension T, with linear mass density μ (mass per unit length), carrying a transverse pulse.',
+     'The two tension forces at the ends of the element are tangential to the string. For a gently curved element, their vertical components do not cancel — this net vertical force is what restores the element toward its equilibrium position.',
+     "For a small angle θ subtended by the element, the net restoring force works out to F = T·(Δx/R), where R is the local radius of curvature and Δx is the element's length.",
+     'Applying Newton\'s second law (F = ma) to the element and comparing with the standard wave equation ∂²y/∂t² = v²·∂²y/∂x² shows that v² = T/μ.',
+     'Taking the square root gives the final result: v = √(T/μ). A tighter string (higher T) or a lighter string (lower μ) carries waves faster.',
+   ]},
+  {title:'The Progressive (Travelling) Wave Equation',icon:'〰️',colour:'teal',
+   subtitle:'Building y(x,t) = A sin(kx − ωt) from first principles',
+   steps:[
+     'A wave moving in the +x direction repeats the same displacement pattern, just shifted in position as time passes — so displacement depends on both x and t together, through the combination (x − vt).',
+     'For a sinusoidal source, the displacement at the origin is y(0,t) = A sin(ωt), where ω = 2π/T is the angular frequency.',
+     'Replacing t with (t − x/v) accounts for the time delay a disturbance takes to reach point x: y(x,t) = A sin(ω(t − x/v)).',
+     'Defining the wave number k = ω/v = 2π/λ, this simplifies to the standard form y(x,t) = A sin(ωt − kx), or equivalently A sin(kx − ωt) for a wave moving in −x.',
+     'This single equation captures everything about the wave: amplitude A, angular frequency ω (→ frequency f = ω/2π), and wave number k (→ wavelength λ = 2π/k).',
+   ]},
+  {title:'Beat Frequency from Superposition',icon:'🎵',colour:'purple',
+   subtitle:'Why two close frequencies produce a throbbing loudness pattern',
+   steps:[
+     'Take two waves of equal amplitude but slightly different frequencies: y₁ = a sin(2πf₁t) and y₂ = a sin(2πf₂t).',
+     'By the principle of superposition, the resultant displacement is y = y₁ + y₂.',
+     'Using the sum-to-product identity, y = 2a cos(2π·((f₁−f₂)/2)·t) · sin(2π·((f₁+f₂)/2)·t).',
+     'This is a wave at the average frequency (f₁+f₂)/2, whose amplitude itself oscillates slowly at frequency |f₁−f₂|/2.',
+     'Loudness is maximum whenever the amplitude term is at its peak — which happens twice per amplitude cycle — so the beat frequency actually heard is |f₁ − f₂|.',
+   ]},
+  {title:"Newton's Formula & Laplace's Correction for Speed of Sound",icon:'💨',colour:'gold',
+   subtitle:'Why sound in air travels faster than Newton first calculated',
+   steps:[
+     "Newton assumed sound propagates through air isothermally (constant temperature), giving v = √(P/ρ), where P is pressure and ρ is density.",
+     'Using standard air values, this formula predicts about 280 m/s at STP — roughly 15% lower than the experimentally measured ~332 m/s.',
+     'Laplace corrected the assumption: compressions and rarefactions in a sound wave happen too fast for heat to escape, so the process is adiabatic, not isothermal.',
+     'For an adiabatic process, PVᵞ = constant (γ = Cp/Cv), which modifies the bulk modulus used in the speed formula from P to γP.',
+     'This gives the corrected formula v = √(γP/ρ), which matches experimental values closely (γ ≈ 1.4 for air).',
+   ]},
+];
+
+const formulaGroups=[
+  {title:'Basic Wave Quantities',items:[
+    ['v = f λ','Wave speed = frequency × wavelength'],
+    ['T = 1 / f','Time period is the reciprocal of frequency'],
+    ['ω = 2π / T = 2π f','Angular frequency in rad/s'],
+    ['k = 2π / λ','Wave number (angular spatial frequency)'],
+  ]},
+  {title:'Wave Speed',items:[
+    ['v = √(T / μ)','Speed of a transverse wave on a stretched string (T = tension, μ = linear mass density)'],
+    ['v = √(B / ρ)','General speed of a longitudinal wave in a medium of bulk modulus B, density ρ'],
+    ['v = √(γP / ρ)',"Speed of sound in a gas — Laplace's adiabatic correction"],
+  ]},
+  {title:'Superposition & Beats',items:[
+    ['Δf = |f₁ − f₂|','Beat frequency heard when two close frequencies superpose'],
+    ['A = √(a₁² + a₂² + 2a₁a₂cosφ)','Resultant amplitude of two superposed waves with phase difference φ'],
+  ]},
+  {title:'Standing Waves',items:[
+    ['fₙ = n v / 2L','Harmonics on a string fixed at both ends, or in an open pipe (n = 1, 2, 3…)'],
+    ['fₙ = (2n − 1) v / 4L','Harmonics in a pipe closed at one end (only odd harmonics, n = 1, 2, 3…)'],
+  ]},
+];
 
 function Header(){return <header className="topbar"><a className="brand" href="#top"><span className="brand-mark">◔</span><b>skill<span>100</span>.ai</b></a><nav>{['Home','Skill Discovery','IDY 2026','WYSD 2026','WYSD Maths','NEET','Rapid Math'].map(x=><a key={x} href="#modules">{x}</a>)}</nav><button className="logout">Logout</button></header>}
 
@@ -211,6 +288,39 @@ function ExamEdge({onBack,onGo}){
   </main></div>
 }
 
+function DerivationsFormulas({onBack,onGo}){
+  const[open,setOpen]=useState(null);
+  return <div className="connect-page"><Header/><main className="connect-main">
+    <DetailNav active="Derivations & Formulas" onBack={onBack} onGo={onGo}/>
+    <p className="connect-label">WAVES · QUICK REFERENCE</p>
+    <h1>Derivations & <span>Formulas</span></h1>
+    <p className="connect-intro">Step-by-step derivations for the key results in Waves, plus a quick-revision formula sheet you can scan right before an exam.</p>
+
+    <h2 className="section-heading">Key Derivations</h2>
+    <div className="derivation-grid">
+      {derivations.map((d,i)=>
+        <article className={`question-card ${d.colour}`} key={d.title}>
+          <button className="question-top" onClick={()=>setOpen(open===i?null:i)}>
+            <span className="question-icon">{d.icon}</span>
+            <span className="question-text"><b>{d.title}</b><small>{d.subtitle}</small></span>
+            <span className={`question-chevron ${open===i?'open':''}`}>⌄</span>
+          </button>
+          {open===i && <ol className="derivation-steps">{d.steps.map((s,j)=><li key={j}>{s}</li>)}</ol>}
+        </article>)}
+    </div>
+
+    <h2 className="section-heading">Formula Sheet</h2>
+    {formulaGroups.map(g=>
+      <div className="formula-group" key={g.title}>
+        <h3>{g.title}</h3>
+        <div className="formula-grid">
+          {g.items.map(([f,desc])=><div className="formula-card" key={f}><code>{f}</code><span>{desc}</span></div>)}
+        </div>
+      </div>)}
+
+  </main></div>
+}
+
 function App(){
   const[view,setView]=useState(null);
   const goDashboard=()=>setView(null);
@@ -218,10 +328,12 @@ function App(){
     if(title==='Connectomics')setView('connectomics');
     else if(title==='Introduction')setView('introduction');
     else if(title==='Exam Edge')setView('examedge');
+    else if(title==='Derivations & Formulas')setView('derivations');
     else goDashboard();
   };
   if(view==='connectomics')return <Connectomics onBack={goDashboard} onGo={goTo}/>;
   if(view==='introduction')return <Introduction onBack={goDashboard} onGo={goTo}/>;
   if(view==='examedge')return <ExamEdge onBack={goDashboard} onGo={goTo}/>;
+  if(view==='derivations')return <DerivationsFormulas onBack={goDashboard} onGo={goTo}/>;
   return <div className="chapter-page"><Header/><main id="top" className="chapter-layout"><section className="chapter-hero"><div className="hero-orb orb-one"/><div className="hero-orb orb-two"/><a href="#modules" className="back-link">← Grade 11 Physics</a><div className="hero-copy"><p className="chapter-kicker">CHAPTER FOURTEEN</p><h1>Master<br/><span>Waves</span></h1><p>Discover how disturbances travel through matter and space. From ripples on water to sound and communication, master the physics of waves.</p></div><div className="stats"><div><strong>7</strong><small>CORE TOPICS</small></div><div><strong>20+</strong><small>PRACTICE PROBLEMS</small></div><div><strong>12</strong><small>CHAPTER LINKS</small></div><div><strong>0%</strong><small>MASTERY</small></div></div></section><section id="modules" className="module-list">{modules.map(([eyebrow,title,icon,colour,text])=><article className={`module-card ${colour}`} key={title} onClick={()=>goTo(title)}><div className="module-icon">{icon}</div><div><p>{eyebrow}</p><h2>{title}</h2><span>{text}</span></div><button aria-label={`Open ${title}`}>→</button></article>)}</section></main></div>
 };export default App;

@@ -159,3 +159,25 @@
 .pyq-solution.purple small{color:#7b43ea}
 
 @media(max-width:900px){.examedge-stats{grid-template-columns:1fr}.examedge-panel{padding:26px 20px}}
+<<<<<<< HEAD
+
+/* ---- Derivations & Formulas ---- */
+.pink::before{background:#e8579b}
+.pink .module-icon{background:#fff0f6}
+
+.derivation-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;max-width:1180px;margin:0 auto}
+
+.derivation-steps{margin:0;padding:0 24px 24px 46px;color:#5d6885;font-size:14.5px;line-height:1.7}
+.derivation-steps li{margin-bottom:12px}
+.derivation-steps li:last-child{margin-bottom:0}
+
+.formula-group{margin-top:34px}
+.formula-group h3{margin:0 0 16px;font-size:19px;color:#17203d}
+.formula-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.formula-card{background:#fff;border:1px solid #e1e6f2;border-radius:16px;padding:20px 22px;box-shadow:0 6px 18px #223a7809}
+.formula-card code{display:block;font-family:'Courier New',monospace;font-size:17px;font-weight:800;color:#4566df;margin-bottom:8px;letter-spacing:-.3px}
+.formula-card span{color:#6c7890;font-size:13.5px;line-height:1.55}
+
+@media(max-width:900px){.derivation-grid{grid-template-columns:1fr}.formula-grid{grid-template-columns:1fr}}
+=======
+>>>>>>> fbf00b503f0fff92545716db8620c97d53fffa98
