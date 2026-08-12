@@ -1,7 +1,16 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useRef, useEffect } from 'react';
 import './index.css';
+import waveData from '../writing-block.json';
 
-const modules=[['BEFORE YOU BEGIN','Connectomics','🔗','gold','Connect waves to oscillations, energy transfer, and the behaviour of particles in a medium.'],['START HERE','Introduction','☀️','blue','Understand what a wave is, how disturbances travel, and why waves carry energy without transporting matter.'],['THE LANGUAGE','Terminology','📖','teal','Learn amplitude, wavelength, frequency, period, phase, crest, trough, and wavefront.'],['CORE PRACTICE','Skills','🎯','purple','Explore transverse and longitudinal waves, progressive-wave displacement, wave speed, and superposition.'],['TEST READY','Exam Edge','🏆','red','Practice reflection of waves, beats, numerical problems, and chapter exercises with confidence.'],['QUICK REFERENCE','Derivations & Formulas','📐','pink','Step-by-step derivations for wave speed and the wave equation, plus a quick-revision formula sheet.']];
+const modules=[['BEFORE YOU BEGIN','Connectomics','🔗','gold','Connect waves to oscillations, energy transfer, and the behaviour of particles in a medium.'],['START HERE','Introduction','☀️','blue','Understand what a wave is, how disturbances travel, and why waves carry energy without transporting matter.'],['THE LANGUAGE','Terminology','📖','teal','Learn amplitude, wavelength, frequency, period, phase, crest, trough, and wavefront.'],['CORE PRACTICE','Skills','🎯','purple','Explore transverse and longitudinal waves, progressive-wave displacement, wave speed, and superposition.'],['VISUAL FLOW','Mind Map','🧠','indigo','Interactive flow mapping every section, idea, and equation in the Waves chapter.'],['WATCH & LEARN','Videos','🎬','green','The Demystifying Waves video, cut into five short topic chapters you can watch one at a time.'],['TEST READY','Exam Edge','🏆','red','Practice reflection of waves, beats, numerical problems, and chapter exercises with confidence.'],['QUICK REFERENCE','Derivations & Formulas','📐','pink','Step-by-step derivations for wave speed and the wave equation, plus a quick-revision formula sheet.']];
+
+const videoTopics=[
+  {n:'01',id:'what-are-waves',title:'What Are Waves?',time:'0:00 – 2:12',colour:'blue',icon:'🌊',file:'01-what-are-waves.mp4',poster:'01-what-are-waves.jpg',blurb:'Why the water itself never travels with a ripple — a moving disturbance versus moving matter.'},
+  {n:'02',id:'transverse-longitudinal',title:'Transverse & Longitudinal',time:'2:12 – 4:00',colour:'teal',icon:'↕️',file:'02-transverse-longitudinal.mp4',poster:'02-transverse-longitudinal.jpg',blurb:'How a string wave and a sound wave move their particles — sideways versus back-and-forth.'},
+  {n:'03',id:'math-behind-waves',title:'The Math Behind Waves',time:'4:00 – 6:24',colour:'purple',icon:'📐',file:'03-math-behind-waves.mp4',poster:'03-math-behind-waves.jpg',blurb:'Amplitude, wavelength and angular frequency build up to y(x,t) = a sin(kx − ωt).'},
+  {n:'04',id:'calculating-wave-speed',title:'Calculating Wave Speed',time:'6:24 – 8:04',colour:'gold',icon:'⚡',file:'04-calculating-wave-speed.mp4',poster:'04-calculating-wave-speed.jpg',blurb:'Speed in strings, gases and solids, plus Newton and Laplace on the speed of sound.'},
+  {n:'05',id:'when-waves-collide',title:'When Waves Collide',time:'8:04 – 10:04',colour:'red',icon:'➕',file:'05-when-waves-collide.mp4',poster:'05-when-waves-collide.jpg',blurb:'Superposition in action, and whether noise is just an invisible web of overlapping waves.'},
+];
 
 const prereqs=[['Periodic Motion & S.H.M.','🌀','Comfort with periodic motion, the restoring force F = −kx, and angular frequency ω — waves are S.H.M. handed from particle to particle.'],['Trigonometric Functions','📐','Reading and manipulating sin(kx − ωt) — recognising amplitude, argument, and how a phase shift moves a graph.'],['Elastic Restoring Forces','🔗','Springs, coupled particles, and how a push on one element creates a force that pulls the next one back into place.']];
 
@@ -27,6 +36,171 @@ const bigQuestions=[
   ['gold','📍','Where','do waves show up?','Water ripples, sound in air, vibrations in a stretched string, seismic waves through rock — all mechanical waves needing a medium. Light and other electromagnetic waves are the exception: they cross a vacuum at c = 299,792,458 m/s.'],
   ['red','⏰','When','does a wave need a medium?','Mechanical waves — sound, water, string waves — always need a medium of elastic, coupled particles to carry them. Electromagnetic waves don\u2019t. A third kind, matter waves, are tied to particles like electrons and show up in devices such as electron microscopes.'],
   ['pink','⚙️','How','does a disturbance actually travel?','Picture springs joined end to end: pull one and release it, and it stretches its neighbour, which stretches the next, and so on. Each spring only oscillates about its own equilibrium position, but the disturbance itself walks all the way down the line.'],
+];
+
+// ---- Terminology data, built from writing-block.json (single source of truth for content) ----
+const chapterData = waveData.course.chapter;
+
+// Friendly labels for the less-common formula/variable fields found in the JSON,
+// so nothing present in the data is silently dropped.
+const extraFormulaLabels = {
+  frequencyFormula: 'Frequency Formula',
+  wavelengths: 'Wavelengths',
+  frequencies: 'Frequencies',
+  fundamental: 'Fundamental',
+  solidBarFormula: 'Formula (Solid Bar)',
+  gasFormulaNewton: "Formula (Newton's, Gas)",
+  gasFormulaLaplace: "Formula (Laplace's, Gas)",
+};
+const extraVariableLabels = { solidBarVariables: 'Variables (Solid Bar)' };
+
+// Worked examples in the JSON are attached to a whole section, not a single term.
+// This maps each example's title to the term(s) it is worked from, so it only
+// surfaces on the term(s) it actually illustrates.
+const exampleTopicMap = {
+  'Classifying Wave Motion': ['Transverse Waves', 'Longitudinal Waves'],
+  'Wave Equation on a String': ['Wave Function'],
+  'Speed of Transverse Waves on a Steel Wire': ['Speed of a Transverse Wave on a Stretched String'],
+  'Speed of Sound in Air': ['Speed of a Longitudinal Wave'],
+  'Resonance in an Open Pipe': ['Resonance'],
+  'Beats from Two Sitar Strings': ['Beat Frequency'],
+};
+
+// Flatten course.chapter.sections[].topics[] (and any nested subsections) into a
+// single list of terminology entries, keeping each entry's section context.
+function flattenTerminology(chapter){
+  const items=[];
+  (chapter.sections||[]).forEach(section=>{
+    (section.topics||[]).forEach(topic=>{
+      items.push({key:`${section.id}::${topic.title}`,sectionId:section.id,sectionNumber:section.number,sectionTitle:section.title,parentSectionTitle:null,...topic});
+    });
+    (section.subsections||[]).forEach(sub=>{
+      const subNumber=`${section.number}.${(sub.id||'').split('-').pop()}`;
+      if(Array.isArray(sub.topics)&&sub.topics.length){
+        sub.topics.forEach(topic=>{
+          items.push({key:`${sub.id}::${topic.title}`,sectionId:sub.id,sectionNumber:subNumber,sectionTitle:sub.title,parentSectionTitle:section.title,...topic});
+        });
+      }else{
+        items.push({key:sub.id,sectionId:sub.id,sectionNumber:subNumber,sectionTitle:section.title,parentSectionTitle:null,...sub});
+      }
+    });
+  });
+  return items;
+}
+
+// Collect every worked example defined anywhere in the chapter (section.example
+// and section.examples), tagged with the section they came from.
+function collectExamples(chapter){
+  const examples=[];
+  (chapter.sections||[]).forEach(section=>{
+    if(section.example)examples.push({...section.example,sectionNumber:section.number,sectionTitle:section.title});
+    (section.examples||[]).forEach(ex=>examples.push({...ex,sectionNumber:section.number,sectionTitle:section.title}));
+  });
+  return examples;
+}
+
+const terminologyItems=flattenTerminology(chapterData);
+const chapterExamples=collectExamples(chapterData);
+function examplesForTerm(title){
+  return chapterExamples.filter(ex=>(exampleTopicMap[ex.title]||[]).includes(title));
+}
+
+// ---- Quiz question bank, generated entirely from terminologyItems ----
+// Every prompt and every option (correct + distractors) is a real symbol,
+// formula, title, or definition already present in writing-block.json —
+// nothing here is invented, just re-presented as multiple-choice.
+function shuffled(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+
+function buildQuizBank(items){
+  const bank=[];
+  const symbolPool=items.filter(t=>t.symbol);
+  const formulaPool=items.filter(t=>t.formula);
+  const defPool=items.filter(t=>t.definition||t.content);
+
+  symbolPool.forEach(t=>{
+    const distractors=shuffled(symbolPool.filter(x=>x.symbol!==t.symbol).map(x=>x.symbol)).slice(0,3);
+    if(distractors.length===3)bank.push({type:'symbol',prompt:`Which symbol represents "${t.title}"?`,correct:t.symbol,options:shuffled([t.symbol,...distractors]),source:t.title});
+  });
+  formulaPool.forEach(t=>{
+    const distractors=shuffled(formulaPool.filter(x=>x.formula!==t.formula).map(x=>x.formula)).slice(0,3);
+    if(distractors.length===3)bank.push({type:'formula',prompt:`Which formula corresponds to "${t.title}"?`,correct:t.formula,options:shuffled([t.formula,...distractors]),source:t.title});
+  });
+  defPool.forEach(t=>{
+    const text=t.definition||t.content;
+    const distractors=shuffled(defPool.filter(x=>x.title!==t.title).map(x=>x.title)).slice(0,3);
+    if(distractors.length===3)bank.push({type:'term',prompt:`Which term does this describe: "${text}"`,correct:t.title,options:shuffled([t.title,...distractors]),source:t.title});
+  });
+  return bank;
+}
+
+const quizBank=buildQuizBank(terminologyItems);
+function pickQuizSet(n=5){return shuffled(quizBank).slice(0,Math.min(n,quizBank.length));}
+
+const mindMapBranches=[
+  {id:'intro',label:'Introduction',ref:'§14.1',colour:'blue',icon:'🌊',points:[
+    'A wave is a disturbance that propagates through a medium (or space) without transporting matter as a whole.',
+    'Waves transport energy and information, not matter — cork on water bobs up and down but never drifts outward.',
+    'Mechanical waves (sound, water, string) need a material, elastic medium.',
+    'Electromagnetic waves need no medium — all travel at c = 299,792,458 m/s in vacuum.',
+    'Matter waves are tied to particles like electrons — used in electron microscopes.',
+    'Huygens, Hooke & Newton linked wave theory to oscillating springs and the simple pendulum.',
+    'Spring-chain analogy: pulling one end disturbs the next spring, and the next — the disturbance walks down the line while each spring only oscillates locally.',
+  ]},
+  {id:'types',label:'Transverse & Longitudinal',ref:'§14.2',colour:'teal',icon:'↕️',points:[
+    'Transverse wave: particles oscillate perpendicular to the direction of propagation (e.g. a wave on a string).',
+    'Longitudinal wave: particles oscillate parallel to the direction of propagation (e.g. sound in a pipe of air).',
+    'Transverse waves need a shear modulus — they propagate only in solids, not fluids.',
+    'Longitudinal waves need a bulk modulus — they propagate in solids, liquids AND gases.',
+    'Steel can carry both transverse and longitudinal waves; air only longitudinal.',
+    'Water surface waves are a mix: capillary waves (short λ, surface tension) and gravity waves (long λ, gravity restoring force).',
+  ]},
+  {id:'displacement',label:'Displacement Relation',ref:'§14.3',colour:'purple',icon:'📈',points:[
+    'y(x,t) = a sin(kx − ωt + φ) describes a sinusoidal travelling wave.',
+    'a = amplitude — maximum displacement from equilibrium.',
+    '(kx − ωt + φ) = phase; φ = initial phase angle (phase at x=0, t=0).',
+    'k = angular wave number = 2π/λ, unit rad·m⁻¹.',
+    'ω = angular frequency = 2π/T = 2πν, unit rad·s⁻¹.',
+    'λ = wavelength — distance between two points of the same phase.',
+    'T = period, ν = frequency = 1/T, measured in hertz.',
+  ]},
+  {id:'speed',label:'Speed of a Wave',ref:'§14.4',colour:'gold',icon:'⚡',points:[
+    'v = ω/k = λ/T = λν — general speed relation for any progressive wave.',
+    'Transverse wave on a stretched string: v = √(T/μ)  (T = tension, μ = linear mass density).',
+    'Longitudinal wave in a fluid: v = √(B/ρ)  (B = bulk modulus, ρ = density).',
+    'Longitudinal wave in a solid bar: v = √(Y/ρ)  (Y = Young\u2019s modulus).',
+    'Newton\u2019s formula for sound (isothermal): v = √(P/ρ) → predicts 280 m/s in air at STP.',
+    'Laplace\u2019s correction (adiabatic, B = γP): v = √(γP/ρ) → gives 331.3 m/s, matching experiment.',
+    'Wave speed depends only on the medium\u2019s elastic + inertial properties, never on the source\u2019s motion.',
+  ]},
+  {id:'superposition',label:'Superposition',ref:'§14.5',colour:'red',icon:'➕',points:[
+    'Principle of superposition: y(x,t) = y₁(x,t) + y₂(x,t) — net displacement is the algebraic sum.',
+    'Each wave moves as if the others were not present; pulses retain their identity after crossing.',
+    'Two equal-amplitude waves differing by phase φ combine to: y = [2a cos(φ/2)] sin(kx − ωt + φ/2).',
+    'Constructive interference: φ = 0 (or multiple of 2π) → resultant amplitude 2a (maximum).',
+    'Destructive interference: φ = π → resultant amplitude 0 everywhere, at all times.',
+    'This principle is the basis of interference, standing waves, and beats.',
+  ]},
+  {id:'reflection',label:'Reflection & Standing Waves',ref:'§14.6',colour:'pink',icon:'🪞',points:[
+    'At a rigid boundary a travelling wave reflects with a phase change of π (180°) — like an echo.',
+    'At an open (free) boundary, reflection happens with no phase change.',
+    'A wave + its own reflection superpose into a standing wave: y = 2a sin(kx) cos(ωt).',
+    'Nodes = fixed points of zero amplitude; antinodes = fixed points of maximum amplitude; spacing = λ/2.',
+    'String fixed at both ends: v_n = nv/2L, n = 1,2,3,… → ALL harmonics allowed.',
+    'Pipe closed at one end, open at the other: v_n = (n+½)v/2L → only ODD harmonics.',
+    'Pipe open at both ends: generates all harmonics, same as a string.',
+    'Sitar and violin timbre differs because different modes are excited to different strengths.',
+  ]},
+  {id:'beats',label:'Beats',ref:'§14.7',colour:'indigo',icon:'🎵',points:[
+    'Beats arise from superposing two waves of close (but not equal) frequencies ν₁ and ν₂.',
+    'The resultant oscillates at the average frequency, but its amplitude waxes and wanes.',
+    'Beat frequency: ν_beat = |ν₁ − ν₂|.',
+    'Musicians use beats to tune instruments — adjusting a string until the beats slow down and vanish.',
+    'Example: 11 Hz + 9 Hz waves superpose to give an audible beat of 2 Hz.',
+  ]},
 ];
 
 const examTabs=[['neet','NEET','green'],['jee','JEE Main','blue'],['cet','Karnataka CET','orange'],['puc','PUC / Boards','purple']];
@@ -239,6 +413,340 @@ function Introduction({onBack,onGo}){
   </main></div>
 }
 
+// ---- Small presentational helpers for the term detail card ----
+
+function KeyValueList({data}){
+  if(!data)return null;
+  if(typeof data==='string')return <p className="term-kv-line">{data}</p>;
+  if(Array.isArray(data))return <ul className="term-kv-list">{data.map((v,i)=><li key={i}>{v}</li>)}</ul>;
+  return <ul className="term-kv-list">{Object.entries(data).map(([k,v])=><li key={k}><b>{k}</b> — {v}</li>)}</ul>;
+}
+
+function WorkedExample({example}){
+  return <div className="worked-example">
+    <p className="worked-example-label">WORKED EXAMPLE {example.number}</p>
+    <h4>{example.title}</h4>
+    {example.given&&<div className="worked-example-field"><span>Given</span><KeyValueList data={example.given}/></div>}
+    {example.find&&<div className="worked-example-field"><span>Find</span><KeyValueList data={example.find}/></div>}
+    {example.method&&<div className="worked-example-field"><span>Method</span><p className="term-kv-line">{example.method}</p></div>}
+    {example.concepts&&<div className="worked-example-field"><span>Concepts</span><KeyValueList data={example.concepts}/></div>}
+    {example.results&&<div className="worked-example-field"><span>Results</span><KeyValueList data={example.results}/></div>}
+    {example.result&&<div className="worked-example-field"><span>Result</span><p className="term-kv-line">{example.result}</p></div>}
+    {example.questions&&<div className="worked-example-field"><span>Questions</span>
+      <ul className="term-kv-list">{example.questions.map((q,i)=><li key={i}>{q.question} — <i>{q.answer}</i></li>)}</ul>
+    </div>}
+  </div>
+}
+
+function TermDetail({term}){
+  const examples=examplesForTerm(term.title);
+  const extraFormulas=Object.keys(extraFormulaLabels).filter(k=>term[k]);
+  const extraVariables=Object.keys(extraVariableLabels).filter(k=>term[k]);
+  return <div className="term-detail">
+    <p className="term-detail-crumb">{term.sectionNumber} · {term.parentSectionTitle?`${term.parentSectionTitle} · `:''}{term.sectionTitle}</p>
+    <div className="term-detail-heading">
+      {term.symbol&&<span className="term-symbol-badge">{term.symbol}</span>}
+      <h2>{term.title}</h2>
+    </div>
+
+    {term.definition&&<p className="term-detail-text">{term.definition}</p>}
+    {term.content&&<p className="term-detail-text">{term.content}</p>}
+    {term.description&&<p className="term-detail-text">{term.description}</p>}
+
+    {(term.formula||extraFormulas.length>0)&&<div className="term-formula-group">
+      {term.formula&&<div className="formula-row"><code>{term.formula}</code></div>}
+      {extraFormulas.map(k=><div className="formula-row" key={k}><span>{extraFormulaLabels[k]}</span><code>{term[k]}</code></div>)}
+    </div>}
+
+    {term.unit&&<p className="term-meta-line"><b>Unit:</b> {term.unit}</p>}
+
+    {term.variables&&<div className="term-variables"><p className="term-block-label">Variables</p><KeyValueList data={term.variables}/></div>}
+    {extraVariables.map(k=><div className="term-variables" key={k}><p className="term-block-label">{extraVariableLabels[k]}</p><KeyValueList data={term[k]}/></div>)}
+
+    {term.condition&&<p className="term-meta-line"><b>Condition:</b> {term.condition}</p>}
+    {term.result&&<p className="term-meta-line"><b>Result:</b> {term.result}</p>}
+
+    {(term.examples&&term.examples.length>0||examples.length>0||term.importantPoint)&&<div className="term-side-grid">
+      {term.examples&&term.examples.length>0&&<div className="term-box">
+        <p className="term-block-label">Examples</p>
+        <ul className="term-kv-list">{term.examples.map((ex,i)=><li key={i}>{ex}</li>)}</ul>
+      </div>}
+      {term.importantPoint&&<div className="term-box quick-memory">
+        <p className="term-block-label">Quick Memory</p>
+        <p>{term.importantPoint}</p>
+      </div>}
+    </div>}
+
+    {examples.map((ex,i)=><WorkedExample example={ex} key={i}/>)}
+  </div>
+}
+
+function Quiz({onGo}){
+  const[questions,setQuestions]=useState(()=>pickQuizSet(5));
+  const[index,setIndex]=useState(0);
+  const[selected,setSelected]=useState(null);
+  const[score,setScore]=useState(0);
+  const[finished,setFinished]=useState(false);
+
+  const q=questions[index];
+
+  const choose=(opt)=>{
+    if(selected)return;
+    setSelected(opt);
+    if(opt===q.correct)setScore(s=>s+1);
+  };
+
+  const next=()=>{
+    if(index+1<questions.length){setIndex(index+1);setSelected(null);}
+    else setFinished(true);
+  };
+
+  const restart=()=>{
+    setQuestions(pickQuizSet(5));
+    setIndex(0);setSelected(null);setScore(0);setFinished(false);
+  };
+
+  if(!q)return <div className="quiz-card"><p>Not enough terminology data to build a quiz yet.</p></div>;
+
+  if(finished)return <div className="quiz-card quiz-finished">
+    <p className="quiz-eyebrow">QUIZ COMPLETE</p>
+    <h3>You scored {score} / {questions.length}</h3>
+    <p className="quiz-result-note">{score===questions.length?'Perfect score — great grasp of the terminology!':score>=Math.ceil(questions.length/2)?'Solid work — a quick review of the missed terms will lock it in.':'Worth another pass through Key Terms before you try again.'}</p>
+    <div className="quiz-actions">
+      <button className="quiz-restart" onClick={restart}>↻ Try Again</button>
+      <button className="quiz-next-topic" onClick={()=>onGo('Skills')}>Next Topic: Skills →</button>
+    </div>
+  </div>;
+
+  return <div className="quiz-card">
+    <div className="quiz-top">
+      <div>
+        <p className="quiz-eyebrow">QUESTION {index+1} OF {questions.length}</p>
+        <h3>Quiz Mode</h3>
+      </div>
+      <div className="quiz-score" aria-label={`Score ${score}`}>{score}</div>
+    </div>
+    <p className="quiz-question">{q.prompt}</p>
+    <div className="quiz-options">
+      {q.options.map(opt=>{
+        let cls='quiz-option';
+        if(selected){
+          if(opt===q.correct)cls+=' correct';
+          else if(opt===selected)cls+=' incorrect';
+        }
+        return <button key={opt} className={cls} onClick={()=>choose(opt)} disabled={!!selected} aria-pressed={opt===selected}>{opt}</button>;
+      })}
+    </div>
+    <div className="quiz-actions">
+      <button className="quiz-next" disabled={!selected} onClick={next}>
+        {index+1<questions.length?'Next Question →':'See Results →'}
+      </button>
+    </div>
+  </div>;
+}
+
+function Terminology({onBack,onGo}){
+  const[tab,setTab]=useState('terms');
+  const[query,setQuery]=useState('');
+  const[selectedKey,setSelectedKey]=useState(terminologyItems[0]?.key);
+  const listRef=useRef(null);
+
+  useEffect(()=>{
+    if(!listRef.current)return;
+    const el=listRef.current.querySelector(`[data-key="${CSS.escape(selectedKey||'')}"]`);
+    if(el)el.scrollIntoView({block:'nearest'});
+  },[selectedKey,tab]);
+
+  const filtered=query.trim()
+    ?terminologyItems.filter(t=>t.title.toLowerCase().includes(query.trim().toLowerCase()))
+    :terminologyItems;
+
+  const activeInFiltered=filtered.find(t=>t.key===selectedKey);
+  const active=activeInFiltered||filtered[0]||terminologyItems.find(t=>t.key===selectedKey);
+  const activeFilteredIndex=activeInFiltered?filtered.indexOf(activeInFiltered):-1;
+
+  let groups=null;
+  if(tab==='sections'){
+    groups=[];
+    filtered.forEach(item=>{
+      const label=`${item.sectionNumber} ${item.sectionTitle}`;
+      let group=groups.find(g=>g.label===label);
+      if(!group){group={label,items:[]};groups.push(group);}
+      group.items.push(item);
+    });
+  }
+
+  const goRelative=(delta)=>{
+    if(activeFilteredIndex<0||filtered.length===0)return;
+    const next=filtered[(activeFilteredIndex+delta+filtered.length)%filtered.length];
+    setSelectedKey(next.key);
+  };
+
+  const termButton=(item)=>
+    <button key={item.key} data-key={item.key} className={`term-list-item ${item.key===active?.key?'active':''}`}
+      aria-selected={item.key===active?.key} onClick={()=>setSelectedKey(item.key)}>
+      {item.symbol&&<span className="term-list-symbol">{item.symbol}</span>}
+      <span>{item.title}</span>
+    </button>;
+
+  return <div className="connect-page"><Header/><main className="connect-main">
+    <DetailNav active="Terminology" onBack={onBack} onGo={onGo}/>
+
+    <section className="lexicon-hero">
+      <h1>Physics <span>Lexicon</span></h1>
+      <p>{tab==='quiz'?'Test your vocabulary and formula knowledge!':`Explore the foundations of Waves with ${terminologyItems.length} key terms.`}</p>
+      <div className="nav-pills lexicon-pills">
+        <button className={`nav-pill ${tab==='terms'?'active':''}`} onClick={()=>setTab('terms')}>📖 Key Terms</button>
+        <button className={`nav-pill ${tab==='sections'?'active':''}`} onClick={()=>setTab('sections')}>🌊 Wave Sections</button>
+        <button className={`nav-pill ${tab==='quiz'?'active':''}`} onClick={()=>setTab('quiz')}>✏️ Quiz Time</button>
+      </div>
+    </section>
+
+    {tab==='quiz'
+      ?<section className="quiz-wrap"><Quiz onGo={onGo}/></section>
+      :<section className="lexicon-layout">
+        <div className="term-list-panel">
+          <div className="term-search">
+            <span>🔍</span>
+            <input type="text" placeholder="Search terms…" value={query}
+              onChange={e=>setQuery(e.target.value)} aria-label="Search terminology"/>
+          </div>
+          <nav className="term-list" ref={listRef} aria-label="Terminology list">
+            {filtered.length===0&&<p className="term-empty">No terms match "{query}".</p>}
+            {tab==='sections'
+              ?groups.map(g=><div key={g.label} className="term-group">
+                  <p className="term-group-label">{g.label}</p>
+                  {g.items.map(item=>termButton(item))}
+                </div>)
+              :filtered.map(item=>termButton(item))}
+          </nav>
+        </div>
+        <div className="term-detail-card">
+          {active&&<>
+            <TermDetail term={active}/>
+            <div className="term-nav">
+              <button onClick={()=>goRelative(-1)} disabled={filtered.length<2}>← Previous</button>
+              <span>{activeFilteredIndex>=0?`${activeFilteredIndex+1} of ${filtered.length}`:''}</span>
+              <button onClick={()=>goRelative(1)} disabled={filtered.length<2}>Next →</button>
+            </div>
+          </>}
+        </div>
+      </section>}
+
+  </main></div>
+}
+
+function polarPoint(cx,cy,r,angleDeg){
+  const a=(angleDeg-90)*(Math.PI/180);
+  return {x:cx+r*Math.cos(a), y:cy+r*Math.sin(a)};
+}
+
+function MindMap({onBack,onGo}){
+  const[active,setActive]=useState(null);
+  const size=620, center=size/2, radius=225;
+
+  const nodes=useMemo(()=>mindMapBranches.map((b,i)=>{
+    const angle=(360/mindMapBranches.length)*i;
+    const pos=polarPoint(center,center,radius,angle);
+    return {...b, x:pos.x, y:pos.y};
+  }),[]);
+
+  const activeBranch=mindMapBranches.find(b=>b.id===active)||null;
+
+  return <div className="connect-page"><Header/><main className="connect-main">
+    <DetailNav active="Mind Map" onBack={onBack} onGo={onGo}/>
+
+    <section className="intro-hero">
+      <h1><span className="intro-lead">The whole chapter,</span> at a glance</h1>
+      <p>Click a branch to expand it. Click the centre — or the branch again — to collapse.</p>
+    </section>
+
+    <div className="mindmap-canvas-wrap">
+      <div className="mindmap-canvas" style={{width:size,height:size}}>
+        <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="mindmap-svg">
+          {nodes.map(n=>
+            <line key={n.id} x1={center} y1={center} x2={n.x} y2={n.y}
+              className={`mindmap-line ${active===n.id?'active '+n.colour:''}`}/>)}
+        </svg>
+
+        <button className="mindmap-hub" onClick={()=>setActive(null)}>WAVES<small>Ch.14</small></button>
+
+        {nodes.map(n=>{
+          const isActive=active===n.id;
+          return <button key={n.id}
+            className={`mindmap-node ${n.colour} ${isActive?'active':''}`}
+            style={{left:n.x,top:n.y}}
+            onClick={()=>setActive(isActive?null:n.id)}>
+            <span className="mindmap-node-icon">{n.icon}</span>
+            <span className="mindmap-node-text"><b>{n.label}</b><small>{n.ref}</small></span>
+          </button>
+        })}
+      </div>
+    </div>
+
+    <div className="mindmap-legend">
+      {mindMapBranches.map(b=>
+        <button key={b.id} className={`mindmap-chip ${b.colour} ${active===b.id?'active':''}`}
+          onClick={()=>setActive(active===b.id?null:b.id)}>
+          {b.icon} {b.label}
+        </button>)}
+    </div>
+
+    {activeBranch ? (
+      <section className={`mindmap-detail-panel ${activeBranch.colour}`}>
+        <div className="mindmap-detail-head">
+          <span className="mindmap-detail-icon">{activeBranch.icon}</span>
+          <div><h3>{activeBranch.label}</h3><p>{activeBranch.ref}</p></div>
+        </div>
+        <ul className="mindmap-detail-list">
+          {activeBranch.points.map((pt,i)=><li key={i}>{pt}</li>)}
+        </ul>
+      </section>
+    ) : (
+      <div className="mindmap-detail-empty">Select a branch above to see its key ideas and equations.</div>
+    )}
+
+  </main></div>
+}
+
+function Videos({onBack,onGo}){
+  const[active,setActive]=useState(0);
+  const v=videoTopics[active];
+  return <div className="connect-page"><Header/><main className="connect-main">
+    <DetailNav active="Videos" onBack={onBack} onGo={onGo}/>
+
+    <section className="intro-hero">
+      <h1><span className="intro-lead">Watch</span> Demystifying Waves</h1>
+      <p>The full video, cut into five topic-wise chapters. Pick a chapter below to jump straight to it.</p>
+    </section>
+
+    <div className="video-stage">
+      <video key={v.file} className="video-player" controls autoPlay poster={`/videos/${v.poster}`} src={`/videos/${v.file}`}/>
+      <div className={`video-now ${v.colour}`}>
+        <span className="video-now-num">{v.n}</span>
+        <div><b>{v.icon} {v.title}</b><small>{v.time}</small></div>
+      </div>
+    </div>
+
+    <h2 className="section-heading">All Chapters</h2>
+    <section className="video-grid">
+      {videoTopics.map((t,i)=>
+        <article key={t.id} className={`video-card ${t.colour} ${active===i?'active':''}`} onClick={()=>setActive(i)}>
+          <div className="video-card-thumb" style={{backgroundImage:`url(/videos/${t.poster})`}}>
+            <span className="video-card-num">{t.n}</span>
+            <span className="video-card-play">▶</span>
+          </div>
+          <div className="video-card-body">
+            <h3>{t.icon} {t.title}</h3>
+            <p>{t.blurb}</p>
+            <small>{t.time}</small>
+          </div>
+        </article>)}
+    </section>
+
+  </main></div>
+}
+
 function ExamEdge({onBack,onGo}){
   const[tab,setTab]=useState('neet');
   const d=examData[tab];
@@ -323,12 +831,18 @@ function App(){
   const goTo=(title)=>{
     if(title==='Connectomics')setView('connectomics');
     else if(title==='Introduction')setView('introduction');
+    else if(title==='Terminology')setView('terminology');
+    else if(title==='Mind Map')setView('mindmap');
+    else if(title==='Videos')setView('videos');
     else if(title==='Exam Edge')setView('examedge');
     else if(title==='Derivations & Formulas')setView('derivations');
     else goDashboard();
   };
   if(view==='connectomics')return <Connectomics onBack={goDashboard} onGo={goTo}/>;
   if(view==='introduction')return <Introduction onBack={goDashboard} onGo={goTo}/>;
+  if(view==='terminology')return <Terminology onBack={goDashboard} onGo={goTo}/>;
+  if(view==='mindmap')return <MindMap onBack={goDashboard} onGo={goTo}/>;
+  if(view==='videos')return <Videos onBack={goDashboard} onGo={goTo}/>;
   if(view==='examedge')return <ExamEdge onBack={goDashboard} onGo={goTo}/>;
   if(view==='derivations')return <DerivationsFormulas onBack={goDashboard} onGo={goTo}/>;
   return <div className="chapter-page"><Header/><main id="top" className="chapter-layout"><section className="chapter-hero"><div className="hero-orb orb-one"/><div className="hero-orb orb-two"/><a href="#modules" className="back-link">← Grade 11 Physics</a><div className="hero-copy"><p className="chapter-kicker">CHAPTER FOURTEEN</p><h1>Master<br/><span>Waves</span></h1><p>Discover how disturbances travel through matter and space. From ripples on water to sound and communication, master the physics of waves.</p></div><div className="stats"><div><strong>7</strong><small>CORE TOPICS</small></div><div><strong>20+</strong><small>PRACTICE PROBLEMS</small></div><div><strong>12</strong><small>CHAPTER LINKS</small></div><div><strong>0%</strong><small>MASTERY</small></div></div></section><section id="modules" className="module-list">{modules.map(([eyebrow,title,icon,colour,text])=><article className={`module-card ${colour}`} key={title} onClick={()=>goTo(title)}><div className="module-icon">{icon}</div><div><p>{eyebrow}</p><h2>{title}</h2><span>{text}</span></div><button aria-label={`Open ${title}`}>→</button></article>)}</section></main></div>
