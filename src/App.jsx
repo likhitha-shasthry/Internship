@@ -29,7 +29,6 @@ const bigQuestions=[
   ['pink','⚙️','How','does a disturbance actually travel?','Picture springs joined end to end: pull one and release it, and it stretches its neighbour, which stretches the next, and so on. Each spring only oscillates about its own equilibrium position, but the disturbance itself walks all the way down the line.'],
 ];
 
-<<<<<<< Updated upstream
 const examTabs=[['neet','NEET','green'],['jee','JEE Main','blue'],['cet','Karnataka CET','orange'],['puc','PUC / Boards','purple']];
 
 const examData={
@@ -59,70 +58,6 @@ const examData={
       ['PUC / Boards 2018','What are beats? Derive an expression for beat frequency.','Superposing y₁ = a sin(ω₁t) and y₂ = a sin(ω₂t) gives a resultant whose amplitude is modulated at frequency |f₁ − f₂|/2, so beats are heard at frequency |f₁ − f₂|.'],
     ]},
 };
-=======
-const mindMapBranches=[
-  {id:'intro',label:'Introduction',ref:'§14.1',colour:'blue',icon:'🌊',points:[
-    'A wave is a disturbance that propagates through a medium (or space) without transporting matter as a whole.',
-    'Waves transport energy and information, not matter — cork on water bobs up and down but never drifts outward.',
-    'Mechanical waves (sound, water, string) need a material, elastic medium.',
-    'Electromagnetic waves need no medium — all travel at c = 299,792,458 m/s in vacuum.',
-    'Matter waves are tied to particles like electrons — used in electron microscopes.',
-    'Huygens, Hooke & Newton linked wave theory to oscillating springs and the simple pendulum.',
-    'Spring-chain analogy: pulling one end disturbs the next spring, and the next — the disturbance walks down the line while each spring only oscillates locally.',
-  ]},
-  {id:'types',label:'Transverse & Longitudinal',ref:'§14.2',colour:'teal',icon:'↕️',points:[
-    'Transverse wave: particles oscillate perpendicular to the direction of propagation (e.g. a wave on a string).',
-    'Longitudinal wave: particles oscillate parallel to the direction of propagation (e.g. sound in a pipe of air).',
-    'Transverse waves need a shear modulus — they propagate only in solids, not fluids.',
-    'Longitudinal waves need a bulk modulus — they propagate in solids, liquids AND gases.',
-    'Steel can carry both transverse and longitudinal waves; air only longitudinal.',
-    'Water surface waves are a mix: capillary waves (short λ, surface tension) and gravity waves (long λ, gravity restoring force).',
-  ]},
-  {id:'displacement',label:'Displacement Relation',ref:'§14.3',colour:'purple',icon:'📈',points:[
-    'y(x,t) = a sin(kx − ωt + φ) describes a sinusoidal travelling wave.',
-    'a = amplitude — maximum displacement from equilibrium.',
-    '(kx − ωt + φ) = phase; φ = initial phase angle (phase at x=0, t=0).',
-    'k = angular wave number = 2π/λ, unit rad·m⁻¹.',
-    'ω = angular frequency = 2π/T = 2πν, unit rad·s⁻¹.',
-    'λ = wavelength — distance between two points of the same phase.',
-    'T = period, ν = frequency = 1/T, measured in hertz.',
-  ]},
-  {id:'speed',label:'Speed of a Wave',ref:'§14.4',colour:'gold',icon:'⚡',points:[
-    'v = ω/k = λ/T = λν — general speed relation for any progressive wave.',
-    'Transverse wave on a stretched string: v = √(T/μ)  (T = tension, μ = linear mass density).',
-    'Longitudinal wave in a fluid: v = √(B/ρ)  (B = bulk modulus, ρ = density).',
-    'Longitudinal wave in a solid bar: v = √(Y/ρ)  (Y = Young\u2019s modulus).',
-    'Newton\u2019s formula for sound (isothermal): v = √(P/ρ) → predicts 280 m/s in air at STP.',
-    'Laplace\u2019s correction (adiabatic, B = γP): v = √(γP/ρ) → gives 331.3 m/s, matching experiment.',
-    'Wave speed depends only on the medium\u2019s elastic + inertial properties, never on the source\u2019s motion.',
-  ]},
-  {id:'superposition',label:'Superposition',ref:'§14.5',colour:'red',icon:'➕',points:[
-    'Principle of superposition: y(x,t) = y₁(x,t) + y₂(x,t) — net displacement is the algebraic sum.',
-    'Each wave moves as if the others were not present; pulses retain their identity after crossing.',
-    'Two equal-amplitude waves differing by phase φ combine to: y = [2a cos(φ/2)] sin(kx − ωt + φ/2).',
-    'Constructive interference: φ = 0 (or multiple of 2π) → resultant amplitude 2a (maximum).',
-    'Destructive interference: φ = π → resultant amplitude 0 everywhere, at all times.',
-    'This principle is the basis of interference, standing waves, and beats.',
-  ]},
-  {id:'reflection',label:'Reflection & Standing Waves',ref:'§14.6',colour:'pink',icon:'🪞',points:[
-    'At a rigid boundary a travelling wave reflects with a phase change of π (180°) — like an echo.',
-    'At an open (free) boundary, reflection happens with no phase change.',
-    'A wave + its own reflection superpose into a standing wave: y = 2a sin(kx) cos(ωt).',
-    'Nodes = fixed points of zero amplitude; antinodes = fixed points of maximum amplitude; spacing = λ/2.',
-    'String fixed at both ends: v_n = nv/2L, n = 1,2,3,… → ALL harmonics allowed.',
-    'Pipe closed at one end, open at the other: v_n = (n+½)v/2L → only ODD harmonics.',
-    'Pipe open at both ends: generates all harmonics, same as a string.',
-    'Sitar and violin timbre differs because different modes are excited to different strengths.',
-  ]},
-  {id:'beats',label:'Beats',ref:'§14.7',colour:'indigo',icon:'🎵',points:[
-    'Beats arise from superposing two waves of close (but not equal) frequencies ν₁ and ν₂.',
-    'The resultant oscillates at the average frequency, but its amplitude waxes and wanes.',
-    'Beat frequency: ν_beat = |ν₁ − ν₂|.',
-    'Musicians use beats to tune instruments — adjusting a string until the beats slow down and vanish.',
-    'Example: 11 Hz + 9 Hz waves superpose to give an audible beat of 2 Hz.',
-  ]},
-];
->>>>>>> Stashed changes
 
 function Header(){return <header className="topbar"><a className="brand" href="#top"><span className="brand-mark">◔</span><b>skill<span>100</span>.ai</b></a><nav>{['Home','Skill Discovery','IDY 2026','WYSD 2026','WYSD Maths','NEET','Rapid Math'].map(x=><a key={x} href="#modules">{x}</a>)}</nav><button className="logout">Logout</button></header>}
 
@@ -231,7 +166,6 @@ function Introduction({onBack,onGo}){
   </main></div>
 }
 
-<<<<<<< Updated upstream
 function ExamEdge({onBack,onGo}){
   const[tab,setTab]=useState('neet');
   const d=examData[tab];
@@ -273,77 +207,6 @@ function ExamEdge({onBack,onGo}){
           </div>)}
       </div>
     </section>
-=======
-function polarPoint(cx,cy,r,angleDeg){
-  const a=(angleDeg-90)*(Math.PI/180);
-  return {x:cx+r*Math.cos(a), y:cy+r*Math.sin(a)};
-}
-
-function MindMap({onBack,onGo}){
-  const[active,setActive]=useState(null);
-  const size=620, center=size/2, radius=225;
-
-  const nodes=useMemo(()=>mindMapBranches.map((b,i)=>{
-    const angle=(360/mindMapBranches.length)*i;
-    const pos=polarPoint(center,center,radius,angle);
-    return {...b, x:pos.x, y:pos.y};
-  }),[]);
-
-  const activeBranch=mindMapBranches.find(b=>b.id===active)||null;
-
-  return <div className="connect-page"><Header/><main className="connect-main">
-    <DetailNav active="Mind Map" onBack={onBack} onGo={onGo}/>
-
-    <section className="intro-hero">
-      <h1><span className="intro-lead">The whole chapter,</span> at a glance</h1>
-      <p>Click a branch to expand it. Click the centre — or the branch again — to collapse.</p>
-    </section>
-
-    <div className="mindmap-canvas-wrap">
-      <div className="mindmap-canvas" style={{width:size,height:size}}>
-        <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="mindmap-svg">
-          {nodes.map(n=>
-            <line key={n.id} x1={center} y1={center} x2={n.x} y2={n.y}
-              className={`mindmap-line ${active===n.id?'active '+n.colour:''}`}/>)}
-        </svg>
-
-        <button className="mindmap-hub" onClick={()=>setActive(null)}>WAVES<small>Ch.14</small></button>
-
-        {nodes.map(n=>{
-          const isActive=active===n.id;
-          return <button key={n.id}
-            className={`mindmap-node ${n.colour} ${isActive?'active':''}`}
-            style={{left:n.x,top:n.y}}
-            onClick={()=>setActive(isActive?null:n.id)}>
-            <span className="mindmap-node-icon">{n.icon}</span>
-            <span className="mindmap-node-text"><b>{n.label}</b><small>{n.ref}</small></span>
-          </button>
-        })}
-      </div>
-    </div>
-
-    <div className="mindmap-legend">
-      {mindMapBranches.map(b=>
-        <button key={b.id} className={`mindmap-chip ${b.colour} ${active===b.id?'active':''}`}
-          onClick={()=>setActive(active===b.id?null:b.id)}>
-          {b.icon} {b.label}
-        </button>)}
-    </div>
-
-    {activeBranch ? (
-      <section className={`mindmap-detail-panel ${activeBranch.colour}`}>
-        <div className="mindmap-detail-head">
-          <span className="mindmap-detail-icon">{activeBranch.icon}</span>
-          <div><h3>{activeBranch.label}</h3><p>{activeBranch.ref}</p></div>
-        </div>
-        <ul className="mindmap-detail-list">
-          {activeBranch.points.map((pt,i)=><li key={i}>{pt}</li>)}
-        </ul>
-      </section>
-    ) : (
-      <div className="mindmap-detail-empty">Select a branch above to see its key ideas and equations.</div>
-    )}
->>>>>>> Stashed changes
 
   </main></div>
 }
@@ -354,19 +217,11 @@ function App(){
   const goTo=(title)=>{
     if(title==='Connectomics')setView('connectomics');
     else if(title==='Introduction')setView('introduction');
-<<<<<<< Updated upstream
     else if(title==='Exam Edge')setView('examedge');
-=======
-    else if(title==='Mind Map')setView('mindmap');
->>>>>>> Stashed changes
     else goDashboard();
   };
   if(view==='connectomics')return <Connectomics onBack={goDashboard} onGo={goTo}/>;
   if(view==='introduction')return <Introduction onBack={goDashboard} onGo={goTo}/>;
-<<<<<<< Updated upstream
   if(view==='examedge')return <ExamEdge onBack={goDashboard} onGo={goTo}/>;
-=======
-  if(view==='mindmap')return <MindMap onBack={goDashboard} onGo={goTo}/>;
->>>>>>> Stashed changes
   return <div className="chapter-page"><Header/><main id="top" className="chapter-layout"><section className="chapter-hero"><div className="hero-orb orb-one"/><div className="hero-orb orb-two"/><a href="#modules" className="back-link">← Grade 11 Physics</a><div className="hero-copy"><p className="chapter-kicker">CHAPTER FOURTEEN</p><h1>Master<br/><span>Waves</span></h1><p>Discover how disturbances travel through matter and space. From ripples on water to sound and communication, master the physics of waves.</p></div><div className="stats"><div><strong>7</strong><small>CORE TOPICS</small></div><div><strong>20+</strong><small>PRACTICE PROBLEMS</small></div><div><strong>12</strong><small>CHAPTER LINKS</small></div><div><strong>0%</strong><small>MASTERY</small></div></div></section><section id="modules" className="module-list">{modules.map(([eyebrow,title,icon,colour,text])=><article className={`module-card ${colour}`} key={title} onClick={()=>goTo(title)}><div className="module-icon">{icon}</div><div><p>{eyebrow}</p><h2>{title}</h2><span>{text}</span></div><button aria-label={`Open ${title}`}>→</button></article>)}</section></main></div>
 };export default App;

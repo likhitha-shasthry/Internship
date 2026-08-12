@@ -103,7 +103,6 @@
 
 @media(max-width:900px){.prereq-grid{grid-template-columns:1fr}.question-grid{grid-template-columns:1fr}}
 
-<<<<<<< Updated upstream
 /* ---- Exam Edge ---- */
 .examedge-hero{margin-top:34px;padding:54px 40px;border-radius:26px;text-align:center;color:#fff;background:radial-gradient(circle at 30% 20%,#3f61ee,#17254b 75%)}
 .examedge-hero h1{margin:0 0 14px;font-size:clamp(34px,4.6vw,50px);letter-spacing:-1.5px}
@@ -160,77 +159,3 @@
 .pyq-solution.purple small{color:#7b43ea}
 
 @media(max-width:900px){.examedge-stats{grid-template-columns:1fr}.examedge-panel{padding:26px 20px}}
-=======
-/* ================= Mind Map ================= */
-.mindmap-canvas-wrap{margin-top:48px;overflow-x:auto;padding:6px 0 10px;display:flex;justify-content:center}
-.mindmap-canvas{position:relative;flex:0 0 auto}
-.mindmap-svg{position:absolute;inset:0}
-.mindmap-line{stroke:#d7deee;stroke-width:2}
-.mindmap-line.active{stroke-width:3}
-.mindmap-line.active.blue{stroke:#5a83f6}
-.mindmap-line.active.teal{stroke:#3fa693}
-.mindmap-line.active.purple{stroke:#7b43ea}
-.mindmap-line.active.gold{stroke:#e5a406}
-.mindmap-line.active.red{stroke:#dc4744}
-.mindmap-line.active.pink{stroke:#e8579b}
-.mindmap-line.active.indigo{stroke:#2f6fb8}
-
-.mindmap-hub{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:2;width:128px;height:128px;border-radius:50%;border:4px solid #fff;cursor:pointer;background:linear-gradient(140deg,#2d49a8,#5d82f6);box-shadow:0 12px 34px #415fe755;color:#fff;display:grid;place-content:center;text-align:center;font-weight:900;font-size:17px;letter-spacing:.5px}
-.mindmap-hub small{display:block;margin-top:4px;font-weight:800;font-size:11px;color:#dbe4ff;letter-spacing:1px}
-
-.mindmap-node{position:absolute;z-index:2;transform:translate(-50%,-50%);display:flex;align-items:center;gap:10px;background:#fff;border:1px solid #e3e8f2;border-radius:16px;padding:11px 14px;box-shadow:0 6px 16px #223a7812;cursor:pointer;max-width:172px;text-align:left;transition:transform .15s ease}
-.mindmap-node:hover{transform:translate(-50%,-50%) translateY(-2px)}
-.mindmap-node-icon{flex:0 0 auto;width:30px;height:30px;border-radius:9px;display:grid;place-items:center;font-size:15px;background:#f5f6fb}
-.mindmap-node-text b{display:block;font-size:12.5px;color:#17203d;line-height:1.25}
-.mindmap-node-text small{display:block;margin-top:1px;color:#8a93ab;font-size:10.5px;font-weight:800}
-
-.mindmap-node.blue .mindmap-node-icon{background:#eef2ff}
-.mindmap-node.teal .mindmap-node-icon{background:#f0f8f6}
-.mindmap-node.purple .mindmap-node-icon{background:#f5f0ff}
-.mindmap-node.gold .mindmap-node-icon{background:#fff8e9}
-.mindmap-node.red .mindmap-node-icon{background:#fff2f2}
-.mindmap-node.pink .mindmap-node-icon{background:#fff0f6}
-.mindmap-node.indigo .mindmap-node-icon{background:#eaf3ff}
-
-.mindmap-node.active{color:#fff}
-.mindmap-node.active .mindmap-node-icon{background:rgba(255,255,255,.25)}
-.mindmap-node.active .mindmap-node-text b{color:#fff}
-.mindmap-node.active .mindmap-node-text small{color:rgba(255,255,255,.85)}
-.mindmap-node.blue.active{background:#5a83f6;border-color:#5a83f6}
-.mindmap-node.teal.active{background:#3fa693;border-color:#3fa693}
-.mindmap-node.purple.active{background:#7b43ea;border-color:#7b43ea}
-.mindmap-node.gold.active{background:#e5a406;border-color:#e5a406}
-.mindmap-node.red.active{background:#dc4744;border-color:#dc4744}
-.mindmap-node.pink.active{background:#e8579b;border-color:#e8579b}
-.mindmap-node.indigo.active{background:#2f6fb8;border-color:#2f6fb8}
-
-.mindmap-legend{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:30px}
-.mindmap-chip{border:1px solid #dfe4ef;background:#fff;border-radius:24px;padding:9px 16px;font-weight:800;font-size:13px;color:#3a4462;cursor:pointer}
-.mindmap-chip.blue.active{background:#5a83f6;border-color:#5a83f6;color:#fff}
-.mindmap-chip.teal.active{background:#3fa693;border-color:#3fa693;color:#fff}
-.mindmap-chip.purple.active{background:#7b43ea;border-color:#7b43ea;color:#fff}
-.mindmap-chip.gold.active{background:#e5a406;border-color:#e5a406;color:#fff}
-.mindmap-chip.red.active{background:#dc4744;border-color:#dc4744;color:#fff}
-.mindmap-chip.pink.active{background:#e8579b;border-color:#e8579b;color:#fff}
-.mindmap-chip.indigo.active{background:#2f6fb8;border-color:#2f6fb8;color:#fff}
-
-.mindmap-detail-panel{margin-top:30px;max-width:760px;margin-left:auto;margin-right:auto;background:#fff;border:1px solid #e1e6f2;border-radius:24px;padding:30px 34px;box-shadow:0 6px 18px #223a7809;border-top:4px solid #4566df}
-.mindmap-detail-panel.blue{border-top-color:#5a83f6}
-.mindmap-detail-panel.teal{border-top-color:#3fa693}
-.mindmap-detail-panel.purple{border-top-color:#7b43ea}
-.mindmap-detail-panel.gold{border-top-color:#e5a406}
-.mindmap-detail-panel.red{border-top-color:#dc4744}
-.mindmap-detail-panel.pink{border-top-color:#e8579b}
-.mindmap-detail-panel.indigo{border-top-color:#2f6fb8}
-.mindmap-detail-head{display:flex;align-items:center;gap:14px;margin-bottom:18px}
-.mindmap-detail-icon{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;font-size:20px;background:#f0f4ff;flex:0 0 auto}
-.mindmap-detail-head h3{margin:0;font-size:21px;color:#17203d}
-.mindmap-detail-head p{margin:2px 0 0;color:#8a93ab;font-size:12.5px;font-weight:800}
-.mindmap-detail-list{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px}
-.mindmap-detail-list li{position:relative;padding-left:20px;color:#5d6885;font-size:15px;line-height:1.6}
-.mindmap-detail-list li::before{content:"";position:absolute;left:0;top:9px;width:6px;height:6px;border-radius:50%;background:#4566df}
-
-.mindmap-detail-empty{margin-top:30px;max-width:760px;margin-left:auto;margin-right:auto;text-align:center;color:#9aa3ba;font-size:15px;border:1px dashed #dfe4ef;border-radius:24px;padding:44px 20px;background:#ffffffa0}
-
-@media(max-width:800px){.mindmap-node{max-width:150px;padding:9px 11px}.mindmap-hub{width:104px;height:104px;font-size:14px}.mindmap-detail-panel{padding:24px 22px}}
->>>>>>> Stashed changes
