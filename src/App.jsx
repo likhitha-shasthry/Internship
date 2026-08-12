@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import './index.css';
-import waveData from '../writing-block.json';
 
 const modules=[['BEFORE YOU BEGIN','Connectomics','🔗','gold','Connect waves to oscillations, energy transfer, and the behaviour of particles in a medium.'],['START HERE','Introduction','☀️','blue','Understand what a wave is, how disturbances travel, and why waves carry energy without transporting matter.'],['THE LANGUAGE','Terminology','📖','teal','Learn amplitude, wavelength, frequency, period, phase, crest, trough, and wavefront.'],['CORE PRACTICE','Skills','🎯','purple','Explore transverse and longitudinal waves, progressive-wave displacement, wave speed, and superposition.'],['TEST READY','Exam Edge','🏆','red','Practice reflection of waves, beats, numerical problems, and chapter exercises with confidence.']];
 
@@ -30,72 +29,35 @@ const bigQuestions=[
   ['pink','⚙️','How','does a disturbance actually travel?','Picture springs joined end to end: pull one and release it, and it stretches its neighbour, which stretches the next, and so on. Each spring only oscillates about its own equilibrium position, but the disturbance itself walks all the way down the line.'],
 ];
 
-// ---- Terminology data, built from writing-block.json (single source of truth for content) ----
-const chapterData = waveData.course.chapter;
+const examTabs=[['neet','NEET','green'],['jee','JEE Main','blue'],['cet','Karnataka CET','orange'],['puc','PUC / Boards','purple']];
 
-// Friendly labels for the less-common formula/variable fields found in the JSON,
-// so nothing present in the data is silently dropped.
-const extraFormulaLabels = {
-  frequencyFormula: 'Frequency Formula',
-  wavelengths: 'Wavelengths',
-  frequencies: 'Frequencies',
-  fundamental: 'Fundamental',
-  solidBarFormula: 'Formula (Solid Bar)',
-  gasFormulaNewton: "Formula (Newton's, Gas)",
-  gasFormulaLaplace: "Formula (Laplace's, Gas)",
+const examData={
+  neet:{title:'NEET',weightage:'2 - 3',marks:'8 - 12',difficulty:'Medium',
+    focus:"Wave speed formulas (v = √(T/μ), v = √(B/ρ)), the principle of superposition, and beat frequency (Δf = |f₁ − f₂|) are asked almost every year. Expect one direct numerical and one conceptual question.",
+    pyqs:[
+      ['NEET 2023','Two tuning forks of frequency 256 Hz and 260 Hz are sounded together. The number of beats heard in 4 seconds is:','Beat frequency = |f₁ − f₂| = |260 − 256| = 4 Hz. Beats in 4 s = 4 × 4 = 16 beats.'],
+      ['NEET 2022','A transverse wave y = 0.02 sin(4πt − 0.02πx) (SI units) travels along a stretched string. The wave speed is:','Compare with y = a sin(ωt − kx): ω = 4π rad/s, k = 0.02π rad/m. v = ω/k = 4π / 0.02π = 200 m/s.'],
+      ['NEET 2021','A wave pulse on a string reflects from a rigid boundary. The phase change on reflection is:','A rigid (fixed) end forces zero displacement, so the reflected pulse is inverted — a phase change of π (180°). A free end gives no phase change.'],
+    ]},
+  jee:{title:'JEE Main',weightage:'1 - 2',marks:'4 - 8',difficulty:'Hard',
+    focus:'Questions combine superposition with standing waves on strings or pipes, or mix wave speed with elasticity (Ch.8). Multi-step numericals involving harmonics and resonance length are common.',
+    pyqs:[
+      ['JEE Main 2023','A string of length 1 m, fixed at both ends, vibrates in its 3rd harmonic at 300 Hz. Find the wave speed on the string.','nth harmonic: fₙ = nv/2L → 300 = 3v/(2×1) → v = 300×2/3 = 200 m/s.'],
+      ['JEE Main 2022','Two waves y₁ = a sin(ωt) and y₂ = a sin(ωt + π/3) superpose. Find the amplitude of the resultant wave.','A = √(a² + a² + 2a²cos(π/3)) = √(3)·a ≈ 1.73a.'],
+    ]},
+  cet:{title:'Karnataka CET',weightage:'2 - 3',marks:'2 - 3',difficulty:'Easy to Medium',
+    focus:'Formula recall and short conceptual definitions dominate — amplitude, wavelength, the frequency-period relation, and the basic wave equation v = fλ. Expect direct one-line numericals.',
+    pyqs:[
+      ['Karnataka CET 2021','The relation between wave velocity v, frequency f and wavelength λ is:','v = f × λ — the wave equation relating speed, frequency and wavelength.'],
+      ['Karnataka CET 2019','A wave has a frequency of 500 Hz and travels at 350 m/s in air. Its wavelength is:','λ = v/f = 350/500 = 0.7 m.'],
+    ]},
+  puc:{title:'PUC / Boards',weightage:'7 - 10%',marks:'5 - 7',difficulty:'Medium',
+    focus:'Derivations (speed of a transverse wave on a stretched string, the progressive wave equation) and short definition questions on amplitude, phase and beats are the safest scoring areas.',
+    pyqs:[
+      ['PUC / Boards 2020','Derive an expression for the speed of a transverse wave on a stretched string.',"Consider an element of string under tension T and linear density μ. Applying Newton's second law to a small curved element and simplifying for small displacements gives v = √(T/μ)."],
+      ['PUC / Boards 2018','What are beats? Derive an expression for beat frequency.','Superposing y₁ = a sin(ω₁t) and y₂ = a sin(ω₂t) gives a resultant whose amplitude is modulated at frequency |f₁ − f₂|/2, so beats are heard at frequency |f₁ − f₂|.'],
+    ]},
 };
-const extraVariableLabels = { solidBarVariables: 'Variables (Solid Bar)' };
-
-// Worked examples in the JSON are attached to a whole section, not a single term.
-// This maps each example's title to the term(s) it is worked from, so it only
-// surfaces on the term(s) it actually illustrates.
-const exampleTopicMap = {
-  'Classifying Wave Motion': ['Transverse Waves', 'Longitudinal Waves'],
-  'Wave Equation on a String': ['Wave Function'],
-  'Speed of Transverse Waves on a Steel Wire': ['Speed of a Transverse Wave on a Stretched String'],
-  'Speed of Sound in Air': ['Speed of a Longitudinal Wave'],
-  'Resonance in an Open Pipe': ['Resonance'],
-  'Beats from Two Sitar Strings': ['Beat Frequency'],
-};
-
-// Flatten course.chapter.sections[].topics[] (and any nested subsections) into a
-// single list of terminology entries, keeping each entry's section context.
-function flattenTerminology(chapter){
-  const items=[];
-  (chapter.sections||[]).forEach(section=>{
-    (section.topics||[]).forEach(topic=>{
-      items.push({sectionId:section.id,sectionNumber:section.number,sectionTitle:section.title,parentSectionTitle:null,...topic});
-    });
-    (section.subsections||[]).forEach(sub=>{
-      const subNumber=`${section.number}.${(sub.id||'').split('-').pop()}`;
-      if(Array.isArray(sub.topics)&&sub.topics.length){
-        sub.topics.forEach(topic=>{
-          items.push({sectionId:sub.id,sectionNumber:subNumber,sectionTitle:sub.title,parentSectionTitle:section.title,...topic});
-        });
-      }else{
-        items.push({sectionId:sub.id,sectionNumber:subNumber,sectionTitle:section.title,parentSectionTitle:null,...sub});
-      }
-    });
-  });
-  return items;
-}
-
-// Collect every worked example defined anywhere in the chapter (section.example
-// and section.examples), tagged with the section they came from.
-function collectExamples(chapter){
-  const examples=[];
-  (chapter.sections||[]).forEach(section=>{
-    if(section.example)examples.push({...section.example,sectionNumber:section.number,sectionTitle:section.title});
-    (section.examples||[]).forEach(ex=>examples.push({...ex,sectionNumber:section.number,sectionTitle:section.title}));
-  });
-  return examples;
-}
-
-const terminologyItems=flattenTerminology(chapterData);
-const chapterExamples=collectExamples(chapterData);
-function examplesForTerm(title){
-  return chapterExamples.filter(ex=>(exampleTopicMap[ex.title]||[]).includes(title));
-}
 
 function Header(){return <header className="topbar"><a className="brand" href="#top"><span className="brand-mark">◔</span><b>skill<span>100</span>.ai</b></a><nav>{['Home','Skill Discovery','IDY 2026','WYSD 2026','WYSD Maths','NEET','Rapid Math'].map(x=><a key={x} href="#modules">{x}</a>)}</nav><button className="logout">Logout</button></header>}
 
@@ -204,121 +166,45 @@ function Introduction({onBack,onGo}){
   </main></div>
 }
 
-// ---- Small presentational helpers for the term detail card ----
-
-function KeyValueList({data}){
-  if(!data)return null;
-  if(typeof data==='string')return <p className="term-kv-line">{data}</p>;
-  if(Array.isArray(data))return <ul className="term-kv-list">{data.map((v,i)=><li key={i}>{v}</li>)}</ul>;
-  return <ul className="term-kv-list">{Object.entries(data).map(([k,v])=><li key={k}><b>{k}</b> — {v}</li>)}</ul>;
-}
-
-function WorkedExample({example}){
-  return <div className="worked-example">
-    <p className="worked-example-label">WORKED EXAMPLE {example.number}</p>
-    <h4>{example.title}</h4>
-    {example.given&&<div className="worked-example-field"><span>Given</span><KeyValueList data={example.given}/></div>}
-    {example.find&&<div className="worked-example-field"><span>Find</span><KeyValueList data={example.find}/></div>}
-    {example.method&&<div className="worked-example-field"><span>Method</span><p className="term-kv-line">{example.method}</p></div>}
-    {example.concepts&&<div className="worked-example-field"><span>Concepts</span><KeyValueList data={example.concepts}/></div>}
-    {example.results&&<div className="worked-example-field"><span>Results</span><KeyValueList data={example.results}/></div>}
-    {example.result&&<div className="worked-example-field"><span>Result</span><p className="term-kv-line">{example.result}</p></div>}
-    {example.questions&&<div className="worked-example-field"><span>Questions</span>
-      <ul className="term-kv-list">{example.questions.map((q,i)=><li key={i}>{q.question} — <i>{q.answer}</i></li>)}</ul>
-    </div>}
-  </div>
-}
-
-function TermDetail({term}){
-  const examples=examplesForTerm(term.title);
-  const extraFormulas=Object.keys(extraFormulaLabels).filter(k=>term[k]);
-  const extraVariables=Object.keys(extraVariableLabels).filter(k=>term[k]);
-  return <div className="term-detail">
-    <p className="term-detail-crumb">{term.sectionNumber} · {term.parentSectionTitle?`${term.parentSectionTitle} · `:''}{term.sectionTitle}</p>
-    <div className="term-detail-heading">
-      {term.symbol&&<span className="term-symbol-badge">{term.symbol}</span>}
-      <h2>{term.title}</h2>
-    </div>
-
-    {term.definition&&<p className="term-detail-text">{term.definition}</p>}
-    {term.content&&<p className="term-detail-text">{term.content}</p>}
-    {term.description&&<p className="term-detail-text">{term.description}</p>}
-
-    {(term.formula||extraFormulas.length>0)&&<div className="term-formula-group">
-      {term.formula&&<div className="formula-row"><code>{term.formula}</code></div>}
-      {extraFormulas.map(k=><div className="formula-row" key={k}><span>{extraFormulaLabels[k]}</span><code>{term[k]}</code></div>)}
-    </div>}
-
-    {term.unit&&<p className="term-meta-line"><b>Unit:</b> {term.unit}</p>}
-
-    {term.variables&&<div className="term-variables"><p className="term-block-label">Variables</p><KeyValueList data={term.variables}/></div>}
-    {extraVariables.map(k=><div className="term-variables" key={k}><p className="term-block-label">{extraVariableLabels[k]}</p><KeyValueList data={term[k]}/></div>)}
-
-    {term.condition&&<p className="term-meta-line"><b>Condition:</b> {term.condition}</p>}
-    {term.result&&<p className="term-meta-line"><b>Result:</b> {term.result}</p>}
-
-    {(term.examples&&term.examples.length>0||examples.length>0||term.importantPoint)&&<div className="term-side-grid">
-      {term.examples&&term.examples.length>0&&<div className="term-box">
-        <p className="term-block-label">Examples</p>
-        <ul className="term-kv-list">{term.examples.map((ex,i)=><li key={i}>{ex}</li>)}</ul>
-      </div>}
-      {term.importantPoint&&<div className="term-box quick-memory">
-        <p className="term-block-label">Quick Memory</p>
-        <p>{term.importantPoint}</p>
-      </div>}
-    </div>}
-
-    {examples.map((ex,i)=><WorkedExample example={ex} key={i}/>)}
-  </div>
-}
-
-function Terminology({onBack,onGo}){
-  const[selected,setSelected]=useState(0);
-  const[tab,setTab]=useState('terms');
-  const active=terminologyItems[selected];
-
-  let groups=null;
-  if(tab==='sections'){
-    groups=[];
-    terminologyItems.forEach((item,idx)=>{
-      const label=`${item.sectionNumber} ${item.sectionTitle}`;
-      let group=groups.find(g=>g.label===label);
-      if(!group){group={label,items:[]};groups.push(group);}
-      group.items.push({item,idx});
-    });
-  }
-
-  const termButton=(item,idx)=>
-    <button key={item.id||idx} className={`term-list-item ${idx===selected?'active':''}`}
-      aria-selected={idx===selected} onClick={()=>setSelected(idx)}>
-      {item.symbol&&<span className="term-list-symbol">{item.symbol}</span>}
-      <span>{item.title}</span>
-    </button>;
-
+function ExamEdge({onBack,onGo}){
+  const[tab,setTab]=useState('neet');
+  const d=examData[tab];
+  const colour=examTabs.find(t=>t[0]===tab)[2];
   return <div className="connect-page"><Header/><main className="connect-main">
-    <DetailNav active="Terminology" onBack={onBack} onGo={onGo}/>
+    <DetailNav active="Exam Edge" onBack={onBack} onGo={onGo}/>
 
-    <section className="lexicon-hero">
-      <h1>Physics <span>Lexicon</span></h1>
-      <p>Explore the foundations of Waves with {terminologyItems.length} key terms.</p>
-      <div className="nav-pills lexicon-pills">
-        <button className={`nav-pill ${tab==='terms'?'active':''}`} onClick={()=>setTab('terms')}>📖 Key Terms</button>
-        <button className={`nav-pill ${tab==='sections'?'active':''}`} onClick={()=>setTab('sections')}>🌊 Wave Sections</button>
-        <button className="nav-pill disabled" disabled title="Coming soon">🧠 Quiz Time</button>
-      </div>
+    <section className="examedge-hero">
+      <h1>Waves <span>Exam Edge</span></h1>
+      <p>See how Waves is tested across major competitive exams and clear your conceptual hurdles.</p>
     </section>
 
-    <section className="lexicon-layout">
-      <nav className="term-list" aria-label="Terminology list">
-        {tab==='sections'
-          ?groups.map(g=><div key={g.label} className="term-group">
-              <p className="term-group-label">{g.label}</p>
-              {g.items.map(({item,idx})=>termButton(item,idx))}
-            </div>)
-          :terminologyItems.map((item,idx)=>termButton(item,idx))}
-      </nav>
-      <div className="term-detail-card">
-        {active&&<TermDetail term={active}/>}
+    <div className="examedge-tabs">
+      {examTabs.map(([key,label,c])=>
+        <button key={key} className={`exam-tab ${c} ${tab===key?'active':''}`} onClick={()=>setTab(key)}>{label}</button>)}
+    </div>
+
+    <section className="examedge-panel">
+      <h2 className={`examedge-strat-title ${colour}`}><span className="examedge-bar"/>{d.title} <b>Strategy</b></h2>
+      <div className="examedge-stats">
+        <div><small>WEIGHTAGE</small><strong className={colour}>{d.weightage} <em>Qs</em></strong></div>
+        <div><small>MARKS</small><strong className={colour}>{d.marks}</strong></div>
+        <div><small>DIFFICULTY</small><strong>{d.difficulty}</strong></div>
+      </div>
+
+      <h3>What to Focus On</h3>
+      <div className={`examedge-focus ${colour}`}>{d.focus}</div>
+
+      <h3 className="examedge-pyq-title">📝 Previous Year Questions (Trend)</h3>
+      <div className="examedge-pyq-list">
+        {d.pyqs.map(([tag,q,sol])=>
+          <div className="pyq-card" key={tag+q.slice(0,12)}>
+            <span className="pyq-tag">{tag}</span>
+            <p>{q}</p>
+            <div className={`pyq-solution ${colour}`}>
+              <small>SOLUTION OUTLINE</small>
+              <span>{sol}</span>
+            </div>
+          </div>)}
       </div>
     </section>
 
@@ -331,11 +217,11 @@ function App(){
   const goTo=(title)=>{
     if(title==='Connectomics')setView('connectomics');
     else if(title==='Introduction')setView('introduction');
-    else if(title==='Terminology')setView('terminology');
+    else if(title==='Exam Edge')setView('examedge');
     else goDashboard();
   };
   if(view==='connectomics')return <Connectomics onBack={goDashboard} onGo={goTo}/>;
   if(view==='introduction')return <Introduction onBack={goDashboard} onGo={goTo}/>;
-  if(view==='terminology')return <Terminology onBack={goDashboard} onGo={goTo}/>;
+  if(view==='examedge')return <ExamEdge onBack={goDashboard} onGo={goTo}/>;
   return <div className="chapter-page"><Header/><main id="top" className="chapter-layout"><section className="chapter-hero"><div className="hero-orb orb-one"/><div className="hero-orb orb-two"/><a href="#modules" className="back-link">← Grade 11 Physics</a><div className="hero-copy"><p className="chapter-kicker">CHAPTER FOURTEEN</p><h1>Master<br/><span>Waves</span></h1><p>Discover how disturbances travel through matter and space. From ripples on water to sound and communication, master the physics of waves.</p></div><div className="stats"><div><strong>7</strong><small>CORE TOPICS</small></div><div><strong>20+</strong><small>PRACTICE PROBLEMS</small></div><div><strong>12</strong><small>CHAPTER LINKS</small></div><div><strong>0%</strong><small>MASTERY</small></div></div></section><section id="modules" className="module-list">{modules.map(([eyebrow,title,icon,colour,text])=><article className={`module-card ${colour}`} key={title} onClick={()=>goTo(title)}><div className="module-icon">{icon}</div><div><p>{eyebrow}</p><h2>{title}</h2><span>{text}</span></div><button aria-label={`Open ${title}`}>→</button></article>)}</section></main></div>
 };export default App;
