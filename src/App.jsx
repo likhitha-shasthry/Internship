@@ -54,6 +54,31 @@ const extraFormulaLabels = {
 };
 const extraVariableLabels = { solidBarVariables: 'Variables (Solid Bar)' };
 
+// Which small diagram (if any) best illustrates a given term. Grouped by
+// diagram type so one visual can serve every term it's genuinely relevant to.
+const visualGroups = {
+  transverse: ['Wave Function','Wave Travelling in Negative Direction','Amplitude','Phase','Initial Phase','Wavelength','Angular Wave Number','Time Period','Angular Frequency','Frequency','Transverse Waves','Progressive Waves','Wave Speed','Fundamental Wave Relation'],
+  longitudinal: ['Longitudinal Waves','Compressions and Rarefactions','Longitudinal Wave Displacement'],
+  standing: ['Standing Wave Formation','Nodes','Antinodes','Distance Between Successive Nodes','Distance Between Successive Antinodes','String Fixed at Both Ends','Harmonics'],
+  interference: ['Superposition Principle','Multiple Waves','Interference','Constructive Interference','Destructive Interference','Resultant Amplitude'],
+  reflection: ['Reflection at a Rigid Boundary','Reflection at an Open Boundary','Rigid Boundary','Open Boundary','Echo'],
+  beats: ['Formation of Beats','Beat Frequency','Nature of Beats'],
+  resonance: ['Air Column Closed at One End','Open Pipe','Resonance'],
+};
+const visualKeyForTitle = {};
+Object.entries(visualGroups).forEach(([key,titles])=>titles.forEach(t=>{visualKeyForTitle[t]=key;}));
+
+// Samples a sine curve into an SVG path string.
+function sinePath(width,height,cycles,amp,phase=0,points=64){
+  const midY=height/2; let d='';
+  for(let i=0;i<=points;i++){
+    const x=(i/points)*width;
+    const y=midY-amp*Math.sin((i/points)*cycles*2*Math.PI+phase);
+    d+=(i===0?'M':'L')+x.toFixed(1)+' '+y.toFixed(1)+' ';
+  }
+  return d.trim();
+}
+
 // Worked examples in the JSON are attached to a whole section, not a single term.
 // This maps each example's title to the term(s) it is worked from, so it only
 // surfaces on the term(s) it actually illustrates.
@@ -453,6 +478,99 @@ function WorkedExample({example}){
   </div>
 }
 
+const visualCaptions = {
+  transverse: 'Transverse Wave Snapshot',
+  longitudinal: 'Longitudinal Wave — Compressions & Rarefactions',
+  standing: 'Standing Wave — String Fixed at Both Ends',
+  interference: 'Superposition — Constructive vs Destructive',
+  reflection: 'Reflection at a Boundary',
+  beats: 'Beats — Amplitude Envelope',
+  resonance: 'Standing Wave in an Air Column',
+};
+
+function TermVisual({title}){
+  const key=visualKeyForTitle[title];
+  if(!key)return null;
+  const W=300,H=110;
+  let body=null;
+
+  if(key==='transverse'){
+    body=<>
+      <line x1="0" y1={H/2} x2={W} y2={H/2} stroke="#c7cfe6" strokeDasharray="3 4"/>
+      <path d={sinePath(W,H,1.5,30)} fill="none" stroke="#4566df" strokeWidth="2.5"/>
+      <line x1={W*0.17} y1={H/2} x2={W*0.17} y2={H/2-30} stroke="#e5a406" strokeWidth="1.5"/>
+      <text x={W*0.17+6} y={H/2-14} fontSize="11" fill="#b07d00" fontWeight="700">a</text>
+      <line x1={W*0.17} y1={H-8} x2={W*0.17+W/1.5} y2={H-8} stroke="#7b43ea" strokeWidth="1.3" markerEnd="url(#arrowP)" markerStart="url(#arrowP)"/>
+      <text x={W*0.17+W/3} y={H-13} fontSize="11" fill="#7b43ea" fontWeight="700">λ</text>
+      <defs><marker id="arrowP" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#7b43ea"/></marker></defs>
+    </>;
+  } else if(key==='longitudinal'){
+    const spacings=[8,8,10,14,20,26,20,14,10,8,8,10,14,20,26,20,14,10,8,8];
+    let x=6; const lines=[];
+    spacings.forEach((s,i)=>{lines.push(<line key={i} x1={x} y1="14" x2={x} y2={H-14} stroke="#4566df" strokeWidth="2"/>); x+=s;});
+    body=<>
+      {lines}
+      <text x="14" y="12" fontSize="10.5" fill="#4566df" fontWeight="700">compression</text>
+      <text x="120" y="12" fontSize="10.5" fill="#7b8296" fontWeight="700">rarefaction</text>
+    </>;
+  } else if(key==='standing'){
+    body=<>
+      <circle cx="6" cy={H/2} r="4" fill="#37436b"/>
+      <circle cx={W-6} cy={H/2} r="4" fill="#37436b"/>
+      <path d={sinePath(W,H,1,26)} fill="none" stroke="#4566df" strokeWidth="2"/>
+      <path d={sinePath(W,H,1,-26)} fill="none" stroke="#4566df" strokeWidth="2" opacity="0.35"/>
+      {[0,0.5,1].map((f,i)=><circle key={'n'+i} cx={f*W} cy={H/2} r="3.5" fill="#dc4744"/>)}
+      {[0.25,0.75].map((f,i)=><circle key={'a'+i} cx={f*W} cy={H/2-26} r="3.5" fill="#e5a406"/>)}
+      <text x="2" y={H-4} fontSize="10" fill="#dc4744" fontWeight="700">● node</text>
+      <text x="70" y={H-4} fontSize="10" fill="#b07d00" fontWeight="700">● antinode</text>
+    </>;
+  } else if(key==='interference'){
+    body=<>
+      <text x="4" y="12" fontSize="10.5" fill="#419d90" fontWeight="800">CONSTRUCTIVE</text>
+      <path d={sinePath(W/2-6,40,1.5,10)} fill="none" stroke="#4566df" strokeWidth="1.3" opacity="0.55" transform="translate(0,16)"/>
+      <path d={sinePath(W/2-6,40,1.5,10)} fill="none" stroke="#7b43ea" strokeWidth="1.3" opacity="0.55" transform="translate(0,16)"/>
+      <path d={sinePath(W/2-6,40,1.5,19)} fill="none" stroke="#419d90" strokeWidth="2.4" transform="translate(0,16)"/>
+      <line x1={W/2+3} y1="0" x2={W/2+3} y2={H} stroke="#e1e6f2" strokeWidth="1"/>
+      <text x={W/2+9} y="12" fontSize="10.5" fill="#dc4744" fontWeight="800">DESTRUCTIVE</text>
+      <path d={sinePath(W/2-9,40,1.5,14,0)} fill="none" stroke="#4566df" strokeWidth="1.3" opacity="0.55" transform={`translate(${W/2+9},16)`}/>
+      <path d={sinePath(W/2-9,40,1.5,14,Math.PI)} fill="none" stroke="#7b43ea" strokeWidth="1.3" opacity="0.55" transform={`translate(${W/2+9},16)`}/>
+      <line x1={W/2+9} y1="36" x2={W-6} y2="36" stroke="#dc4744" strokeWidth="2.4" transform="translate(0,16)"/>
+    </>;
+  } else if(key==='reflection'){
+    body=<>
+      <line x1={W-14} y1="6" x2={W-14} y2={H-6} stroke="#37436b" strokeWidth="4"/>
+      <text x="4" y="14" fontSize="10.5" fill="#4566df" fontWeight="800">RIGID → inverted</text>
+      <path d={`M6,28 Q30,10 50,28 T94,28`} fill="none" stroke="#4566df" strokeWidth="2"/>
+      <path d={`M6,28 Q30,46 50,28 T94,28`} fill="none" stroke="#dc4744" strokeWidth="2" strokeDasharray="4 3"/>
+      <text x="4" y="66" fontSize="10.5" fill="#419d90" fontWeight="800">OPEN → upright</text>
+      <path d={`M6,82 Q30,64 50,82 T94,82`} fill="none" stroke="#4566df" strokeWidth="2"/>
+      <path d={`M6,82 Q30,64 50,82 T94,82`} fill="none" stroke="#419d90" strokeWidth="2" strokeDasharray="4 3" transform="translate(4,0)"/>
+    </>;
+  } else if(key==='beats'){
+    body=<>
+      <path d={sinePath(W,H,10,32)} fill="none" stroke="#4566df" strokeWidth="1.4"/>
+      <path d={`M0,${H/2} `+Array.from({length:65},(_,i)=>{const x=(i/64)*W;const env=32*Math.abs(Math.cos((i/64)*2*Math.PI));return `L${x.toFixed(1)},${(H/2-env).toFixed(1)}`;}).join(' ')} fill="none" stroke="#e5a406" strokeWidth="1.8" strokeDasharray="2 3"/>
+      <path d={`M0,${H/2} `+Array.from({length:65},(_,i)=>{const x=(i/64)*W;const env=32*Math.abs(Math.cos((i/64)*2*Math.PI));return `L${x.toFixed(1)},${(H/2+env).toFixed(1)}`;}).join(' ')} fill="none" stroke="#e5a406" strokeWidth="1.8" strokeDasharray="2 3"/>
+      <text x="4" y="12" fontSize="10.5" fill="#b07d00" fontWeight="700">amplitude envelope</text>
+    </>;
+  } else if(key==='resonance'){
+    body=<>
+      <line x1="10" y1="10" x2="10" y2={H-10} stroke="#37436b" strokeWidth="4"/>
+      <path d={`M10,${H/2} Q ${W*0.55},14 ${W-10},${H/2}`} fill="none" stroke="#4566df" strokeWidth="2"/>
+      <path d={`M10,${H/2} Q ${W*0.55},${H-14} ${W-10},${H/2}`} fill="none" stroke="#4566df" strokeWidth="2" opacity="0.35"/>
+      <circle cx="10" cy={H/2} r="3.5" fill="#dc4744"/>
+      <circle cx={W-10} cy={H/2} r="3.5" fill="#e5a406"/>
+      <text x="0" y={H-2} fontSize="10" fill="#dc4744" fontWeight="700">closed = node</text>
+      <text x={W-92} y={H-2} fontSize="10" fill="#b07d00" fontWeight="700">open = antinode</text>
+    </>;
+  }
+
+  return <div className="term-visual">
+    <p className="term-block-label">{visualCaptions[key]}</p>
+    <svg viewBox={`0 0 ${W} ${H}`} className="term-visual-svg" preserveAspectRatio="xMidYMid meet">{body}</svg>
+  </div>;
+}
+
 function TermDetail({term}){
   const examples=examplesForTerm(term.title);
   const extraFormulas=Object.keys(extraFormulaLabels).filter(k=>term[k]);
@@ -474,6 +592,8 @@ function TermDetail({term}){
     </div>}
 
     {term.unit&&<p className="term-meta-line"><b>Unit:</b> {term.unit}</p>}
+
+    <TermVisual title={term.title}/>
 
     {term.variables&&<div className="term-variables"><p className="term-block-label">Variables</p><KeyValueList data={term.variables}/></div>}
     {extraVariables.map(k=><div className="term-variables" key={k}><p className="term-block-label">{extraVariableLabels[k]}</p><KeyValueList data={term[k]}/></div>)}
@@ -651,6 +771,10 @@ function Terminology({onBack,onGo}){
           </>}
         </div>
       </section>}
+
+    {tab!=='quiz'&&<div className="mastered-wrap">
+      <button className="mastered-btn" onClick={()=>onGo('Skills')}>I've mastered the language! 🎉</button>
+    </div>}
 
   </main></div>
 }

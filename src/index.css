@@ -324,6 +324,11 @@
 .term-box{background:#f6f8fd;border:1px solid #e6ebf7;border-radius:16px;padding:16px 18px}
 .term-box.quick-memory{background:#eef2ff;border-color:#dbe3ff}
 .term-box.quick-memory p:last-child{margin:0;color:#37436b;font-size:14.5px;line-height:1.55}
+.term-visual{background:#f6f8fd;border:1px solid #e6ebf7;border-radius:16px;padding:14px 18px 10px;margin:0 0 16px}
+.term-visual-svg{width:100%;height:auto;max-width:300px;display:block;margin:0 auto}
+.mastered-wrap{display:flex;justify-content:center;margin-top:30px}
+.mastered-btn{border:0;border-radius:32px;background:#1f9d84;color:#fff;font-size:16px;font-weight:800;padding:15px 30px;cursor:pointer;box-shadow:0 6px 18px #1f9d8433;transition:transform .15s ease}
+.mastered-btn:hover{transform:translateY(-2px)}
 
 .worked-example{margin-top:22px;border-top:1px solid #e6ebf7;padding-top:20px}
 .worked-example-label{margin:0 0 4px;color:#4566df;font-size:11px;font-weight:900;letter-spacing:1.2px}
