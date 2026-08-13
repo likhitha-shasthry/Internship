@@ -180,6 +180,191 @@ function buildQuizBank(items){
 const quizBank=buildQuizBank(terminologyItems);
 function pickQuizSet(n=5){return shuffled(quizBank).slice(0,Math.min(n,quizBank.length));}
 
+// ---- Skills: one skill per top-level chapter section (14.1 – 14.7) ----
+// Every skill's Learn content, Practice bank and Assess bank is generated
+// straight from writing-block.json — nothing here is hand-written trivia.
+// Each real item (symbol / formula / definition / unit / key point / example /
+// variable) is turned into MULTIPLE question phrasings so a 6-topic section
+// can still yield 15+ distinct, genuinely different questions for Practice
+// and another 15 different ones for Assess.
+
+function pickDistractors(pool,mapper,excludeVal,count,fallbackPool){
+  const seen=new Set([excludeVal]);
+  const out=[];
+  const tryPool=(p)=>{
+    shuffled(p).forEach(item=>{
+      if(out.length>=count)return;
+      const val=mapper(item);
+      if(val&&!seen.has(val)){seen.add(val);out.push(val);}
+    });
+  };
+  tryPool(pool);
+  if(out.length<count&&fallbackPool)tryPool(fallbackPool);
+  return out;
+}
+
+const genericUnits=['m','s','Hz','rad','kg','N','m/s','rad/s','rad m^-1'];
+
+function buildQuestionPool(items,allItems){
+  const bank=[];
+  const push=(o)=>bank.push(o);
+
+  const symbolPool=items.filter(t=>t.symbol);
+  const formulaPool=items.filter(t=>t.formula);
+  const defPool=items.filter(t=>t.definition||t.content||t.description);
+  const unitPool=items.filter(t=>t.unit);
+  const ipPool=items.filter(t=>t.importantPoint);
+  const exPool=items.filter(t=>Array.isArray(t.examples)&&t.examples.length);
+  const varPool=items.filter(t=>t.variables&&Object.keys(t.variables).length);
+
+  const allSymbols=allItems.filter(t=>t.symbol);
+  const allFormulas=allItems.filter(t=>t.formula);
+  const allDefs=allItems.filter(t=>t.definition||t.content||t.description);
+  const allIp=allItems.filter(t=>t.importantPoint);
+  const allEx=[];
+  allItems.forEach(t=>(t.examples||[]).forEach(ex=>allEx.push({title:t.title,ex})));
+  const allVars=[];
+  allItems.forEach(t=>{if(t.variables)Object.entries(t.variables).forEach(([sym,mean])=>allVars.push({title:t.title,sym,mean}));});
+
+  const factLine=(t)=>{
+    let line=`"${t.title}"`;
+    if(t.symbol)line+=` (symbol ${t.symbol})`;
+    line+=t.definition?`: ${t.definition}`:t.content?`: ${t.content}`:t.description?`: ${t.description}`:'.';
+    if(t.formula)line+=` Formula: ${t.formula}.`;
+    if(t.unit)line+=` Unit: ${t.unit}.`;
+    return line;
+  };
+
+  symbolPool.forEach(t=>{
+    const d=pickDistractors(symbolPool,x=>x.symbol,t.symbol,3,allSymbols);
+    if(d.length>=1){
+      push({prompt:`Which symbol represents "${t.title}"?`,correct:t.symbol,options:shuffled([t.symbol,...d]),source:t.title,explanation:factLine(t)});
+    }
+    const dRev=pickDistractors(symbolPool,x=>x.title,t.title,3,allSymbols);
+    if(dRev.length>=1){
+      push({prompt:`In this topic, what does the symbol "${t.symbol}" stand for?`,correct:t.title,options:shuffled([t.title,...dRev]),source:t.title,explanation:factLine(t)});
+    }
+  });
+
+  formulaPool.forEach(t=>{
+    const d=pickDistractors(formulaPool,x=>x.formula,t.formula,3,allFormulas);
+    if(d.length>=1){
+      push({prompt:`Which formula corresponds to "${t.title}"?`,correct:t.formula,options:shuffled([t.formula,...d]),source:t.title,explanation:factLine(t)});
+    }
+    const dRev=pickDistractors(formulaPool,x=>x.title,t.title,3,allFormulas);
+    if(dRev.length>=1){
+      push({prompt:`The relation "${t.formula}" describes:`,correct:t.title,options:shuffled([t.title,...dRev]),source:t.title,explanation:factLine(t)});
+    }
+  });
+
+  defPool.forEach(t=>{
+    const text=t.definition||t.content||t.description;
+    const d=pickDistractors(defPool,x=>x.title,t.title,3,allDefs);
+    if(d.length>=1){
+      push({prompt:`Which term does this describe: "${text}"`,correct:t.title,options:shuffled([t.title,...d]),source:t.title,explanation:factLine(t)});
+    }
+    const dRev=pickDistractors(defPool,x=>x.definition||x.content||x.description,text,3,allDefs);
+    if(dRev.length>=1){
+      push({prompt:`What best describes "${t.title}"?`,correct:text,options:shuffled([text,...dRev]),source:t.title,explanation:factLine(t)});
+    }
+  });
+
+  unitPool.forEach(t=>{
+    const d=pickDistractors(unitPool,x=>x.unit,t.unit,3,genericUnits.map(u=>({unit:u})));
+    push({prompt:`What is the SI unit of "${t.title}"?`,correct:t.unit,options:shuffled([t.unit,...d]),source:t.title,explanation:factLine(t)});
+  });
+
+  ipPool.forEach(t=>{
+    const d=pickDistractors(ipPool,x=>x.importantPoint,t.importantPoint,3,allIp);
+    if(d.length>=1){
+      push({prompt:`Which is the key thing to remember about "${t.title}"?`,correct:t.importantPoint,options:shuffled([t.importantPoint,...d]),source:t.title,explanation:factLine(t)});
+    }
+    const dRev=pickDistractors(ipPool,x=>x.title,t.title,3,allIp);
+    if(dRev.length>=1){
+      push({prompt:`This key point — "${t.importantPoint}" — is about:`,correct:t.title,options:shuffled([t.title,...dRev]),source:t.title,explanation:factLine(t)});
+    }
+  });
+
+  exPool.forEach(t=>{
+    const ex=t.examples[0];
+    const d=pickDistractors(items.filter(x=>x.title!==t.title&&Array.isArray(x.examples)&&x.examples.length),x=>x.examples[0],ex,3,allEx.map(e=>({examples:[e.ex]})));
+    if(d.length>=1){
+      push({prompt:`Which of these is a real example of "${t.title}"?`,correct:ex,options:shuffled([ex,...d]),source:t.title,explanation:factLine(t)});
+    }
+  });
+
+  varPool.forEach(t=>{
+    Object.entries(t.variables).forEach(([sym,mean])=>{
+      const otherVarMeanings=allVars.filter(v=>!(v.title===t.title&&v.sym===sym)).map(v=>v.mean);
+      const d=pickDistractors(otherVarMeanings.map(mean=>({mean})),x=>x.mean,mean,3,null);
+      if(d.length>=1){
+        push({prompt:`In the formula for "${t.title}" (${t.formula||''}), what does "${sym}" represent?`,correct:mean,options:shuffled([mean,...d]),source:t.title,explanation:factLine(t)});
+      }
+    });
+  });
+
+  defPool.forEach(t=>{
+    const text=t.definition||t.content||t.description;
+    push({prompt:`True or False: "${text}" — this is about ${t.title}.`,correct:'True',options:['True','False'],source:t.title,explanation:factLine(t)});
+    const others=defPool.filter(x=>x.title!==t.title);
+    if(others.length){
+      const other=shuffled(others)[0];
+      const otherText=other.definition||other.content||other.description;
+      push({prompt:`True or False: "${otherText}" — this is about ${t.title}.`,correct:'False',options:['True','False'],source:t.title,explanation:`Actually, that statement describes "${other.title}", not "${t.title}". ${factLine(t)}`});
+    }
+  });
+
+  // dedupe identical prompts (can happen when a title repeats a template)
+  const seenPrompts=new Set();
+  return bank.filter(q=>{
+    if(seenPrompts.has(q.prompt))return false;
+    seenPrompts.add(q.prompt);
+    return true;
+  });
+}
+
+function padTo(arr,n){
+  if(arr.length===0)return [];
+  const out=[];
+  let i=0;
+  while(out.length<n){out.push(arr[i%arr.length]);i++;}
+  return shuffled(out);
+}
+
+// Builds two genuinely different 15-question sets (Practice vs Assess) from
+// one skill's question pool. If the underlying content is thin, the two
+// sets are built from independent shuffles so their order and mix differ
+// even where some repetition is unavoidable.
+function splitPracticeAssess(pool,n=15){
+  const s1=shuffled(pool);
+  if(s1.length>=2*n)return {practice:s1.slice(0,n),assess:s1.slice(n,2*n)};
+  if(s1.length>=n){
+    const practice=s1.slice(0,n);
+    const remainder=s1.slice(n);
+    const filler=shuffled(practice).slice(0,n-remainder.length);
+    return {practice,assess:shuffled([...remainder,...filler])};
+  }
+  return {practice:padTo(s1,n),assess:padTo(shuffled(pool),n)};
+}
+
+const skillMeta=[
+  {number:'14.1',id:'intro',icon:'🌊',colour:'blue',blurb:'What a wave actually is, how a disturbance propagates, and the difference between mechanical, electromagnetic and matter waves.'},
+  {number:'14.2',id:'types',icon:'↕️',colour:'teal',blurb:'Tell transverse from longitudinal waves, spot compressions and rarefactions, and classify real wave motion.'},
+  {number:'14.3',id:'displacement',icon:'📈',colour:'purple',blurb:'Read and build the progressive wave equation y(x,t) = a sin(kx − ωt + φ) — amplitude, phase, wavelength and frequency.'},
+  {number:'14.4',id:'speed',icon:'⚡',colour:'gold',blurb:'Calculate wave speed on strings and in solids, liquids and gases — including Newton and Laplace on the speed of sound.'},
+  {number:'14.5',id:'superposition',icon:'➕',colour:'red',blurb:'Apply the principle of superposition to predict constructive and destructive interference.'},
+  {number:'14.6',id:'reflection',icon:'🪞',colour:'pink',blurb:'Reflection at rigid and open boundaries, standing waves, nodes, antinodes, harmonics and resonance.'},
+  {number:'14.7',id:'beats',icon:'🎵',colour:'indigo',blurb:'How beats arise from two close frequencies, and how to calculate beat frequency.'},
+];
+
+const skillsData=skillMeta.map(meta=>{
+  const section=chapterData.sections.find(s=>s.number===meta.number);
+  const items=terminologyItems.filter(t=>t.sectionNumber.split('.').slice(0,2).join('.')===meta.number);
+  const pool=buildQuestionPool(items,terminologyItems);
+  const{practice,assess}=splitPracticeAssess(pool,15);
+  return {...meta,title:section?section.title:meta.number,items,pool,practiceBank:practice,assessBank:assess};
+});
+
 const mindMapBranches=[
   {id:'intro',label:'Introduction',ref:'§14.1',colour:'blue',icon:'🌊',points:[
     'A wave is a disturbance that propagates through a medium (or space) without transporting matter as a whole.',
@@ -968,6 +1153,288 @@ function DerivationsFormulas({onBack,onGo}){
   </main></div>
 }
 
+// ---- Skills: Learn ----
+function SkillOverview({skill}){
+  return <div className="term-detail">
+    <p className="term-detail-crumb">{skill.number} · {skill.title}</p>
+    <div className="term-detail-heading"><h2>{skill.title}</h2></div>
+    <p className="term-detail-text">{skill.blurb}</p>
+    <div className="term-box quick-memory">
+      <p className="term-block-label">What You'll Cover</p>
+      <ul className="term-kv-list">{skill.items.map(t=><li key={t.key}>{t.title}</li>)}</ul>
+    </div>
+  </div>
+}
+
+function SkillLearn({skill,onExit}){
+  const topics=useMemo(()=>[{key:'overview',isOverview:true,title:'Overview'},...skill.items],[skill]);
+  const[idx,setIdx]=useState(0);
+  const current=topics[idx];
+  return <div className="connect-page"><Header/><main className="connect-main">
+    <button className="detail-back skill-exit-top" onClick={onExit}>← Back to Skills</button>
+    <div className={`skill-learn-layout ${skill.colour}`}>
+      <aside className="skill-learn-sidebar">
+        <div className="skill-learn-sidebar-head"><span className="skill-learn-sidebar-icon">{skill.icon}</span><h3>{skill.title}</h3></div>
+        <nav>
+          {topics.map((t,i)=>
+            <button key={t.key} className={`skill-learn-nav-item ${i===idx?'active':''}`} onClick={()=>setIdx(i)}>
+              <span className="skill-learn-nav-dot"/>{t.title}
+            </button>)}
+        </nav>
+      </aside>
+      <section className={`skill-learn-card ${skill.colour}`}>
+        <p className="skill-learn-eyebrow">{current.isOverview?'OVERVIEW':`TOPIC ${idx}`}</p>
+        {current.isOverview?<SkillOverview skill={skill}/>:<TermDetail term={current}/>}
+        <div className="skill-learn-footer">
+          <button className="skill-nav-btn" disabled={idx===0} onClick={()=>setIdx(i=>i-1)}>← Previous</button>
+          {idx<topics.length-1
+            ?<button className={`skill-nav-btn primary ${skill.colour}`} onClick={()=>setIdx(i=>i+1)}>Next Topic →</button>
+            :<button className={`skill-nav-btn primary ${skill.colour}`} onClick={onExit}>Got It ✓</button>}
+        </div>
+      </section>
+    </div>
+  </main></div>
+}
+
+// ---- Skills: Practice ----
+function SkillPractice({skill,onExit}){
+  const bank=skill.practiceBank;
+  const[idx,setIdx]=useState(0);
+  const[answers,setAnswers]=useState({});
+  const q=bank[idx];
+  const selected=answers[idx];
+
+  const choose=(opt)=>{ if(selected)return; setAnswers(a=>({...a,[idx]:opt})); };
+
+  if(!q)return <div className="connect-page"><Header/><main className="connect-main">
+    <button className="detail-back skill-exit-top" onClick={onExit}>← Exit Practice</button>
+    <p className="skill-empty">Not enough content in {skill.title} to build practice questions yet.</p>
+  </main></div>;
+
+  return <div className="connect-page"><Header/><main className="connect-main">
+    <div className="skill-practice-wrap">
+      <div className={`skill-practice-card ${skill.colour}`}>
+        <div className="skill-practice-top">
+          <button className="skill-exit-link" onClick={onExit}>← Exit Practice</button>
+          <span className="skill-practice-counter">Practice {idx+1}/{bank.length}</span>
+        </div>
+        <p className="skill-source-tag">{skill.icon} {q.source}</p>
+        <h3 className="skill-question-text">{q.prompt}</h3>
+        <div className="skill-options">
+          {q.options.map(opt=>{
+            let cls='skill-option';
+            if(selected){
+              if(opt===q.correct)cls+=' correct';
+              else if(opt===selected)cls+=' incorrect';
+              else cls+=' muted';
+            }
+            return <button key={opt} className={cls} onClick={()=>choose(opt)} disabled={!!selected}>{opt}</button>;
+          })}
+        </div>
+        {selected&&<div className={`skill-feedback ${selected===q.correct?'correct':'incorrect'}`}>
+          <p>{selected===q.correct?'🎉 Correct!':'❌ Not quite'}</p>
+          <small>{q.explanation}</small>
+        </div>}
+        <div className="skill-practice-footer">
+          <button className="skill-nav-btn" disabled={idx===0} onClick={()=>setIdx(i=>i-1)}>← Previous</button>
+          {idx<bank.length-1
+            ?<button className={`skill-nav-btn primary ${skill.colour}`} disabled={!selected} onClick={()=>setIdx(i=>i+1)}>Next Question →</button>
+            :<button className={`skill-nav-btn primary ${skill.colour}`} disabled={!selected} onClick={onExit}>Finish Practice ✓</button>}
+        </div>
+      </div>
+    </div>
+  </main></div>
+}
+
+// ---- Skills: Assess ----
+function formatClock(totalSeconds){
+  const m=Math.floor(totalSeconds/60), s=totalSeconds%60;
+  return `${m}:${String(s).padStart(2,'0')}`;
+}
+
+function SkillAssess({skill,onExit}){
+  const questions=skill.assessBank;
+  const[phase,setPhase]=useState('test'); // 'test' | 'report'
+  const[idx,setIdx]=useState(0);
+  const[answers,setAnswers]=useState({});
+  const[answeredAt,setAnsweredAt]=useState({});
+  const[marked,setMarked]=useState({});
+  const[seconds,setSeconds]=useState(0);
+  const[showBreakdown,setShowBreakdown]=useState(null);
+
+  useEffect(()=>{
+    if(phase!=='test')return;
+    const t=setInterval(()=>setSeconds(s=>s+1),1000);
+    return ()=>clearInterval(t);
+  },[phase]);
+
+  if(!questions.length)return <div className="connect-page"><Header/><main className="connect-main">
+    <button className="detail-back skill-exit-top" onClick={onExit}>← Back to Skills</button>
+    <p className="skill-empty">Not enough content in {skill.title} to build an assessment yet.</p>
+  </main></div>;
+
+  const q=questions[idx];
+  const selected=answers[idx];
+  // During the test, choosing an option only records the answer — no
+  // correctness or explanation is revealed until Submit Assessment.
+  const choose=(opt)=>{
+    setAnswers(a=>({...a,[idx]:opt}));
+    setAnsweredAt(t=>({...t,[idx]:seconds}));
+  };
+  const toggleMark=()=>setMarked(m=>({...m,[idx]:!m[idx]}));
+
+  const answeredCount=questions.filter((_,i)=>answers[i]!==undefined).length;
+  const score=questions.reduce((n,qq,i)=>n+(answers[i]===qq.correct?1:0),0);
+  const accuracy=Math.round((score/questions.length)*100);
+
+  const submit=()=>setPhase('report');
+
+  if(phase==='report'){
+    const tier=accuracy===100?{emoji:'🏆',title:'Mastered!'}:accuracy>=60?{emoji:'💪',title:'Keep Learning!'}:{emoji:'📘',title:'Needs Practice'};
+    return <div className="connect-page"><Header/><main className="connect-main">
+      <button className="detail-back skill-exit-top" onClick={onExit}>← Back to Skills</button>
+
+      <section className="skill-report-hero">
+        <div className="skill-score-ring" style={{'--pct':`${accuracy}%`}}>
+          <span>{score}<small>/{questions.length}</small></span>
+        </div>
+        <h2>{tier.emoji} {tier.title}</h2>
+        <p>{accuracy===100?'Perfect score — you\'ve mastered this skill!':accuracy>=60?'Review the concepts and try again for 100%.':'Revisit the Learn tab before your next attempt.'}</p>
+        <div className="skill-report-actions">
+          <button className="skill-nav-btn" onClick={onExit}>Back to Skills</button>
+          <button className={`skill-nav-btn primary ${skill.colour}`} onClick={()=>{setAnswers({});setAnsweredAt({});setMarked({});setSeconds(0);setIdx(0);setShowBreakdown(null);setPhase('test');}}>↻ Retake Assessment</button>
+        </div>
+      </section>
+
+      <h2 className="section-heading">📊 Assessment Report</h2>
+      <div className="skill-report-stats">
+        <div><small>TOTAL SCORE</small><strong>{score}<em>/{questions.length}</em></strong></div>
+        <div><small>ACCURACY</small><strong className={accuracy>=60?'good':'bad'}>{accuracy}%</strong></div>
+        <div><small>TIME TAKEN</small><strong>⏱ {formatClock(seconds)}</strong></div>
+      </div>
+
+      <h3 className="skill-breakdown-title">Question Breakdown</h3>
+      <div className="skill-breakdown-list">
+        {questions.map((qq,i)=>{
+          const wasAnswered=answers[i]!==undefined;
+          const correct=wasAnswered&&answers[i]===qq.correct;
+          const status=!wasAnswered?'skipped':correct?'right':'wrong';
+          const statusLabel=status==='skipped'?'⏭ Skipped':status==='right'?'✓ Correct':'✕ Wrong';
+          const open=showBreakdown===i;
+          return <div className={`skill-breakdown-item ${status} ${open?'open':''}`} key={i}>
+            <div className="skill-breakdown-top">
+              <span className={`skill-breakdown-num ${status}`}>{i+1}</span>
+              <div className="skill-breakdown-qtext">
+                <p>{qq.prompt}</p>
+              </div>
+              <div className="skill-breakdown-status">
+                <span className={`skill-breakdown-tag ${status}`}>{statusLabel}</span>
+                <small className="skill-breakdown-time">🕒 {answeredAt[i]!==undefined?answeredAt[i]:0}s</small>
+              </div>
+            </div>
+            <div className="skill-breakdown-options">
+              {qq.options.map(opt=>{
+                let cls='skill-breakdown-opt';
+                if(opt===qq.correct)cls+=' correct';
+                else if(opt===answers[i])cls+=' incorrect';
+                return <span key={opt} className={cls}>{opt}</span>;
+              })}
+            </div>
+            <button className="skill-check-solution" onClick={()=>setShowBreakdown(open?null:i)}>{open?'^ Hide Solution':'v Check Solution'}</button>
+            {open&&<div className="skill-solution-box">
+              <p className="skill-solution-title">💡 Step-by-Step Logic</p>
+              <p>{qq.explanation}</p>
+            </div>}
+          </div>;
+        })}
+      </div>
+
+      <div className="skill-report-bottom">
+        <button className={`skill-nav-btn primary ${skill.colour}`} onClick={onExit}>Back to Skills</button>
+      </div>
+    </main></div>
+  }
+
+  return <div className="connect-page"><Header/><main className="connect-main">
+    <div className={`skill-assess-layout ${skill.colour}`}>
+      <div className="skill-assess-card">
+        <p className="skill-assess-qnum">QUESTION {idx+1} OF {questions.length}</p>
+        <h3 className="skill-question-text">{q.prompt}</h3>
+        <div className="skill-options vertical">
+          {q.options.map(opt=>
+            <button key={opt} className={`skill-option ${selected===opt?'selected':''}`} onClick={()=>choose(opt)}>{opt}</button>)}
+        </div>
+        <div className="skill-assess-footer">
+          <button className="skill-nav-btn" disabled={idx===0} onClick={()=>setIdx(i=>i-1)}>← Previous</button>
+          <button className={`skill-nav-btn mark ${marked[idx]?'active':''}`} onClick={toggleMark}>{marked[idx]?'★ Marked':'☆ Mark for Review'}</button>
+          <button className={`skill-nav-btn primary ${skill.colour}`} disabled={idx===questions.length-1} onClick={()=>setIdx(i=>i+1)}>Next →</button>
+        </div>
+      </div>
+
+      <aside className="skill-assess-side">
+        <div className="skill-assess-timer">⏱ {formatClock(seconds)}</div>
+        <p className="skill-palette-label">Question Palette</p>
+        <div className="skill-palette-grid">
+          {questions.map((_,i)=>{
+            let cls='skill-palette-btn';
+            if(marked[i])cls+=' marked';
+            else if(answers[i]!==undefined)cls+=' answered';
+            if(i===idx)cls+=' current';
+            return <button key={i} className={cls} onClick={()=>setIdx(i)}>{i+1}</button>;
+          })}
+        </div>
+        <div className="skill-palette-legend">
+          <span><i className="answered"/>Answered</span>
+          <span><i className="unanswered"/>Not Answered</span>
+          <span><i className="marked"/>Marked for Review</span>
+        </div>
+        <p className="skill-assess-progress">{answeredCount} of {questions.length} answered</p>
+        <button className="skill-submit-btn" onClick={submit}>Submit Assessment</button>
+      </aside>
+    </div>
+  </main></div>
+}
+
+// ---- Skills: Hub ----
+function SkillsHub({onBack,onGo}){
+  const[sub,setSub]=useState('list');
+  const[activeId,setActiveId]=useState(null);
+  const skill=skillsData.find(s=>s.id===activeId);
+
+  const open=(id,mode)=>{ setActiveId(id); setSub(mode); };
+  const exitToList=()=>setSub('list');
+
+  if(skill&&sub==='learn')return <SkillLearn skill={skill} onExit={exitToList}/>;
+  if(skill&&sub==='practice')return <SkillPractice skill={skill} onExit={exitToList}/>;
+  if(skill&&sub==='assess')return <SkillAssess skill={skill} onExit={exitToList}/>;
+
+  return <div className="connect-page"><Header/><main className="connect-main">
+    <DetailNav active="Skills" onBack={onBack} onGo={onGo}/>
+
+    <section className="intro-hero">
+      <h1><span className="intro-lead">Core</span> Skills</h1>
+      <p>Choose a skill below. Read the lesson, practice to build confidence, and take the assessment to earn your mastery!</p>
+    </section>
+
+    <div className="skills-list">
+      {skillsData.map(s=>
+        <article className={`skill-card ${s.colour}`} key={s.id}>
+          <div className="skill-card-icon">{s.icon}</div>
+          <div className="skill-card-body">
+            <h2>{s.title}</h2>
+            <p>{s.blurb}</p>
+          </div>
+          <div className="skill-card-actions">
+            <button className="skill-btn outline" onClick={()=>open(s.id,'learn')}>📘 Learn</button>
+            <button className="skill-btn outline" onClick={()=>open(s.id,'practice')}>✏️ Practice</button>
+          </div>
+          <button className={`skill-assess-btn ${s.colour}`} onClick={()=>open(s.id,'assess')}>🏆 Assess</button>
+        </article>)}
+    </div>
+
+  </main></div>
+}
+
 function App(){
   const[view,setView]=useState(null);
   const goDashboard=()=>setView(null);
@@ -975,6 +1442,7 @@ function App(){
     if(title==='Connectomics')setView('connectomics');
     else if(title==='Introduction')setView('introduction');
     else if(title==='Terminology')setView('terminology');
+    else if(title==='Skills')setView('skills');
     else if(title==='Mind Map')setView('mindmap');
     else if(title==='Videos')setView('videos');
     else if(title==='Exam Edge')setView('examedge');
@@ -984,6 +1452,7 @@ function App(){
   if(view==='connectomics')return <Connectomics onBack={goDashboard} onGo={goTo}/>;
   if(view==='introduction')return <Introduction onBack={goDashboard} onGo={goTo}/>;
   if(view==='terminology')return <Terminology onBack={goDashboard} onGo={goTo}/>;
+  if(view==='skills')return <SkillsHub onBack={goDashboard} onGo={goTo}/>;
   if(view==='mindmap')return <MindMap onBack={goDashboard} onGo={goTo}/>;
   if(view==='videos')return <Videos onBack={goDashboard} onGo={goTo}/>;
   if(view==='examedge')return <ExamEdge onBack={goDashboard} onGo={goTo}/>;
