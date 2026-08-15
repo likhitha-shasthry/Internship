@@ -756,12 +756,12 @@ function TermVisual({title}){
   </div>;
 }
 
-function TermDetail({term}){
+function TermDetail({term,hideCrumb}){
   const examples=examplesForTerm(term.title);
   const extraFormulas=Object.keys(extraFormulaLabels).filter(k=>term[k]);
   const extraVariables=Object.keys(extraVariableLabels).filter(k=>term[k]);
   return <div className="term-detail">
-    <p className="term-detail-crumb">{term.parentSectionTitle?`${term.parentSectionTitle} · `:''}{term.sectionTitle}</p>
+    {!hideCrumb&&<p className="term-detail-crumb">{term.parentSectionTitle?`${term.parentSectionTitle} · `:''}{term.sectionTitle}</p>}
     <div className="term-detail-heading">
       {term.symbol&&<span className="term-symbol-badge">{term.symbol}</span>}
       <h2>{term.title}</h2>
@@ -869,27 +869,16 @@ function Quiz({onGo}){
   </div>;
 }
 
-function Terminology({onBack,onGo}){
-  const[tab,setTab]=useState('terms');
+function KeyTermsBrowser(){
   const[query,setQuery]=useState('');
   const[selectedKey,setSelectedKey]=useState(terminologyItems[0]?.key);
   const listRef=useRef(null);
-
-  // Switching tabs (Key Terms ↔ Wave Sections) should always land on a
-  // valid, freshly-picked term for that view, instead of silently keeping
-  // whatever was selected in the previous tab — that's what made the
-  // detail card look "stuck" on the same term when switching tabs.
-  const changeTab=(next)=>{
-    setTab(next);
-    setQuery('');
-    if(next!=='quiz'&&terminologyItems[0])setSelectedKey(terminologyItems[0].key);
-  };
 
   useEffect(()=>{
     if(!listRef.current)return;
     const el=listRef.current.querySelector(`[data-key="${CSS.escape(selectedKey||'')}"]`);
     if(el)el.scrollIntoView({block:'nearest'});
-  },[selectedKey,tab]);
+  },[selectedKey]);
 
   const filtered=query.trim()
     ?terminologyItems.filter(t=>t.title.toLowerCase().includes(query.trim().toLowerCase()))
@@ -897,75 +886,136 @@ function Terminology({onBack,onGo}){
 
   const activeInFiltered=filtered.find(t=>t.key===selectedKey);
   const active=activeInFiltered||filtered[0]||terminologyItems.find(t=>t.key===selectedKey);
-  const activeFilteredIndex=activeInFiltered?filtered.indexOf(activeInFiltered):-1;
-
-  let groups=null;
-  if(tab==='sections'){
-    groups=[];
-    filtered.forEach(item=>{
-      const label=item.sectionTitle;
-      let group=groups.find(g=>g.label===label);
-      if(!group){group={label,items:[]};groups.push(group);}
-      group.items.push(item);
-    });
-  }
+  const activeIndex=activeInFiltered?filtered.indexOf(activeInFiltered):-1;
 
   const goRelative=(delta)=>{
-    if(activeFilteredIndex<0||filtered.length===0)return;
-    const next=filtered[(activeFilteredIndex+delta+filtered.length)%filtered.length];
+    if(activeIndex<0||filtered.length===0)return;
+    const next=filtered[(activeIndex+delta+filtered.length)%filtered.length];
     setSelectedKey(next.key);
   };
 
-  const termButton=(item)=>
-    <button key={item.key} data-key={item.key} className={`term-list-item ${item.key===active?.key?'active':''}`}
-      aria-selected={item.key===active?.key} onClick={()=>setSelectedKey(item.key)}>
-      {item.symbol&&<span className="term-list-symbol">{item.symbol}</span>}
-      <span>{item.title}</span>
-    </button>;
+  return <section className="lexicon-layout">
+    <div className="term-list-panel">
+      <div className="term-search">
+        <span>🔍</span>
+        <input type="text" placeholder="Search terms…" value={query}
+          onChange={e=>setQuery(e.target.value)} aria-label="Search terminology"/>
+      </div>
+      <nav className="term-list" ref={listRef} aria-label="Terminology list">
+        {filtered.length===0&&<p className="term-empty">No terms match "{query}".</p>}
+        {filtered.map(item=>
+          <button key={item.key} data-key={item.key} className={`term-list-item ${item.key===active?.key?'active':''}`}
+            aria-selected={item.key===active?.key} onClick={()=>setSelectedKey(item.key)}>
+            {item.symbol&&<span className="term-list-symbol">{item.symbol}</span>}
+            <span>{item.title}</span>
+          </button>)}
+      </nav>
+    </div>
+    <div className="term-detail-card">
+      {active&&<>
+        <TermDetail term={active}/>
+        <div className="term-nav">
+          <button onClick={()=>goRelative(-1)} disabled={filtered.length<2}>← Previous</button>
+          <span>{activeIndex>=0?`${activeIndex+1} of ${filtered.length}`:''}</span>
+          <button onClick={()=>goRelative(1)} disabled={filtered.length<2}>Next →</button>
+        </div>
+      </>}
+    </div>
+  </section>;
+}
+
+// The 7 top-level sections (14.1–14.7), each already carrying its own
+// blurb + topic list via skillsData. This drives a section-by-section
+// walkthrough that's deliberately a different interaction than the flat
+// Key Terms glossary: pick a section, then expand each topic one at a
+// time, with a small progress readout as you go.
+function SectionExplorer(){
+  const[activeNum,setActiveNum]=useState(skillsData[0]?.number);
+  const[openKey,setOpenKey]=useState(null);
+  const[seen,setSeen]=useState({});
+  const section=skillsData.find(s=>s.number===activeNum)||skillsData[0];
+
+  const selectSection=(num)=>{
+    setActiveNum(num);
+    setOpenKey(null);
+  };
+
+  const toggleTopic=(item)=>{
+    const willOpen=openKey!==item.key;
+    setOpenKey(willOpen?item.key:null);
+    if(willOpen)setSeen(prev=>{
+      const set=new Set(prev[activeNum]||[]);
+      set.add(item.key);
+      return {...prev,[activeNum]:set};
+    });
+  };
+
+  const exploredCount=seen[activeNum]?.size||0;
+  const totalCount=section?.items.length||0;
+  const progressPct=totalCount?Math.round((exploredCount/totalCount)*100):0;
+
+  return <div className="sections-explorer">
+    <nav className="sections-rail" aria-label="Chapter sections">
+      {skillsData.map(s=>{
+        const done=seen[s.number]?.size||0;
+        return <button key={s.number} className={`sections-rail-btn ${s.colour} ${activeNum===s.number?'active':''}`} onClick={()=>selectSection(s.number)}>
+          <span className="sections-rail-icon">{s.icon}</span>
+          <span className="sections-rail-body">
+            <b>{s.title}</b>
+            <small>{done}/{s.items.length} explored</small>
+          </span>
+        </button>;
+      })}
+    </nav>
+
+    <div className={`sections-panel ${section?.colour||''}`}>
+      <p className="sections-panel-eyebrow">CHAPTER WALKTHROUGH</p>
+      <div className="sections-panel-heading"><span>{section?.icon}</span><h2>{section?.title}</h2></div>
+      <p className="sections-panel-blurb">{section?.blurb}</p>
+
+      <div className="sections-progress">
+        <div className="sections-progress-track"><div className="sections-progress-fill" style={{width:`${progressPct}%`}}/></div>
+        <span>{exploredCount} of {totalCount} topics explored</span>
+      </div>
+
+      <div className="sections-accordion">
+        {section?.items.map(item=>{
+          const open=openKey===item.key;
+          const done=seen[activeNum]?.has(item.key);
+          return <div key={item.key} className={`sections-accordion-item ${open?'open':''}`}>
+            <button className="sections-accordion-head" onClick={()=>toggleTopic(item)} aria-expanded={open}>
+              {item.symbol&&<span className="term-list-symbol">{item.symbol}</span>}
+              <span className="sections-accordion-title">{item.title}</span>
+              {done&&!open&&<span className="sections-accordion-check">✓</span>}
+              <span className="sections-accordion-chevron">⌄</span>
+            </button>
+            {open&&<div className="sections-accordion-body"><TermDetail term={item} hideCrumb/></div>}
+          </div>;
+        })}
+      </div>
+    </div>
+  </div>;
+}
+
+function Terminology({onBack,onGo}){
+  const[tab,setTab]=useState('terms');
 
   return <div className="connect-page"><Header/><main className="connect-main">
     <DetailNav active="Terminology" onBack={onBack} onGo={onGo}/>
 
     <section className="lexicon-hero">
       <h1>Physics <span>Lexicon</span></h1>
-      <p>{tab==='quiz'?'Test your vocabulary and formula knowledge!':`Explore the foundations of Waves with ${terminologyItems.length} key terms.`}</p>
+      <p>{tab==='quiz'?'Test your vocabulary and formula knowledge!':tab==='sections'?'Walk through the chapter section by section — expand each topic as you go.':`Search and browse all ${terminologyItems.length} key terms in one place.`}</p>
       <div className="nav-pills lexicon-pills">
-        <button className={`nav-pill ${tab==='terms'?'active':''}`} onClick={()=>changeTab('terms')}>📖 Key Terms</button>
-        <button className={`nav-pill ${tab==='sections'?'active':''}`} onClick={()=>changeTab('sections')}>🌊 Wave Sections</button>
-        <button className={`nav-pill ${tab==='quiz'?'active':''}`} onClick={()=>changeTab('quiz')}>✏️ Quiz Time</button>
+        <button className={`nav-pill ${tab==='terms'?'active':''}`} onClick={()=>setTab('terms')}>📖 Key Terms</button>
+        <button className={`nav-pill ${tab==='sections'?'active':''}`} onClick={()=>setTab('sections')}>🌊 Wave Sections</button>
+        <button className={`nav-pill ${tab==='quiz'?'active':''}`} onClick={()=>setTab('quiz')}>✏️ Quiz Time</button>
       </div>
     </section>
 
-    {tab==='quiz'
-      ?<section className="quiz-wrap"><Quiz onGo={onGo}/></section>
-      :<section className="lexicon-layout">
-        <div className="term-list-panel">
-          <div className="term-search">
-            <span>🔍</span>
-            <input type="text" placeholder="Search terms…" value={query}
-              onChange={e=>setQuery(e.target.value)} aria-label="Search terminology"/>
-          </div>
-          <nav className="term-list" ref={listRef} aria-label="Terminology list">
-            {filtered.length===0&&<p className="term-empty">No terms match "{query}".</p>}
-            {tab==='sections'
-              ?groups.map(g=><div key={g.label} className="term-group">
-                  <p className="term-group-label">{g.label}</p>
-                  {g.items.map(item=>termButton(item))}
-                </div>)
-              :filtered.map(item=>termButton(item))}
-          </nav>
-        </div>
-        <div className="term-detail-card">
-          {active&&<>
-            <TermDetail term={active}/>
-            <div className="term-nav">
-              <button onClick={()=>goRelative(-1)} disabled={filtered.length<2}>← Previous</button>
-              <span>{activeFilteredIndex>=0?`${activeFilteredIndex+1} of ${filtered.length}`:''}</span>
-              <button onClick={()=>goRelative(1)} disabled={filtered.length<2}>Next →</button>
-            </div>
-          </>}
-        </div>
-      </section>}
+    {tab==='quiz' && <section className="quiz-wrap"><Quiz onGo={onGo}/></section>}
+    {tab==='terms' && <KeyTermsBrowser/>}
+    {tab==='sections' && <SectionExplorer/>}
 
     {tab!=='quiz'&&<div className="mastered-wrap">
       <button className="mastered-btn" onClick={()=>onGo('Skills')}>I've mastered the language! 🎉</button>
