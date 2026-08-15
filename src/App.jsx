@@ -539,7 +539,7 @@ function DetailNav({active,onBack,onGo}){
     <div className="nav-pills">
       {modules.map(([,title,icon,colour])=>
         <button key={title} className={`nav-pill ${colour} ${active===title?'active':''}`} onClick={()=>onGo(title)}>
-          <span>{icon}</span>{title}
+          <span>{icon}</span>{title==='Introduction'?'Intro':title}
         </button>)}
     </div>
   </div>
@@ -548,9 +548,18 @@ function DetailNav({active,onBack,onGo}){
 function Connectomics({onBack,onGo}){
   return <div className="connect-page"><Header/><main className="connect-main">
     <DetailNav active="Connectomics" onBack={onBack} onGo={onGo}/>
-    <div className="connect-label">WAVES · CONNECTOMICS</div>
-    <h1>See how <span>waves connect</span></h1>
-    <p className="connect-intro">A wave is a travelling disturbance that carries energy, not matter. This map links what you already know to the ideas — and the everyday devices — you're about to master.</p>
+
+    <section className="connect-hero">
+      <div className="connect-label">WAVES · CONNECTOMICS</div>
+      <h1>See how <span>waves connect</span></h1>
+      <p className="connect-intro">A wave is a travelling disturbance that carries energy, not matter. This map links what you already know to the ideas — and the everyday devices — you're about to master.</p>
+    </section>
+
+    <div className="checkpoint-heading">
+      <div className="checkpoint-heading-icon">📋</div>
+      <h2>Connectomic Checkpoint</h2>
+      <p>Every concept in this chapter rests on what you already know. Verify these before proceeding.</p>
+    </div>
 
     <section className="checkpoint-panel">
       <h2>✅ You must be comfortable with:</h2>
@@ -564,17 +573,17 @@ function Connectomics({onBack,onGo}){
       <span>This chapter connects directly to Oscillations (Ch.13), Elasticity (Ch.8) and Wave Optics (Ch.16). A wave is motion borrowed from a spring and handed from particle to particle — every later chapter on sound, light, or radiation either applies or extends it.</span>
     </div>
 
-    <h2 className="section-heading">The Web of Physics</h2>
+    <h2 className="section-heading center">The Web of Physics</h2>
     <section className="web-grid">
       {webLinks.map(([icon,tag,title,chap,cls,text])=>
-        <article className={`web-card ${cls}`} key={title}>
+        <article className={`web-card tag-${tag.toLowerCase()}`} key={title}>
           <div className="web-card-top"><span className="web-icon">{icon}</span><span className="web-tag">{tag}</span></div>
           <h3>Waves <small>(Ch.14)</small> <b>→</b> {title} <small>({chap})</small></h3>
           <p>{text}</p>
         </article>)}
     </section>
 
-    <h2 className="section-heading">Real World Systems</h2>
+    <h2 className="section-heading center">Real World Systems</h2>
     <section className="realworld-grid">
       {realWorld.map(([impact,title,text])=>
         <article className="realworld-card" key={title}>
@@ -585,7 +594,7 @@ function Connectomics({onBack,onGo}){
     </section>
 
     <section className="infinite-panel">
-      <div className="infinite-icon">⛓️</div>
+      <div className="infinite-icon">🔗</div>
       <h2>Infinite Connections</h2>
       <p>Waves aren't just ripples on a string — they're the language of sound, music, medical imaging, and eventually light itself. Every note you hear and every scan a doctor reads relies on the physics in this chapter.</p>
       <button onClick={()=>onGo('Introduction')}>Next Topic: Introduction <b>→</b></button>
@@ -615,7 +624,7 @@ function Introduction({onBack,onGo}){
       <p>Get started with the 6 big questions and check your prerequisites.</p>
     </section>
 
-    <h2 className="section-heading center">Prerequisites</h2>
+    <h2 className="section-heading center accent">Prerequisites</h2>
     <section className="prereq-grid">
       {prereqs.map(([title,icon,text])=>
         <article className="prereq-card" key={title}>
@@ -625,13 +634,13 @@ function Introduction({onBack,onGo}){
         </article>)}
     </section>
 
-    <h2 className="section-heading center">6 Big Questions</h2>
+    <h2 className="section-heading center accent">6 Big Questions</h2>
     <section className="question-grid">
       {bigQuestions.map(q=><QuestionCard key={q[2]} colour={q[0]} icon={q[1]} word={q[2]} subtitle={q[3]} detail={q[4]}/>)}
     </section>
 
     <section className="ready-panel">
-      <div><p>READY TO LEARN THE LANGUAGE?</p><h2>Next up: amplitude, wavelength, frequency, and phase.</h2></div>
+      <div><h2>Ready to learn the language?</h2><p>Next up: amplitude, wavelength, frequency, and phase.</p></div>
       <button onClick={()=>onGo('Terminology')}>Terminology <b>→</b></button>
     </section>
 
