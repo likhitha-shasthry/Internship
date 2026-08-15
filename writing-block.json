@@ -18,27 +18,27 @@
           "topics": [
             {
               "title": "What is a Wave?",
-              "content": "A wave is a moving disturbance that propagates from one point to another without the actual physical transfer or flow of matter as a whole."
+              "content": "A wave is a disturbance that travels from one place to another. The wave moves, but the matter it travels through does not move along with it."
             },
             {
               "title": "Energy Transfer",
-              "content": "Waves transport energy and propagate information from one point to another."
+              "content": "A wave carries energy and information from one point to another — it does not carry matter with it."
             },
             {
               "title": "Mechanical Waves",
-              "content": "Mechanical waves require a material medium for propagation. Examples include waves on a string, water waves, sound waves and seismic waves."
+              "content": "Mechanical waves need a material medium (like a string, water, or air) to travel through. Waves on a string, water waves, sound waves and earthquake waves are all mechanical waves."
             },
             {
               "title": "Electromagnetic Waves",
-              "content": "Electromagnetic waves do not necessarily require a medium and can propagate through vacuum. Examples include light, radio waves and X-rays."
+              "content": "Electromagnetic waves do not need a medium — they can travel even through empty space (vacuum). Light, radio waves and X-rays are examples."
             },
             {
               "title": "Matter Waves",
-              "content": "Matter waves are associated with particles such as electrons, protons, neutrons, atoms and molecules."
+              "content": "Matter waves are linked to tiny particles like electrons, protons, neutrons, atoms and molecules."
             },
             {
               "title": "Wave Propagation in a Medium",
-              "content": "A disturbance propagates through coupled oscillating elements of a medium. Elastic forces transmit the disturbance from one element to another."
+              "content": "A disturbance moves through a medium because the particles are connected — when one particle moves, it pulls or pushes its neighbour, and so the disturbance passes along the whole chain."
             }
           ]
         },
@@ -50,7 +50,7 @@
           "topics": [
             {
               "title": "Transverse Waves",
-              "definition": "The constituents of the medium oscillate perpendicular to the direction of wave propagation.",
+              "definition": "In a transverse wave, the particles of the medium move up and down (or side to side), at right angles to the direction the wave travels.",
               "examples": [
                 "Wave on a stretched string"
               ],
@@ -58,7 +58,7 @@
             },
             {
               "title": "Longitudinal Waves",
-              "definition": "The constituents of the medium oscillate along the direction of wave propagation.",
+              "definition": "In a longitudinal wave, the particles of the medium move back and forth along the same direction the wave travels.",
               "examples": [
                 "Sound waves in air"
               ],
@@ -66,19 +66,19 @@
             },
             {
               "title": "Compressions and Rarefactions",
-              "content": "Longitudinal sound waves propagate through successive compressions and rarefactions of the medium."
+              "content": "As a longitudinal sound wave travels, it creates regions where particles are squeezed close together (compressions) and regions where they spread apart (rarefactions)."
             },
             {
               "title": "Progressive Waves",
-              "definition": "A travelling or progressive wave moves from one part of the medium to another while the medium as a whole does not move with the wave."
+              "definition": "A progressive (or travelling) wave moves steadily from one part of the medium to another, even though the medium as a whole stays in place."
             },
             {
               "title": "Propagation in Different Media",
-              "content": "Transverse waves require a medium capable of sustaining shear stress, whereas longitudinal waves can propagate in elastic solids, liquids and gases."
+              "content": "Transverse waves need a medium that can resist being twisted or sheared, so they mainly travel through solids. Longitudinal waves only need to be compressed, so they can travel through solids, liquids and gases."
             },
             {
               "title": "Water Waves",
-              "content": "Water waves involve complicated particle motion and can contain both transverse and longitudinal components."
+              "content": "Water waves are a mix of both types — the water particles move in loops, partly up-and-down and partly back-and-forth."
             }
           ],
           "example": {
@@ -113,16 +113,17 @@
             {
               "title": "Wave Function",
               "formula": "y(x,t) = a sin(kx - ωt + φ)",
-              "description": "A sinusoidal travelling wave propagating in the positive x-direction."
+              "description": "This formula describes a smooth, repeating (sinusoidal) wave moving in the positive x-direction."
             },
             {
               "title": "Wave Travelling in Negative Direction",
-              "formula": "y(x,t) = a sin(kx + ωt + φ)"
+              "formula": "y(x,t) = a sin(kx + ωt + φ)",
+              "content": "This is the same kind of wave, just travelling in the opposite (negative x) direction."
             },
             {
               "title": "Amplitude",
               "symbol": "a",
-              "definition": "Maximum displacement of the constituents of the medium from their equilibrium position.",
+              "definition": "Amplitude is how far the particles of the medium move from their resting (equilibrium) position at most.",
               "examples": [
                 "Doubling the amplitude of a wave increases the energy it carries four-fold, since energy is proportional to a².",
                 "On a y(x,t) = a sin(kx − ωt) graph, a is the height of the curve above the axis."
@@ -132,7 +133,7 @@
             {
               "title": "Phase",
               "formula": "kx - ωt + φ",
-              "definition": "The phase determines the displacement of the wave at a particular position and instant.",
+              "definition": "The phase tells you exactly where a particle is in its up-and-down cycle at a given place and time.",
               "examples": [
                 "Two particles exactly one wavelength apart always share the same phase — they move in perfect step."
               ],
@@ -141,14 +142,14 @@
             {
               "title": "Initial Phase",
               "symbol": "φ",
-              "definition": "The phase at x = 0 and t = 0.",
+              "definition": "The initial phase is the phase value at the starting point, x = 0 and t = 0.",
               "importantPoint": "φ shifts the wave sideways along x (or in time) without changing its shape, amplitude, or wavelength."
             },
             {
               "title": "Wavelength",
               "symbol": "λ",
               "formula": "λ = 2π/k",
-              "definition": "The minimum distance between two points having the same phase.",
+              "definition": "Wavelength is the shortest distance between two points on a wave that are in the exact same stage of their motion (for example, crest to crest).",
               "examples": [
                 "The distance from one crest to the next crest, or from one compression to the next compression.",
                 "λ = 2π/k links the spatial period directly to the angular wave number."
@@ -163,7 +164,8 @@
               "examples": [
                 "A wave with wavelength 2 m has angular wave number k = 2π/2 = π rad/m."
               ],
-              "importantPoint": "k = 2π/λ is the spatial analogue of ω — radians per metre instead of radians per second."
+              "importantPoint": "k = 2π/λ is the spatial analogue of ω — radians per metre instead of radians per second.",
+              "content": "It tells you how many radians of the wave shape fit into one metre."
             },
             {
               "title": "Time Period",
@@ -173,7 +175,8 @@
                 "The time taken for any one particle in the medium to complete one full oscillation.",
                 "Halving the angular frequency ω doubles the time period, since T = 2π/ω."
               ],
-              "importantPoint": "Time period is a temporal period — the wave's spatial twin is the wavelength."
+              "importantPoint": "Time period is a temporal period — the wave's spatial twin is the wavelength.",
+              "content": "It is measured in seconds."
             },
             {
               "title": "Angular Frequency",
@@ -183,7 +186,8 @@
               "examples": [
                 "A wave completing 5 oscillations per second (ν = 5 Hz) has ω = 2π(5) ≈ 31.4 rad/s."
               ],
-              "importantPoint": "ω = 2πν — angular frequency is frequency measured in radians per second instead of cycles per second."
+              "importantPoint": "ω = 2πν — angular frequency is frequency measured in radians per second instead of cycles per second.",
+              "content": "It tells you how fast the wave oscillates, in radians per second."
             },
             {
               "title": "Frequency",
@@ -194,11 +198,13 @@
                 "A tuning fork vibrating at 440 Hz completes 440 oscillations every second.",
                 "A shorter time period always means a higher frequency, since ν = 1/T."
               ],
-              "importantPoint": "Frequency and time period are reciprocals of each other: ν = 1/T."
+              "importantPoint": "Frequency and time period are reciprocals of each other: ν = 1/T.",
+              "content": "It is measured in hertz (Hz) — one hertz means one oscillation per second."
             },
             {
               "title": "Longitudinal Wave Displacement",
-              "formula": "s(x,t) = a sin(kx - ωt + φ)"
+              "formula": "s(x,t) = a sin(kx - ωt + φ)",
+              "content": "This gives the displacement of a particle in a longitudinal wave, at any position and time."
             }
           ],
           "example": {
@@ -236,7 +242,8 @@
                 "Sound travels through air at roughly 343 m/s at room temperature.",
                 "v = ω/k gives the speed at which a fixed phase point, such as a crest, moves."
               ],
-              "importantPoint": "Wave speed is fixed by the medium's properties — it does not depend on the wave's amplitude or frequency."
+              "importantPoint": "Wave speed is fixed by the medium's properties — it does not depend on the wave's amplitude or frequency.",
+              "content": "It is how fast the wave pattern moves through the medium, in metres per second."
             },
             {
               "title": "Fundamental Wave Relation",
@@ -244,15 +251,16 @@
               "examples": [
                 "If λ = 0.5 m and ν = 660 Hz, then v = λν = 330 m/s, close to the speed of sound in air."
               ],
-              "importantPoint": "v = λν connects every core wave property in one line: speed, wavelength, and frequency."
+              "importantPoint": "v = λν connects every core wave property in one line: speed, wavelength, and frequency.",
+              "content": "This links a wave's speed, wavelength and frequency in one simple equation."
             },
             {
               "title": "Physical Meaning",
-              "content": "During one complete oscillation of a constituent of the medium, the wave pattern travels a distance equal to one wavelength."
+              "content": "In the time it takes a particle to complete one full oscillation, the wave itself moves forward by exactly one wavelength."
             },
             {
               "title": "Dependence of Wave Speed",
-              "content": "The speed of a mechanical wave depends on the inertial and elastic properties of the medium."
+              "content": "How fast a mechanical wave travels depends only on the medium's mass (inertia) and stiffness (elasticity) — not on the wave's amplitude or frequency."
             }
           ],
           "subsections": [
@@ -264,7 +272,8 @@
                 "T": "Tension in the string",
                 "μ": "Linear mass density"
               },
-              "importantPoint": "The speed depends on the properties of the string and does not depend on the wavelength or frequency of the wave itself."
+              "importantPoint": "The speed depends on the properties of the string and does not depend on the wavelength or frequency of the wave itself.",
+              "content": "This gives the speed of a wave travelling along a stretched string."
             },
             {
               "id": "14-4-2",
@@ -280,7 +289,8 @@
                 "ρ": "Mass density"
               },
               "gasFormulaNewton": "v = √(P/ρ)",
-              "gasFormulaLaplace": "v = √(γP/ρ)"
+              "gasFormulaLaplace": "v = √(γP/ρ)",
+              "content": "This gives the speed of a longitudinal wave in a fluid."
             }
           ],
           "examples": [
@@ -315,7 +325,7 @@
           "topics": [
             {
               "title": "Superposition Principle",
-              "definition": "When two or more waves overlap, the resultant displacement is the algebraic sum of the individual displacements.",
+              "definition": "When two or more waves meet at a point, the total displacement there is just the sum of what each wave would cause on its own.",
               "formula": "y(x,t) = y1(x,t) + y2(x,t)",
               "examples": [
                 "Two ripples crossing on a pond simply pass through each other, each carrying on unaffected afterward."
@@ -324,11 +334,12 @@
             },
             {
               "title": "Multiple Waves",
-              "formula": "y = Σ fi(x - vt)"
+              "formula": "y = Σ fi(x - vt)",
+              "content": "When several waves overlap at once, you just add up all their individual displacements."
             },
             {
               "title": "Interference",
-              "content": "The principle of superposition is fundamental to the phenomenon of interference."
+              "content": "Interference is what happens when two or more waves overlap and add together — it follows directly from the superposition principle."
             },
             {
               "title": "Constructive Interference",
@@ -337,7 +348,8 @@
               "examples": [
                 "Two loudspeakers in phase produce a louder sound where their waves overlap and reinforce."
               ],
-              "importantPoint": "Constructive interference occurs when the path or phase difference is a whole number of wavelengths (0, λ, 2λ, …)."
+              "importantPoint": "Constructive interference occurs when the path or phase difference is a whole number of wavelengths (0, λ, 2λ, …).",
+              "content": "The two waves line up crest-to-crest, so they add up to make a bigger wave."
             },
             {
               "title": "Destructive Interference",
@@ -346,12 +358,14 @@
               "examples": [
                 "Noise-cancelling headphones generate a wave out of phase with unwanted sound so the two cancel."
               ],
-              "importantPoint": "Destructive interference occurs when the path or phase difference is an odd multiple of half a wavelength (λ/2, 3λ/2, …)."
+              "importantPoint": "Destructive interference occurs when the path or phase difference is an odd multiple of half a wavelength (λ/2, 3λ/2, …).",
+              "content": "The two waves line up crest-to-trough, so they cancel each other out."
             },
             {
               "title": "Resultant Amplitude",
               "formula": "A(φ) = 2a cos(φ/2)",
-              "importantPoint": "A(φ) = 2a cos(φ/2) is maximum (2a) when φ = 0, and zero when φ = π."
+              "importantPoint": "A(φ) = 2a cos(φ/2) is maximum (2a) when φ = 0, and zero when φ = π.",
+              "content": "This gives the amplitude of the combined wave for any phase difference between the two waves."
             }
           ]
         },
@@ -363,7 +377,7 @@
           "topics": [
             {
               "title": "Reflection at a Rigid Boundary",
-              "content": "A travelling wave or pulse suffers a phase change of π on reflection at a rigid boundary.",
+              "content": "When a wave hits a fixed, rigid boundary (like a wall), it bounces back flipped upside down.",
               "examples": [
                 "A pulse sent down a string tied to a wall comes back upside-down."
               ],
@@ -371,7 +385,7 @@
             },
             {
               "title": "Reflection at an Open Boundary",
-              "content": "At a completely free boundary, the reflected pulse has the same phase as the incident pulse, assuming no energy dissipation.",
+              "content": "When a wave hits a free, open boundary, it bounces back the same way up, without flipping.",
               "examples": [
                 "A pulse on a string with a free end comes back the same way up, with no inversion."
               ],
@@ -379,15 +393,17 @@
             },
             {
               "title": "Rigid Boundary",
-              "formula": "yr(x,t) = -a sin(kx - ωt)"
+              "formula": "yr(x,t) = -a sin(kx - ωt)",
+              "content": "This gives the displacement of the reflected wave after it bounces off a rigid (fixed) boundary."
             },
             {
               "title": "Open Boundary",
-              "formula": "yr(x,t) = a sin(kx - ωt)"
+              "formula": "yr(x,t) = a sin(kx - ωt)",
+              "content": "This gives the displacement of the reflected wave after it bounces off a free (open) boundary."
             },
             {
               "title": "Echo",
-              "content": "Echo is an example of reflection by a rigid boundary.",
+              "content": "An echo is simply a sound wave reflecting off a hard, rigid surface and coming back to your ear.",
               "importantPoint": "The human ear needs about 0.1 s between a sound and its reflection to hear them as separate — this sets the minimum distance for an audible echo."
             }
           ],
@@ -400,7 +416,7 @@
                 {
                   "title": "Standing Wave Formation",
                   "formula": "y(x,t) = 2a sin(kx) cos(ωt)",
-                  "description": "Produced by superposition of two waves of equal amplitude and wavelength travelling in opposite directions.",
+                  "description": "A standing wave is formed when two identical waves travel in opposite directions and overlap — the wave pattern appears to stay in place instead of moving forward.",
                   "examples": [
                     "A guitar string plucked between two fixed ends sets up a standing wave with fixed nodes at both ends."
                   ],
@@ -408,7 +424,7 @@
                 },
                 {
                   "title": "Nodes",
-                  "definition": "Points where the amplitude is zero and there is no motion.",
+                  "definition": "Nodes are points on a standing wave that never move — the displacement there is always zero.",
                   "formula": "x = nλ/2",
                   "examples": [
                     "On a string fixed at both ends, the two fixed ends are always nodes."
@@ -417,17 +433,19 @@
                 },
                 {
                   "title": "Antinodes",
-                  "definition": "Points where the amplitude is maximum.",
+                  "definition": "Antinodes are points on a standing wave that move the most — the displacement there is always at its maximum.",
                   "formula": "x = (n + 1/2)λ/2",
                   "importantPoint": "Antinodes are points of maximum displacement, located exactly midway between two consecutive nodes."
                 },
                 {
                   "title": "Distance Between Successive Nodes",
-                  "formula": "λ/2"
+                  "formula": "λ/2",
+                  "content": "Two neighbouring nodes on a standing wave are always half a wavelength apart."
                 },
                 {
                   "title": "Distance Between Successive Antinodes",
-                  "formula": "λ/2"
+                  "formula": "λ/2",
+                  "content": "Two neighbouring antinodes on a standing wave are always half a wavelength apart."
                 },
                 {
                   "title": "String Fixed at Both Ends",
@@ -438,28 +456,29 @@
                   "examples": [
                     "A string of length 0.6 m fixed at both ends can only vibrate at frequencies νₙ = nv/2L, for whole numbers n."
                   ],
-                  "importantPoint": "Only wavelengths that fit a whole number of half-wavelengths into the string's length are allowed: L = nλ/2."
+                  "importantPoint": "Only wavelengths that fit a whole number of half-wavelengths into the string's length are allowed: L = nλ/2.",
+                  "content": "Only certain wavelengths fit neatly onto a string fixed at both ends — this formula shows which ones are allowed."
                 },
                 {
                   "title": "Harmonics",
-                  "content": "n = 1 is the fundamental or first harmonic, n = 2 is the second harmonic, n = 3 is the third harmonic, and so on.",
+                  "content": "The lowest frequency a string can vibrate at is called the fundamental (or first harmonic). The next allowed frequencies are the second harmonic, third harmonic, and so on.",
                   "importantPoint": "The lowest possible frequency is the fundamental (1st harmonic); every allowed frequency above it is a higher harmonic."
                 },
                 {
                   "title": "Air Column Closed at One End",
                   "formula": "λ = 2L/(n + 1/2)",
                   "frequencyFormula": "ν = (n + 1/2)v/(2L)",
-                  "content": "Only odd harmonics occur.",
+                  "content": "In a pipe that is closed at one end, the closed end must be a node, so only the odd-numbered harmonics (1st, 3rd, 5th…) can form.",
                   "importantPoint": "The closed end is always a displacement node, so only odd harmonics (1st, 3rd, 5th, …) can form."
                 },
                 {
                   "title": "Open Pipe",
-                  "content": "For an air column open at both ends, both ends are antinodes and all harmonics can occur.",
+                  "content": "In a pipe that is open at both ends, both ends are antinodes, so every harmonic — odd and even — can form.",
                   "importantPoint": "Both ends are displacement antinodes, so an open pipe supports every harmonic — odd and even."
                 },
                 {
                   "title": "Resonance",
-                  "content": "A system shows resonance when the external frequency is close to one of its natural frequencies.",
+                  "content": "Resonance happens when something is pushed at a frequency very close to its own natural frequency, causing it to vibrate with a much larger amplitude.",
                   "examples": [
                     "Pushing a swing at exactly its natural frequency builds a large amplitude with very little effort."
                   ],
@@ -487,7 +506,7 @@
           "topics": [
             {
               "title": "Formation of Beats",
-              "definition": "Beats arise when two waves having slightly different frequencies and comparable amplitudes are superposed.",
+              "definition": "Beats happen when two sound waves of slightly different frequency, but similar loudness, overlap.",
               "importantPoint": "Beats arise from superposing two waves of slightly different frequency — the resultant amplitude itself rises and falls periodically."
             },
             {
@@ -496,11 +515,12 @@
               "examples": [
                 "A tuning fork at 256 Hz and one at 260 Hz sounded together produce 4 beats per second."
               ],
-              "importantPoint": "Beat frequency is simply the difference of the two frequencies: νbeat = |ν1 − ν2| — musicians use this to tune instruments by listening for the beats to slow and vanish."
+              "importantPoint": "Beat frequency is simply the difference of the two frequencies: νbeat = |ν1 − ν2| — musicians use this to tune instruments by listening for the beats to slow and vanish.",
+              "content": "It is measured in hertz (Hz) — the number of beats you hear each second."
             },
             {
               "title": "Nature of Beats",
-              "content": "The sound intensity periodically increases and decreases, producing audible waxing and waning.",
+              "content": "During beats, the loudness of the sound keeps rising and falling in a regular pattern, so you hear it get louder and softer over and over.",
               "importantPoint": "The beat pattern repeats with a period of 1/|ν1 − ν2| — frequencies close together produce slow beats you can count by ear."
             }
           ],
