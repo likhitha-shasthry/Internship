@@ -761,7 +761,7 @@ function TermDetail({term}){
   const extraFormulas=Object.keys(extraFormulaLabels).filter(k=>term[k]);
   const extraVariables=Object.keys(extraVariableLabels).filter(k=>term[k]);
   return <div className="term-detail">
-    <p className="term-detail-crumb">{term.sectionNumber} · {term.parentSectionTitle?`${term.parentSectionTitle} · `:''}{term.sectionTitle}</p>
+    <p className="term-detail-crumb">{term.parentSectionTitle?`${term.parentSectionTitle} · `:''}{term.sectionTitle}</p>
     <div className="term-detail-heading">
       {term.symbol&&<span className="term-symbol-badge">{term.symbol}</span>}
       <h2>{term.title}</h2>
@@ -875,6 +875,16 @@ function Terminology({onBack,onGo}){
   const[selectedKey,setSelectedKey]=useState(terminologyItems[0]?.key);
   const listRef=useRef(null);
 
+  // Switching tabs (Key Terms ↔ Wave Sections) should always land on a
+  // valid, freshly-picked term for that view, instead of silently keeping
+  // whatever was selected in the previous tab — that's what made the
+  // detail card look "stuck" on the same term when switching tabs.
+  const changeTab=(next)=>{
+    setTab(next);
+    setQuery('');
+    if(next!=='quiz'&&terminologyItems[0])setSelectedKey(terminologyItems[0].key);
+  };
+
   useEffect(()=>{
     if(!listRef.current)return;
     const el=listRef.current.querySelector(`[data-key="${CSS.escape(selectedKey||'')}"]`);
@@ -893,7 +903,7 @@ function Terminology({onBack,onGo}){
   if(tab==='sections'){
     groups=[];
     filtered.forEach(item=>{
-      const label=`${item.sectionNumber} ${item.sectionTitle}`;
+      const label=item.sectionTitle;
       let group=groups.find(g=>g.label===label);
       if(!group){group={label,items:[]};groups.push(group);}
       group.items.push(item);
@@ -920,9 +930,9 @@ function Terminology({onBack,onGo}){
       <h1>Physics <span>Lexicon</span></h1>
       <p>{tab==='quiz'?'Test your vocabulary and formula knowledge!':`Explore the foundations of Waves with ${terminologyItems.length} key terms.`}</p>
       <div className="nav-pills lexicon-pills">
-        <button className={`nav-pill ${tab==='terms'?'active':''}`} onClick={()=>setTab('terms')}>📖 Key Terms</button>
-        <button className={`nav-pill ${tab==='sections'?'active':''}`} onClick={()=>setTab('sections')}>🌊 Wave Sections</button>
-        <button className={`nav-pill ${tab==='quiz'?'active':''}`} onClick={()=>setTab('quiz')}>✏️ Quiz Time</button>
+        <button className={`nav-pill ${tab==='terms'?'active':''}`} onClick={()=>changeTab('terms')}>📖 Key Terms</button>
+        <button className={`nav-pill ${tab==='sections'?'active':''}`} onClick={()=>changeTab('sections')}>🌊 Wave Sections</button>
+        <button className={`nav-pill ${tab==='quiz'?'active':''}`} onClick={()=>changeTab('quiz')}>✏️ Quiz Time</button>
       </div>
     </section>
 
@@ -1156,7 +1166,7 @@ function DerivationsFormulas({onBack,onGo}){
 // ---- Skills: Learn ----
 function SkillOverview({skill}){
   return <div className="term-detail">
-    <p className="term-detail-crumb">{skill.number} · {skill.title}</p>
+    <p className="term-detail-crumb">{skill.title}</p>
     <div className="term-detail-heading"><h2>{skill.title}</h2></div>
     <p className="term-detail-text">{skill.blurb}</p>
     <div className="term-box quick-memory">
