@@ -130,6 +130,66 @@ function examplesForTerm(title){
   return chapterExamples.filter(ex=>(exampleTopicMap[ex.title]||[]).includes(title));
 }
 
+// ---- Key Terms (curated glossary) ----
+// The Key Terms tab is a short, scannable glossary — not a dump of every
+// topic in the chapter. Only genuinely "vocabulary" entries are included
+// here; the deeper how/why explanations live in Core Concepts instead.
+// A few JSON titles are phrased as mini-questions ("What is a Wave?") —
+// keyTermLabels gives them a clean glossary-style name for display only,
+// the underlying lookup key (title) is untouched.
+const keyTermLabels={
+  'What is a Wave?':'Wave',
+  'Mechanical Waves':'Mechanical Wave',
+  'Electromagnetic Waves':'Electromagnetic Wave',
+  'Transverse Waves':'Transverse Wave',
+  'Longitudinal Waves':'Longitudinal Wave',
+  'Progressive Waves':'Progressive Wave',
+  'Superposition Principle':'Superposition',
+};
+const keyTermOrder=[
+  'What is a Wave?','Mechanical Waves','Electromagnetic Waves',
+  'Transverse Waves','Longitudinal Waves','Progressive Waves',
+  'Amplitude','Wavelength','Angular Wave Number','Time Period','Angular Frequency','Frequency',
+  'Wave Speed','Superposition Principle','Interference','Constructive Interference','Destructive Interference',
+  'Nodes','Antinodes','Beat Frequency','Resonance','Echo',
+];
+const keyTermTitleSet=new Set(keyTermOrder);
+const isKeyTerm=(title)=>keyTermTitleSet.has(title);
+
+// Deliberately NOT copy-pasted from the JSON's definition/content — this is
+// a separate, plain-English "glossary voice" so Key Terms and Core Concepts
+// never read like the same sentence twice. Core Concepts keeps the fuller,
+// more technical original text; Key Terms stays quick and conversational.
+const glossaryBlurb={
+  'What is a Wave?':'A travelling disturbance — it carries energy from place to place, but never drags the matter itself along with it.',
+  'Mechanical Waves':"Any wave that needs something physical to push through — air, water, a stretched string.",
+  'Electromagnetic Waves':"A wave that needs nothing to travel through at all — it crosses empty space just fine.",
+  'Transverse Waves':'Particles bob sideways while the wave itself pushes straight ahead — motion and travel direction are at right angles.',
+  'Longitudinal Waves':'Particles shuffle back and forth in the very same direction the wave is heading — like a slinky pushed end-on.',
+  'Progressive Waves':'A wave pattern that keeps advancing through the medium, even though no single particle actually travels with it.',
+  'Amplitude':"The biggest swing a particle makes away from its resting spot — how 'big' the wave really is.",
+  'Wavelength':'The length of one full repeat of the wave pattern — crest to crest, or trough to trough.',
+  'Angular Wave Number':'How tightly packed the wave is in space — radians of wave-shape squeezed into every metre.',
+  'Time Period':'How long a single particle takes to complete one full up-and-down cycle.',
+  'Angular Frequency':'How fast a particle spins through its cycle — measured in radians instead of plain seconds.',
+  'Frequency':'How many complete cycles happen every second — more cycles means higher pitch or more energy.',
+  'Wave Speed':'How quickly the disturbance itself races through the medium — not how fast any one particle moves.',
+  'Superposition Principle':"Waves don't fight for space — wherever they overlap, their effects simply add together.",
+  'Interference':'The pattern left behind when two waves cross paths and blend — sometimes bigger, sometimes smaller.',
+  'Constructive Interference':'Crest meets crest — the waves team up and the result gets louder or taller.',
+  'Destructive Interference':'Crest meets trough — the waves cancel out, sometimes down to total silence.',
+  'Nodes':'The "frozen" spots on a standing wave — they never move, no matter how big the wave gets.',
+  'Antinodes':'The spots that swing hardest on a standing wave — maximum motion, right between two nodes.',
+  'Beat Frequency':'How many times per second the loudness throbs when two close-pitched notes play together.',
+  'Resonance':'Push something at exactly its own natural rhythm, and even a gentle nudge builds a huge swing.',
+  'Echo':"Your own sound, bounced back at you off a hard surface — a wave's version of a mirror.",
+};
+
+const keyTerms=keyTermOrder
+  .map(title=>terminologyItems.find(t=>t.title===title))
+  .filter(Boolean)
+  .map(t=>({...t,label:keyTermLabels[t.title]||t.title,blurb:glossaryBlurb[t.title]||t.definition||t.content||t.description}));
+
 // ---- Quiz question bank, generated entirely from terminologyItems ----
 // Every prompt and every option (correct + distractors) is a real symbol,
 // formula, title, or definition already present in writing-block.json —
@@ -531,6 +591,34 @@ const formulaGroups=[
   ]},
 ];
 
+const revisionCards=[
+  ['📏','Basic Quantities',[
+    'v = f λ — wave speed equals frequency times wavelength',
+    'T = 1/f and ω = 2π f — period and angular frequency',
+    'k = 2π/λ — the wave (angular) number',
+  ]],
+  ['⚡','Wave Speed',[
+    'v = √(T/μ) — transverse wave on a stretched string',
+    'v = √(B/ρ) — general speed in a medium of bulk modulus B',
+    'v = √(γP/ρ) — speed of sound in a gas (Laplace\u2019s correction)',
+  ]],
+  ['➕','Superposition & Beats',[
+    'Resultant displacement is the sum of the individual waves: y = y₁ + y₂',
+    'Beat frequency: Δf = |f₁ − f₂|',
+    'Constructive: crest meets crest. Destructive: crest meets trough.',
+  ]],
+  ['🎸','Standing Waves & Harmonics',[
+    'String fixed at both ends: fₙ = n v / 2L (all harmonics)',
+    'Pipe closed at one end: fₙ = (2n − 1) v / 4L (odd harmonics only)',
+    'Nodes never move; antinodes swing hardest.',
+  ]],
+  ['🪞','Reflection & Boundaries',[
+    'Rigid boundary: wave reflects inverted — a phase change of π',
+    'Open/free boundary: wave reflects with no phase change',
+    'An echo is just a reflected sound wave off a hard surface',
+  ]],
+];
+
 function Header(){return <header className="topbar"><a className="brand" href="#top"><span className="brand-mark">◔</span><b>skill<span>100</span>.ai</b></a><nav>{['Home','Skill Discovery','IDY 2026','WYSD 2026','WYSD Maths','NEET','Rapid Math'].map(x=><a key={x} href="#modules">{x}</a>)}</nav><button className="logout">Logout</button></header>}
 
 function DetailNav({active,onBack,onGo}){
@@ -765,20 +853,61 @@ function TermVisual({title}){
   </div>;
 }
 
-function TermDetail({term,hideCrumb}){
+function TermDetail({term,hideCrumb,variant='full'}){
   const examples=examplesForTerm(term.title);
   const extraFormulas=Object.keys(extraFormulaLabels).filter(k=>term[k]);
   const extraVariables=Object.keys(extraVariableLabels).filter(k=>term[k]);
+  const baseText=term.definition||term.content||term.description;
+  const displayTitle=term.label||term.title;
+
+  // Key Terms (brief): the glossary card — a short, plain-English blurb
+  // (never the raw textbook sentence), a couple of real-world examples,
+  // and a memory hook. Nothing deeper — that's what Core Concepts is for.
+  if(variant==='brief'){
+    return <div className="term-detail term-detail-brief">
+      <div className="term-detail-heading">
+        {term.symbol&&<span className="term-symbol-badge">{term.symbol}</span>}
+        <h2>{displayTitle}</h2>
+      </div>
+      {(term.blurb||baseText)&&<p className="term-detail-text">{term.blurb||baseText}</p>}
+      {(term.examples&&term.examples.length>0||term.importantPoint)&&<div className="term-side-grid">
+        {term.examples&&term.examples.length>0&&<div className="term-box">
+          <p className="term-block-label">In the Wild</p>
+          <ul className="term-kv-list">{term.examples.slice(0,2).map((ex,i)=><li key={i}>{ex}</li>)}</ul>
+        </div>}
+        {term.importantPoint&&<div className="term-box quick-memory">
+          <p className="term-block-label">💡 Quick Memory</p>
+          <p>{term.importantPoint}</p>
+        </div>}
+      </div>}
+    </div>
+  }
+
+  // Core Concepts (deep): how it actually works — the fuller mechanism, the
+  // formula, the picture, the worked example. If a term already has its own
+  // Key Terms card, this view skips that one-line blurb, its memory tip and
+  // its first couple of examples entirely, so nothing reads twice — it only
+  // surfaces what's genuinely new: the "how", not the "what".
+  const alreadyInGlossary=isKeyTerm(term.title);
+  const skipBaseText=variant==='deep'&&alreadyInGlossary;
+  const insightLabel=variant==='deep'?'🔎 Why It Works':'💡 Quick Memory';
+  const insightClass=variant==='deep'?'term-box key-insight':'term-box quick-memory';
+  const showInsight=term.importantPoint&&!(variant==='deep'&&alreadyInGlossary);
+  const deepExamples=variant==='deep'&&alreadyInGlossary&&term.examples
+    ?term.examples.slice(2)
+    :term.examples;
+
   return <div className="term-detail">
     {!hideCrumb&&<p className="term-detail-crumb">{term.parentSectionTitle?`${term.parentSectionTitle} · `:''}{term.sectionTitle}</p>}
     <div className="term-detail-heading">
       {term.symbol&&<span className="term-symbol-badge">{term.symbol}</span>}
-      <h2>{term.title}</h2>
+      <h2>{displayTitle}</h2>
+      {skipBaseText&&<span className="term-glossary-chip" title="Already covered in Key Terms">📖 in Key Terms</span>}
     </div>
 
-    {term.definition&&<p className="term-detail-text">{term.definition}</p>}
-    {term.content&&<p className="term-detail-text">{term.content}</p>}
-    {term.description&&<p className="term-detail-text">{term.description}</p>}
+    {!skipBaseText&&term.definition&&<p className="term-detail-text">{term.definition}</p>}
+    {!skipBaseText&&term.content&&<p className="term-detail-text">{term.content}</p>}
+    {!skipBaseText&&term.description&&<p className="term-detail-text">{term.description}</p>}
 
     {(term.formula||extraFormulas.length>0)&&<div className="term-formula-group">
       {term.formula&&<div className="formula-row"><code>{term.formula}</code></div>}
@@ -795,13 +924,13 @@ function TermDetail({term,hideCrumb}){
     {term.condition&&<p className="term-meta-line"><b>Condition:</b> {term.condition}</p>}
     {term.result&&<p className="term-meta-line"><b>Result:</b> {term.result}</p>}
 
-    {(term.examples&&term.examples.length>0||examples.length>0||term.importantPoint)&&<div className="term-side-grid">
-      {term.examples&&term.examples.length>0&&<div className="term-box">
-        <p className="term-block-label">Examples</p>
-        <ul className="term-kv-list">{term.examples.map((ex,i)=><li key={i}>{ex}</li>)}</ul>
+    {(deepExamples&&deepExamples.length>0||examples.length>0||showInsight)&&<div className="term-side-grid">
+      {deepExamples&&deepExamples.length>0&&<div className="term-box">
+        <p className="term-block-label">{alreadyInGlossary?'One More Example':'Examples'}</p>
+        <ul className="term-kv-list">{deepExamples.map((ex,i)=><li key={i}>{ex}</li>)}</ul>
       </div>}
-      {term.importantPoint&&<div className="term-box quick-memory">
-        <p className="term-block-label">Quick Memory</p>
+      {showInsight&&<div className={insightClass}>
+        <p className="term-block-label">{insightLabel}</p>
         <p>{term.importantPoint}</p>
       </div>}
     </div>}
@@ -838,7 +967,7 @@ function Quiz({onGo}){
   if(!q)return <div className="quiz-card"><p>Not enough terminology data to build a quiz yet.</p></div>;
 
   if(finished)return <div className="quiz-card quiz-finished">
-    <p className="quiz-eyebrow">QUIZ COMPLETE</p>
+    <p className="quiz-eyebrow">PRACTICE COMPLETE</p>
     <h3>You scored {score} / {questions.length}</h3>
     <p className="quiz-result-note">{score===questions.length?'Perfect score — great grasp of the terminology!':score>=Math.ceil(questions.length/2)?'Solid work — a quick review of the missed terms will lock it in.':'Worth another pass through Key Terms before you try again.'}</p>
     <div className="quiz-actions">
@@ -851,7 +980,7 @@ function Quiz({onGo}){
     <div className="quiz-top">
       <div>
         <p className="quiz-eyebrow">QUESTION {index+1} OF {questions.length}</p>
-        <h3>Quiz Mode</h3>
+        <h3>Practice Question</h3>
       </div>
       <div className="quiz-score" aria-label={`Score ${score}`}>{score}</div>
     </div>
@@ -866,10 +995,10 @@ function Quiz({onGo}){
         return <button key={opt} className={cls} onClick={()=>choose(opt)} disabled={!!selected} aria-pressed={opt===selected}>{opt}</button>;
       })}
     </div>
-    {selected&&q.explanation&&
-      <div className="quiz-explanation">
-        <strong>Explanation:</strong> {q.explanation}
-      </div>}
+    {selected&&<div className={`quiz-reveal ${selected===q.correct?'is-correct':'is-incorrect'}`}>
+      <span className="quiz-reveal-badge">{selected===q.correct?'✓ Correct':'✕ Not quite'}</span>
+      {q.explanation&&<p><strong>Why:</strong> {q.explanation}</p>}
+    </div>}
     <div className="quiz-actions">
       <button className="quiz-next" disabled={!selected} onClick={next}>
         {index+1<questions.length?'Next Question →':'See Results →'}
@@ -878,9 +1007,74 @@ function Quiz({onGo}){
   </div>;
 }
 
+function FlashcardDeck({terms}){
+  const[index,setIndex]=useState(0);
+  const[flipped,setFlipped]=useState(false);
+  const[known,setKnown]=useState(()=>new Set());
+  const[order,setOrder]=useState(()=>terms.map((_,i)=>i));
+
+  const card=terms[order[index]];
+  if(!card)return null;
+
+  const goNext=()=>{
+    setFlipped(false);
+    setIndex(i=>(i+1)%order.length);
+  };
+  const goPrev=()=>{
+    setFlipped(false);
+    setIndex(i=>(i-1+order.length)%order.length);
+  };
+  const markKnown=(isKnown)=>{
+    setKnown(prev=>{
+      const next=new Set(prev);
+      if(isKnown)next.add(card.key); else next.delete(card.key);
+      return next;
+    });
+    goNext();
+  };
+  const shuffle=()=>{
+    const next=[...order];
+    for(let i=next.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[next[i],next[j]]=[next[j],next[i]];}
+    setOrder(next);setIndex(0);setFlipped(false);
+  };
+
+  return <div className="flashcard-wrap">
+    <div className="flashcard-progress">
+      <span>{known.size} of {terms.length} marked known</span>
+      <button className="flashcard-shuffle" onClick={shuffle}>🔀 Shuffle</button>
+    </div>
+
+    <button className={`flashcard ${flipped?'is-flipped':''}`} onClick={()=>setFlipped(f=>!f)} aria-live="polite">
+      <div className="flashcard-inner">
+        <div className="flashcard-face flashcard-front">
+          {card.symbol&&<span className="term-symbol-badge">{card.symbol}</span>}
+          <h3>{card.label}</h3>
+          <p className="flashcard-hint">Tap to reveal ↻</p>
+        </div>
+        <div className="flashcard-face flashcard-back">
+          <h4>{card.label}</h4>
+          <p>{card.blurb||card.definition||card.content}</p>
+          {card.importantPoint&&<p className="flashcard-tip">💡 {card.importantPoint}</p>}
+        </div>
+      </div>
+    </button>
+
+    <div className="flashcard-nav">
+      <button onClick={goPrev} disabled={order.length<2}>← Prev</button>
+      <div className="flashcard-know-btns">
+        <button className="flashcard-know unsure" onClick={()=>markKnown(false)}>🤔 Still Learning</button>
+        <button className="flashcard-know known" onClick={()=>markKnown(true)}>✓ Got It</button>
+      </div>
+      <button onClick={goNext} disabled={order.length<2}>Next →</button>
+    </div>
+    <p className="flashcard-count">Card {index+1} of {order.length}</p>
+  </div>;
+}
+
 function KeyTermsBrowser(){
   const[query,setQuery]=useState('');
-  const[selectedKey,setSelectedKey]=useState(terminologyItems[0]?.key);
+  const[selectedKey,setSelectedKey]=useState(keyTerms[0]?.key);
+  const[mode,setMode]=useState('browse');
   const listRef=useRef(null);
 
   useEffect(()=>{
@@ -890,11 +1084,11 @@ function KeyTermsBrowser(){
   },[selectedKey]);
 
   const filtered=query.trim()
-    ?terminologyItems.filter(t=>t.title.toLowerCase().includes(query.trim().toLowerCase()))
-    :terminologyItems;
+    ?keyTerms.filter(t=>t.label.toLowerCase().includes(query.trim().toLowerCase()))
+    :keyTerms;
 
   const activeInFiltered=filtered.find(t=>t.key===selectedKey);
-  const active=activeInFiltered||filtered[0]||terminologyItems.find(t=>t.key===selectedKey);
+  const active=activeInFiltered||filtered[0]||keyTerms.find(t=>t.key===selectedKey);
   const activeIndex=activeInFiltered?filtered.indexOf(activeInFiltered):-1;
 
   const goRelative=(delta)=>{
@@ -903,131 +1097,160 @@ function KeyTermsBrowser(){
     setSelectedKey(next.key);
   };
 
-  return <section className="lexicon-layout">
-    <div className="term-list-panel">
-      <div className="term-search">
-        <span>🔍</span>
-        <input type="text" placeholder="Search terms…" value={query}
-          onChange={e=>setQuery(e.target.value)} aria-label="Search terminology"/>
-      </div>
-      <nav className="term-list" ref={listRef} aria-label="Terminology list">
-        {filtered.length===0&&<p className="term-empty">No terms match "{query}".</p>}
-        {filtered.map(item=>
-          <button key={item.key} data-key={item.key} className={`term-list-item ${item.key===active?.key?'active':''}`}
-            aria-selected={item.key===active?.key} onClick={()=>setSelectedKey(item.key)}>
-            {item.symbol&&<span className="term-list-symbol">{item.symbol}</span>}
-            <span>{item.title}</span>
-          </button>)}
-      </nav>
+  return <section>
+    <div className="lexicon-mode-toggle">
+      <button className={mode==='browse'?'active':''} onClick={()=>setMode('browse')}>📋 Browse</button>
+      <button className={mode==='flash'?'active':''} onClick={()=>setMode('flash')}>🔄 Flashcards</button>
     </div>
-    <div className="term-detail-card">
-      {active&&<>
-        <TermDetail term={active}/>
-        <div className="term-nav">
-          <button onClick={()=>goRelative(-1)} disabled={filtered.length<2}>← Previous</button>
-          <span>{activeIndex>=0?`${activeIndex+1} of ${filtered.length}`:''}</span>
-          <button onClick={()=>goRelative(1)} disabled={filtered.length<2}>Next →</button>
+
+    {mode==='flash'
+      ? <FlashcardDeck terms={keyTerms}/>
+      : <div className="lexicon-layout">
+        <div className="term-list-panel">
+          <div className="term-search">
+            <span>🔍</span>
+            <input type="text" placeholder="Search terms…" value={query}
+              onChange={e=>setQuery(e.target.value)} aria-label="Search terminology"/>
+          </div>
+          <nav className="term-list" ref={listRef} aria-label="Terminology list">
+            {filtered.length===0&&<p className="term-empty">No terms match "{query}".</p>}
+            {filtered.map(item=>
+              <button key={item.key} data-key={item.key} className={`term-list-item ${item.key===active?.key?'active':''}`}
+                aria-selected={item.key===active?.key} onClick={()=>setSelectedKey(item.key)}>
+                {item.symbol&&<span className="term-list-symbol">{item.symbol}</span>}
+                <span>{item.label}</span>
+              </button>)}
+          </nav>
         </div>
-      </>}
-    </div>
+        <div className="term-detail-card">
+          {active&&<>
+            <TermDetail term={active} variant="brief"/>
+            <div className="term-nav">
+              <button onClick={()=>goRelative(-1)} disabled={filtered.length<2}>← Previous</button>
+              <button onClick={()=>goRelative(1)} disabled={filtered.length<2}>Next →</button>
+            </div>
+          </>}
+        </div>
+      </div>}
   </section>;
 }
 
-// The 7 top-level sections (14.1–14.7), each already carrying its own
-// blurb + topic list via skillsData. This drives a section-by-section
-// walkthrough that's deliberately a different interaction than the flat
-// Key Terms glossary: pick a section, then expand each topic one at a
-// time, with a small progress readout as you go.
-function SectionExplorer(){
-  const[activeNum,setActiveNum]=useState(skillsData[0]?.number);
-  const[openKey,setOpenKey]=useState(null);
-  const[seen,setSeen]=useState({});
-  const section=skillsData.find(s=>s.number===activeNum)||skillsData[0];
+// ---- Core Concepts: a deliberately SHORT list of the chapter's essential
+// principles — not a re-run of every topic in the textbook, and not a
+// duplicate of Key Terms. Each card pairs a plain-English statement of the
+// rule with one worked-style example and a one-line memory hook, mirroring
+// the "3 Laws of Newton" pattern used elsewhere on the site. Content is
+// distilled from the chapter's own summary points, so nothing here repeats
+// a Key Terms definition verbatim.
+const corePrinciples=[
+  {id:'wave-equation',title:'The Wave Equation',tag:'y = a sin(kx − ωt)',icon:'📈',colour:'blue',
+    statement:'A wave travelling in the positive x-direction is written y(x,t) = a sin(kx − ωt + φ).',
+    explanation:"This one formula captures a wave's shape, amplitude, and how it shifts through space and time together. Flip the sign to +ωt and it's the exact same wave, just heading the other way.",
+    examples:['A ripple crossing a pond, traced crest by crest as x and t change together.','A guitar string caught mid-vibration in a photo — same curve, different instant t.'],
+    tipLabel:'Pro-Hint',tip:'Wavelength = 2π/k and Period = 2π/ω. Spot those two ratios and you can read off almost anything about the wave.'},
+  {id:'wave-speed',title:'Speed of a Wave',tag:'v = λν',icon:'⚡',colour:'gold',
+    statement:'Wave speed is fixed by the medium, not by amplitude or frequency: v = λν = ω/k.',
+    explanation:'On a stretched string, v = √(T/μ) — tighter or lighter strings carry waves faster. Through a fluid or gas, v = √(B/ρ) — stiffer, less dense media carry sound faster.',
+    examples:['Tightening a guitar string raises the wave speed on it — and the pitch.','Sound travels faster through steel than air because steel resists compression far more.'],
+    tipLabel:'Pro-Hint',tip:'Speed = Wavelength × Frequency works for every wave — mechanical or electromagnetic.'},
+  {id:'superposition',title:'Principle of Superposition',tag:'y = y₁ + y₂',icon:'➕',colour:'red',
+    statement:"When two or more waves overlap, the resultant displacement is simply the sum of each wave's individual displacement.",
+    explanation:"Waves pass through each other unchanged — they don't collide or block one another. Where two crests align you get a bigger push (constructive); where a crest meets a trough, they partly or fully cancel (destructive).",
+    examples:['Two speakers placed just wrong can create a "dead spot" where sound almost disappears.','Ripples from two stones dropped in a pond cross paths without disturbing each other.'],
+    tipLabel:'Survival Tip',tip:"Superposition is THE idea behind interference, standing waves and beats — get this one and the rest follow."},
+  {id:'reflection',title:'Reflection of Waves',tag:'Fixed vs. Open End',icon:'🪞',colour:'pink',
+    statement:'At a rigid (fixed) boundary a wave reflects upside down — a phase change of π. At an open boundary, it reflects with no phase change at all.',
+    explanation:"This single rule explains why a rope tied to a wall sends back an inverted pulse, while a free end sends the pulse back the same way up — and why standing waves always have a node at a fixed end.",
+    examples:['A rope tied to a wall: the reflected pulse flips.','An open pipe end: the reflected wave stays right-side up.'],
+    tipLabel:'Survival Tip',tip:'Fixed end → flip (node). Open end → no flip (antinode). Memorise this pair and standing-wave diagrams solve themselves.'},
+  {id:'standing-waves',title:'Standing Waves & Harmonics',tag:'νₙ = nv/2L',icon:'🎵',colour:'indigo',
+    statement:'Overlapping incident and reflected waves lock into a standing pattern with fixed nodes (no motion) and antinodes (maximum motion).',
+    explanation:'A string fixed at both ends only rings at frequencies νₙ = nv/2L — whole-number harmonics. A pipe open at one end skips the even harmonics and rings only at odd multiples.',
+    examples:['A guitar string vibrating in one, two, or three loops sounds different, related pitches.','Blowing across a closed flute end produces only odd harmonics of the fundamental note.'],
+    tipLabel:'Pro-Hint',tip:'Count the loops (n) in a standing-wave diagram — that number plugs straight into νₙ = nv/2L.'},
+  {id:'beats',title:'Beats',tag:'νbeat = |ν1 − ν2|',icon:'🎧',colour:'teal',
+    statement:'Two sound waves of nearly equal frequency, played together, produce a rhythmic rise and fall in loudness — beats.',
+    explanation:'The beat frequency is simply the difference between the two frequencies: νbeat = |ν1 − ν2|. Musicians use exactly this to tune instruments, listening for the beats to slow and vanish.',
+    examples:['Two guitar strings almost — but not quite — in tune throb audibly when plucked together.','A 256 Hz and a 260 Hz tuning fork sounded together give 4 beats per second.'],
+    tipLabel:'Pro-Hint',tip:'Beat frequency is a plain subtraction — no square roots, no vectors, just |ν1 − ν2|.'},
+];
 
-  const selectSection=(num)=>{
-    setActiveNum(num);
-    setOpenKey(null);
-  };
-
-  const toggleTopic=(item)=>{
-    const willOpen=openKey!==item.key;
-    setOpenKey(willOpen?item.key:null);
-    if(willOpen)setSeen(prev=>{
-      const set=new Set(prev[activeNum]||[]);
-      set.add(item.key);
-      return {...prev,[activeNum]:set};
-    });
-  };
-
-  const exploredCount=seen[activeNum]?.size||0;
-  const totalCount=section?.items.length||0;
-  const progressPct=totalCount?Math.round((exploredCount/totalCount)*100):0;
+function CorePrinciples(){
+  const[activeId,setActiveId]=useState(corePrinciples[0].id);
+  const active=corePrinciples.find(p=>p.id===activeId)||corePrinciples[0];
 
   return <div className="sections-explorer">
-    <nav className="sections-rail" aria-label="Chapter sections">
-      {skillsData.map(s=>{
-        const done=seen[s.number]?.size||0;
-        return <button key={s.number} className={`sections-rail-btn ${s.colour} ${activeNum===s.number?'active':''}`} onClick={()=>selectSection(s.number)}>
-          <span className="sections-rail-icon">{s.icon}</span>
+    <nav className="sections-rail" aria-label="Core principles">
+      {corePrinciples.map(p=>
+        <button key={p.id} className={`sections-rail-btn ${p.colour} ${activeId===p.id?'active':''}`} onClick={()=>setActiveId(p.id)}>
+          <span className="sections-rail-icon">{p.icon}</span>
           <span className="sections-rail-body">
-            <b>{s.title}</b>
-            <small>{done}/{s.items.length} explored</small>
+            <b>{p.title}</b>
+            <small>{p.tag}</small>
           </span>
-        </button>;
-      })}
+        </button>)}
     </nav>
 
-    <div className={`sections-panel ${section?.colour||''}`}>
-      <p className="sections-panel-eyebrow">CHAPTER WALKTHROUGH</p>
-      <div className="sections-panel-heading"><span>{section?.icon}</span><h2>{section?.title}</h2></div>
-      <p className="sections-panel-blurb">{section?.blurb}</p>
+    <div className={`sections-panel ${active.colour}`}>
+      <div className="sections-panel-heading"><span>{active.icon}</span><h2>{active.title}</h2></div>
 
-      <div className="sections-progress">
-        <div className="sections-progress-track"><div className="sections-progress-fill" style={{width:`${progressPct}%`}}/></div>
-        <span>{exploredCount} of {totalCount} topics explored</span>
-      </div>
+      <blockquote className={`principle-statement ${active.colour}`}>{active.statement}</blockquote>
 
-      <div className="sections-accordion">
-        {section?.items.map(item=>{
-          const open=openKey===item.key;
-          const done=seen[activeNum]?.has(item.key);
-          return <div key={item.key} className={`sections-accordion-item ${open?'open':''}`}>
-            <button className="sections-accordion-head" onClick={()=>toggleTopic(item)} aria-expanded={open}>
-              {item.symbol&&<span className="term-list-symbol">{item.symbol}</span>}
-              <span className="sections-accordion-title">{item.title}</span>
-              {done&&!open&&<span className="sections-accordion-check">✓</span>}
-              <span className="sections-accordion-chevron">⌄</span>
-            </button>
-            {open&&<div className="sections-accordion-body"><TermDetail term={item} hideCrumb/></div>}
-          </div>;
-        })}
+      <p className="sections-panel-blurb">{active.explanation}</p>
+
+      <div className="term-side-grid">
+        <div className="term-box">
+          <p className="term-block-label">Example Application</p>
+          <ul className="term-kv-list">{active.examples.map((ex,i)=><li key={i}>{ex}</li>)}</ul>
+        </div>
+        <div className="term-box quick-memory">
+          <p className="term-block-label">🌐 Student Tip</p>
+          <p><b>{active.tipLabel}:</b> {active.tip}</p>
+        </div>
       </div>
     </div>
   </div>;
 }
 
+const terminologyStepCopy={
+  terms:{title:'Key Terms',lead:`Explore the foundations with ${keyTerms.length} key terms.`},
+  concepts:{title:'Core Concepts',lead:`The chapter's ${corePrinciples.length} essential principles — no textbook dump, just what actually matters.`},
+  practice:{title:'Practice Questions',lead:'Check what stuck. Answer, reveal instant feedback, and see the reasoning behind each one.'},
+};
+
 function Terminology({onBack,onGo}){
   const[tab,setTab]=useState('terms');
+  const copy=terminologyStepCopy[tab];
 
   return <div className="connect-page"><Header/><main className="connect-main">
     <DetailNav active="Terminology" onBack={onBack} onGo={onGo}/>
 
     <section className="lexicon-hero">
       <h1>Physics <span>Lexicon</span></h1>
-      <p>{tab==='quiz'?'Test your vocabulary and formula knowledge!':tab==='sections'?'Walk through the chapter section by section — expand each topic as you go.':`Search and browse all ${terminologyItems.length} key terms in one place.`}</p>
+      <p>{copy.lead}</p>
+      <div className="lexicon-steps" aria-hidden="true">
+        <span className={tab==='terms'||tab==='concepts'||tab==='practice'?'done':''}>1</span>
+        <i/>
+        <span className={tab==='concepts'||tab==='practice'?'done':''}>2</span>
+        <i/>
+        <span className={tab==='practice'?'done':''}>3</span>
+      </div>
       <div className="nav-pills lexicon-pills">
         <button className={`nav-pill ${tab==='terms'?'active':''}`} onClick={()=>setTab('terms')}>📖 Key Terms</button>
-        <button className={`nav-pill ${tab==='sections'?'active':''}`} onClick={()=>setTab('sections')}>🌊 Wave Sections</button>
-        <button className={`nav-pill ${tab==='quiz'?'active':''}`} onClick={()=>setTab('quiz')}>✏️ Quiz Time</button>
+        <button className={`nav-pill ${tab==='concepts'?'active':''}`} onClick={()=>setTab('concepts')}>🌊 Core Concepts</button>
+        <button className={`nav-pill ${tab==='practice'?'active':''}`} onClick={()=>setTab('practice')}>✏️ Practice Questions</button>
       </div>
     </section>
 
-    {tab==='quiz' && <section className="quiz-wrap"><Quiz onGo={onGo}/></section>}
     {tab==='terms' && <KeyTermsBrowser/>}
-    {tab==='sections' && <SectionExplorer/>}
+    {tab==='concepts' && <CorePrinciples/>}
+    {tab==='practice' && <section className="quiz-wrap"><Quiz onGo={onGo}/></section>}
 
-    {tab!=='quiz'&&<div className="mastered-wrap">
-      <button className="mastered-btn" onClick={()=>onGo('Skills')}>I've mastered the language! 🎉</button>
+    {tab==='terms'&&<div className="mastered-wrap">
+      <button className="mastered-btn" onClick={()=>setTab('concepts')}>I know the language — take me deeper 🌊</button>
+    </div>}
+    {tab==='concepts'&&<div className="mastered-wrap">
+      <button className="mastered-btn" onClick={()=>setTab('practice')}>I've got the concepts — test me! 🎯</button>
     </div>}
 
   </main></div>
@@ -1183,6 +1406,25 @@ function ExamEdge({onBack,onGo}){
               <span>{sol}</span>
             </div>
           </div>)}
+      </div>
+    </section>
+
+    <section className="revision-section">
+      <h2 className="revision-heading"><span>⚡</span> Quick Revision Module</h2>
+      <p className="revision-sub">Everything you need for last-minute revision. One card = one topic.</p>
+      <div className="revision-grid">
+        {revisionCards.map(([icon,title,points])=>
+          <div className="revision-card" key={title}>
+            <div className="revision-card-head"><span>{icon}</span>{title}</div>
+            <ul className="revision-list">{points.map((p,i)=><li key={i}>{p}</li>)}</ul>
+          </div>)}
+      </div>
+      <div className="exam-strategy-panel">
+        <div className="exam-strategy-label">📌 Final Exam Strategy</div>
+        <p>In Waves, <b>~55% of questions are conceptual</b> — wave types, superposition, and standing wave patterns. Spend time mastering these rather than complex numericals. For numericals: identify the wave type first, note whether it's an open/closed pipe or a fixed/free string, then apply the right formula.</p>
+      </div>
+      <div className="finish-topic-wrap">
+        <button className="finish-topic-btn" onClick={()=>onGo('Derivations & Formulas')}>Finish Topic ✓</button>
       </div>
     </section>
 
@@ -1526,5 +1768,5 @@ function App(){
   if(view==='videos')return <Videos onBack={goDashboard} onGo={goTo}/>;
   if(view==='examedge')return <ExamEdge onBack={goDashboard} onGo={goTo}/>;
   if(view==='derivations')return <DerivationsFormulas onBack={goDashboard} onGo={goTo}/>;
-  return <div className="chapter-page"><Header/><main id="top" className="chapter-layout"><section className="chapter-hero"><div className="hero-orb orb-one"/><div className="hero-orb orb-two"/><a href="#modules" className="back-link">← Grade 11 Physics</a><div className="hero-copy"><p className="chapter-kicker">CHAPTER FOURTEEN</p><h1>Master<br/><span>Waves</span></h1><p>Discover how disturbances travel through matter and space. From ripples on water to sound and communication, master the physics of waves.</p></div><div className="stats"><div><strong>7</strong><small>CORE TOPICS</small></div><div><strong>20+</strong><small>PRACTICE PROBLEMS</small></div><div><strong>12</strong><small>CHAPTER LINKS</small></div><div><strong>0%</strong><small>MASTERY</small></div></div></section><section id="modules" className="module-list">{modules.map(([eyebrow,title,icon,colour,text])=><article className={`module-card ${colour}`} key={title} onClick={()=>goTo(title)}><div className="module-icon">{icon}</div><div><p>{eyebrow}</p><h2>{title}</h2><span>{text}</span></div><button aria-label={`Open ${title}`}>→</button></article>)}</section></main></div>
+  return <div className="chapter-page"><Header/><main id="top" className="chapter-layout"><section className="chapter-hero"><div className="hero-orb orb-one"/><div className="hero-orb orb-two"/><a href="#modules" className="back-link">← Grade 11 Physics</a><div className="hero-copy"><p className="chapter-kicker">CHAPTER FOURTEEN</p><h1>Master<br/><span>Waves</span></h1><p>Discover how disturbances travel through matter and space. From ripples on water to sound and communication, master the physics of waves.</p></div><div className="stats"><div><strong>6</strong><small>CORE TOPICS</small></div><div><strong>20+</strong><small>PRACTICE PROBLEMS</small></div><div><strong>4</strong><small>CHAPTER LINKS</small></div><div><strong>0%</strong><small>MASTERY</small></div></div></section><section id="modules" className="module-list">{modules.map(([eyebrow,title,icon,colour,text])=><article className={`module-card ${colour}`} key={title} onClick={()=>goTo(title)}><div className="module-icon">{icon}</div><div><p>{eyebrow}</p><h2>{title}</h2><span>{text}</span></div><button aria-label={`Open ${title}`}>→</button></article>)}</section></main></div>
 };export default App;
