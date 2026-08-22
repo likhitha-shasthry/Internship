@@ -1,17 +1,51 @@
-Status: Working
-# React + Vite
+# Physics – Waves
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+An interactive educational website developed using **React, JSX, JavaScript, and CSS** to present the concepts of Waves in a simple and structured manner.
 
-Currently, two official plugins are available:
+## About the Project
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+This project is designed as a digital learning resource for understanding the fundamental concepts of **Waves in Physics**.
 
-## React Compiler
+The website presents the topic in an organized and interactive format, making it easier for students to learn and revise important concepts.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Content Covered
 
-## Expanding the Oxlint configuration
+The website covers key topics related to Waves, including:
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+* Introduction to Waves
+* Types of Waves
+* Wave Motion
+* Wave Characteristics
+* Wavelength
+* Frequency
+* Amplitude
+* Time Period
+* Wave Velocity
+* Transverse and Longitudinal Waves
+* Important concepts and explanations related to Waves
+
+## Technologies Used
+
+* **React** – Used to develop the website using reusable components.
+* **JSX** – Used to structure and render the user interface.
+* **JavaScript** – Used to implement the website's functionality and interactions.
+* **CSS** – Used for styling, layout, and responsive presentation.
+
+## Project Structure
+
+```text
+Internship_wysd/
+├── public/
+├── src/
+├── package.json
+├── vite.config.js
+└── README.md
+```
+
+## Live Website
+
+[Physics – Waves](https://internship-wysd.vercel.app/)
+
+## Purpose
+
+The project was developed as part of an internship to gain practical experience in frontend development and to create an interactive educational platform for learning Physics concepts.
