@@ -591,6 +591,34 @@ const formulaGroups=[
   ]},
 ];
 
+const revisionCards=[
+  ['📏','Basic Quantities',[
+    'v = f λ — wave speed equals frequency times wavelength',
+    'T = 1/f and ω = 2π f — period and angular frequency',
+    'k = 2π/λ — the wave (angular) number',
+  ]],
+  ['⚡','Wave Speed',[
+    'v = √(T/μ) — transverse wave on a stretched string',
+    'v = √(B/ρ) — general speed in a medium of bulk modulus B',
+    'v = √(γP/ρ) — speed of sound in a gas (Laplace\u2019s correction)',
+  ]],
+  ['➕','Superposition & Beats',[
+    'Resultant displacement is the sum of the individual waves: y = y₁ + y₂',
+    'Beat frequency: Δf = |f₁ − f₂|',
+    'Constructive: crest meets crest. Destructive: crest meets trough.',
+  ]],
+  ['🎸','Standing Waves & Harmonics',[
+    'String fixed at both ends: fₙ = n v / 2L (all harmonics)',
+    'Pipe closed at one end: fₙ = (2n − 1) v / 4L (odd harmonics only)',
+    'Nodes never move; antinodes swing hardest.',
+  ]],
+  ['🪞','Reflection & Boundaries',[
+    'Rigid boundary: wave reflects inverted — a phase change of π',
+    'Open/free boundary: wave reflects with no phase change',
+    'An echo is just a reflected sound wave off a hard surface',
+  ]],
+];
+
 function Header(){return <header className="topbar"><a className="brand" href="#top"><span className="brand-mark">◔</span><b>skill<span>100</span>.ai</b></a><nav>{['Home','Skill Discovery','IDY 2026','WYSD 2026','WYSD Maths','NEET','Rapid Math'].map(x=><a key={x} href="#modules">{x}</a>)}</nav><button className="logout">Logout</button></header>}
 
 function DetailNav({active,onBack,onGo}){
@@ -1378,6 +1406,25 @@ function ExamEdge({onBack,onGo}){
               <span>{sol}</span>
             </div>
           </div>)}
+      </div>
+    </section>
+
+    <section className="revision-section">
+      <h2 className="revision-heading"><span>⚡</span> Quick Revision Module</h2>
+      <p className="revision-sub">Everything you need for last-minute revision. One card = one topic.</p>
+      <div className="revision-grid">
+        {revisionCards.map(([icon,title,points])=>
+          <div className="revision-card" key={title}>
+            <div className="revision-card-head"><span>{icon}</span>{title}</div>
+            <ul className="revision-list">{points.map((p,i)=><li key={i}>{p}</li>)}</ul>
+          </div>)}
+      </div>
+      <div className="exam-strategy-panel">
+        <div className="exam-strategy-label">📌 Final Exam Strategy</div>
+        <p>In Waves, <b>~55% of questions are conceptual</b> — wave types, superposition, and standing wave patterns. Spend time mastering these rather than complex numericals. For numericals: identify the wave type first, note whether it's an open/closed pipe or a fixed/free string, then apply the right formula.</p>
+      </div>
+      <div className="finish-topic-wrap">
+        <button className="finish-topic-btn" onClick={()=>onGo('Derivations & Formulas')}>Finish Topic ✓</button>
       </div>
     </section>
 
