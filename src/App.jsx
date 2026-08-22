@@ -1099,7 +1099,6 @@ function KeyTermsBrowser(){
             <TermDetail term={active} variant="brief"/>
             <div className="term-nav">
               <button onClick={()=>goRelative(-1)} disabled={filtered.length<2}>← Previous</button>
-              <span>{activeIndex>=0?`${activeIndex+1} of ${filtered.length}`:''}</span>
               <button onClick={()=>goRelative(1)} disabled={filtered.length<2}>Next →</button>
             </div>
           </>}
@@ -1108,82 +1107,86 @@ function KeyTermsBrowser(){
   </section>;
 }
 
-// The 7 top-level sections (14.1–14.7), each already carrying its own
-// blurb + topic list via skillsData. This drives a section-by-section
-// walkthrough that's deliberately a different interaction than the flat
-// Key Terms glossary: pick a section, then expand each topic one at a
-// time, with a small progress readout as you go.
-function SectionExplorer(){
-  const[activeNum,setActiveNum]=useState(skillsData[0]?.number);
-  const[openKey,setOpenKey]=useState(null);
-  const[seen,setSeen]=useState({});
-  const section=skillsData.find(s=>s.number===activeNum)||skillsData[0];
+// ---- Core Concepts: a deliberately SHORT list of the chapter's essential
+// principles — not a re-run of every topic in the textbook, and not a
+// duplicate of Key Terms. Each card pairs a plain-English statement of the
+// rule with one worked-style example and a one-line memory hook, mirroring
+// the "3 Laws of Newton" pattern used elsewhere on the site. Content is
+// distilled from the chapter's own summary points, so nothing here repeats
+// a Key Terms definition verbatim.
+const corePrinciples=[
+  {id:'wave-equation',title:'The Wave Equation',tag:'y = a sin(kx − ωt)',icon:'📈',colour:'blue',
+    statement:'A wave travelling in the positive x-direction is written y(x,t) = a sin(kx − ωt + φ).',
+    explanation:"This one formula captures a wave's shape, amplitude, and how it shifts through space and time together. Flip the sign to +ωt and it's the exact same wave, just heading the other way.",
+    examples:['A ripple crossing a pond, traced crest by crest as x and t change together.','A guitar string caught mid-vibration in a photo — same curve, different instant t.'],
+    tipLabel:'Pro-Hint',tip:'Wavelength = 2π/k and Period = 2π/ω. Spot those two ratios and you can read off almost anything about the wave.'},
+  {id:'wave-speed',title:'Speed of a Wave',tag:'v = λν',icon:'⚡',colour:'gold',
+    statement:'Wave speed is fixed by the medium, not by amplitude or frequency: v = λν = ω/k.',
+    explanation:'On a stretched string, v = √(T/μ) — tighter or lighter strings carry waves faster. Through a fluid or gas, v = √(B/ρ) — stiffer, less dense media carry sound faster.',
+    examples:['Tightening a guitar string raises the wave speed on it — and the pitch.','Sound travels faster through steel than air because steel resists compression far more.'],
+    tipLabel:'Pro-Hint',tip:'Speed = Wavelength × Frequency works for every wave — mechanical or electromagnetic.'},
+  {id:'superposition',title:'Principle of Superposition',tag:'y = y₁ + y₂',icon:'➕',colour:'red',
+    statement:"When two or more waves overlap, the resultant displacement is simply the sum of each wave's individual displacement.",
+    explanation:"Waves pass through each other unchanged — they don't collide or block one another. Where two crests align you get a bigger push (constructive); where a crest meets a trough, they partly or fully cancel (destructive).",
+    examples:['Two speakers placed just wrong can create a "dead spot" where sound almost disappears.','Ripples from two stones dropped in a pond cross paths without disturbing each other.'],
+    tipLabel:'Survival Tip',tip:"Superposition is THE idea behind interference, standing waves and beats — get this one and the rest follow."},
+  {id:'reflection',title:'Reflection of Waves',tag:'Fixed vs. Open End',icon:'🪞',colour:'pink',
+    statement:'At a rigid (fixed) boundary a wave reflects upside down — a phase change of π. At an open boundary, it reflects with no phase change at all.',
+    explanation:"This single rule explains why a rope tied to a wall sends back an inverted pulse, while a free end sends the pulse back the same way up — and why standing waves always have a node at a fixed end.",
+    examples:['A rope tied to a wall: the reflected pulse flips.','An open pipe end: the reflected wave stays right-side up.'],
+    tipLabel:'Survival Tip',tip:'Fixed end → flip (node). Open end → no flip (antinode). Memorise this pair and standing-wave diagrams solve themselves.'},
+  {id:'standing-waves',title:'Standing Waves & Harmonics',tag:'νₙ = nv/2L',icon:'🎵',colour:'indigo',
+    statement:'Overlapping incident and reflected waves lock into a standing pattern with fixed nodes (no motion) and antinodes (maximum motion).',
+    explanation:'A string fixed at both ends only rings at frequencies νₙ = nv/2L — whole-number harmonics. A pipe open at one end skips the even harmonics and rings only at odd multiples.',
+    examples:['A guitar string vibrating in one, two, or three loops sounds different, related pitches.','Blowing across a closed flute end produces only odd harmonics of the fundamental note.'],
+    tipLabel:'Pro-Hint',tip:'Count the loops (n) in a standing-wave diagram — that number plugs straight into νₙ = nv/2L.'},
+  {id:'beats',title:'Beats',tag:'νbeat = |ν1 − ν2|',icon:'🎧',colour:'teal',
+    statement:'Two sound waves of nearly equal frequency, played together, produce a rhythmic rise and fall in loudness — beats.',
+    explanation:'The beat frequency is simply the difference between the two frequencies: νbeat = |ν1 − ν2|. Musicians use exactly this to tune instruments, listening for the beats to slow and vanish.',
+    examples:['Two guitar strings almost — but not quite — in tune throb audibly when plucked together.','A 256 Hz and a 260 Hz tuning fork sounded together give 4 beats per second.'],
+    tipLabel:'Pro-Hint',tip:'Beat frequency is a plain subtraction — no square roots, no vectors, just |ν1 − ν2|.'},
+];
 
-  const selectSection=(num)=>{
-    setActiveNum(num);
-    setOpenKey(null);
-  };
-
-  const toggleTopic=(item)=>{
-    const willOpen=openKey!==item.key;
-    setOpenKey(willOpen?item.key:null);
-    if(willOpen)setSeen(prev=>{
-      const set=new Set(prev[activeNum]||[]);
-      set.add(item.key);
-      return {...prev,[activeNum]:set};
-    });
-  };
-
-  const exploredCount=seen[activeNum]?.size||0;
-  const totalCount=section?.items.length||0;
-  const progressPct=totalCount?Math.round((exploredCount/totalCount)*100):0;
+function CorePrinciples(){
+  const[activeId,setActiveId]=useState(corePrinciples[0].id);
+  const active=corePrinciples.find(p=>p.id===activeId)||corePrinciples[0];
 
   return <div className="sections-explorer">
-    <nav className="sections-rail" aria-label="Chapter sections">
-      {skillsData.map(s=>{
-        const done=seen[s.number]?.size||0;
-        return <button key={s.number} className={`sections-rail-btn ${s.colour} ${activeNum===s.number?'active':''}`} onClick={()=>selectSection(s.number)}>
-          <span className="sections-rail-icon">{s.icon}</span>
+    <nav className="sections-rail" aria-label="Core principles">
+      {corePrinciples.map(p=>
+        <button key={p.id} className={`sections-rail-btn ${p.colour} ${activeId===p.id?'active':''}`} onClick={()=>setActiveId(p.id)}>
+          <span className="sections-rail-icon">{p.icon}</span>
           <span className="sections-rail-body">
-            <b>{s.title}</b>
-            <small>{done}/{s.items.length} explored</small>
+            <b>{p.title}</b>
+            <small>{p.tag}</small>
           </span>
-        </button>;
-      })}
+        </button>)}
     </nav>
 
-    <div className={`sections-panel ${section?.colour||''}`}>
-      <p className="sections-panel-eyebrow">CORE CONCEPTS</p>
-      <div className="sections-panel-heading"><span>{section?.icon}</span><h2>{section?.title}</h2></div>
-      <p className="sections-panel-blurb">{section?.blurb}</p>
+    <div className={`sections-panel ${active.colour}`}>
+      <div className="sections-panel-heading"><span>{active.icon}</span><h2>{active.title}</h2></div>
 
-      <div className="sections-progress">
-        <div className="sections-progress-track"><div className="sections-progress-fill" style={{width:`${progressPct}%`}}/></div>
-        <span>{exploredCount} of {totalCount} topics explored</span>
-      </div>
+      <blockquote className={`principle-statement ${active.colour}`}>{active.statement}</blockquote>
 
-      <div className="sections-accordion">
-        {section?.items.map(item=>{
-          const open=openKey===item.key;
-          const done=seen[activeNum]?.has(item.key);
-          return <div key={item.key} className={`sections-accordion-item ${open?'open':''}`}>
-            <button className="sections-accordion-head" onClick={()=>toggleTopic(item)} aria-expanded={open}>
-              {item.symbol&&<span className="term-list-symbol">{item.symbol}</span>}
-              <span className="sections-accordion-title">{item.title}</span>
-              {done&&!open&&<span className="sections-accordion-check">✓</span>}
-              <span className="sections-accordion-chevron">⌄</span>
-            </button>
-            {open&&<div className="sections-accordion-body"><TermDetail term={item} hideCrumb variant="deep"/></div>}
-          </div>;
-        })}
+      <p className="sections-panel-blurb">{active.explanation}</p>
+
+      <div className="term-side-grid">
+        <div className="term-box">
+          <p className="term-block-label">Example Application</p>
+          <ul className="term-kv-list">{active.examples.map((ex,i)=><li key={i}>{ex}</li>)}</ul>
+        </div>
+        <div className="term-box quick-memory">
+          <p className="term-block-label">🌐 Student Tip</p>
+          <p><b>{active.tipLabel}:</b> {active.tip}</p>
+        </div>
       </div>
     </div>
   </div>;
 }
 
 const terminologyStepCopy={
-  terms:{title:'Key Terms',lead:`Start with the vocabulary — ${keyTerms.length} essential terms and their concise definitions.`},
-  concepts:{title:'Core Concepts',lead:'Now go deeper — see how waves actually behave, with formulas, visuals and worked examples.'},
+  terms:{title:'Key Terms',lead:`Explore the foundations with ${keyTerms.length} key terms.`},
+  concepts:{title:'Core Concepts',lead:`The chapter's ${corePrinciples.length} essential principles — no textbook dump, just what actually matters.`},
   practice:{title:'Practice Questions',lead:'Check what stuck. Answer, reveal instant feedback, and see the reasoning behind each one.'},
 };
 
@@ -1212,7 +1215,7 @@ function Terminology({onBack,onGo}){
     </section>
 
     {tab==='terms' && <KeyTermsBrowser/>}
-    {tab==='concepts' && <SectionExplorer/>}
+    {tab==='concepts' && <CorePrinciples/>}
     {tab==='practice' && <section className="quiz-wrap"><Quiz onGo={onGo}/></section>}
 
     {tab==='terms'&&<div className="mastered-wrap">
